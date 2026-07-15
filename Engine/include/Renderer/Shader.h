@@ -9,17 +9,21 @@ static const char* DEFAULT_VERTEX_SHADER =
 "uniform mat4 model;\n"
 "uniform mat4 view;\n"
 "uniform mat4 projection;\n"
+"out vec3 o_pos;\n"
 "void main()\n"
 "{\n"
 "	mat4 mvp = projection * view * model;\n"
+"	o_pos = (mvp * vec4(pos, 1.0)).xyz;\n"
 "	gl_Position = mvp * vec4(pos, 1.0);\n"
 "}\n\0";
 
 static const char* DEFAULT_FRAGMENT_SHADER =
 "#version 330 core\n"
+"in vec3 o_pos;\n"
 "void main()\n"
 "{\n"
-"	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+"	float col = ((1.0 / o_pos.z)) - 0.5;\n"
+"	gl_FragColor = vec4(col, col, col, 0.0);\n"
 "}\n\0";
 
 class Shader

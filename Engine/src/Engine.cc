@@ -22,9 +22,9 @@ Engine::Engine(const char* window_title, int width, int height) {
 		std::cerr << "Failed to initialise Window" << std::endl;
 	}
 
-	// Enable Vsync
-	glfwSwapInterval(1);
 	glfwMakeContextCurrent(this->window);
+	// Enable Vsync
+	glfwSwapInterval(0);
 
 	// Initialise glad to load specified OpenGL version (3.3 core)
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);

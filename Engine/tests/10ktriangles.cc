@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Engine.h>
+#include <chrono>
 
 #include <Renderer/Triangle.h>
 #include <Renderer/Vertex.h>
@@ -24,8 +25,19 @@ Triangle t2 = Triangle(
 Triangle tris[] = { t, t2 };
 Mesh mesh = Mesh(tris, sizeof(tris) / sizeof(Triangle));
 
-static void on_render() {
+static std::chrono::milliseconds tim;
+static int fps_counter{ 0 };
 
+static void on_render() {
+	auto now = std::chrono::system_clock::now();
+	auto new_tim = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+
+	fps_counter++;
+	if ((new_tim - tim).count() > 1000) {
+		std::cout << "FPS: " << fps_counter << std::endl;
+		tim = new_tim;
+		fps_counter = 0;
+	}
 }
 
 int main() {
@@ -45,7 +57,7 @@ int main() {
 			Vertex(Vector3(-0.5f, 0.5f, -t)),
 			Vertex(Vector3(0.5f, 0.5f, -t))
 		);
-		triangles[t+1] = Triangle(
+		triangles[t + 1] = Triangle(
 			Vertex(Vector3(0.5f, 0.5f, -t)),
 			Vertex(Vector3(-0.5f, -0.5f, -t)),
 			Vertex(Vector3(0.5f, -0.5f, -t))
@@ -57,7 +69,7 @@ int main() {
 
 	// Move the camera back so that we are not in the same position as the square
 	scene.camera.transform.translate(Vector3(0.0f, -1.5f, -1.0f));
-	
+
 	while (engine->should_keep_ticking()) {
 		engine->tick();
 	}

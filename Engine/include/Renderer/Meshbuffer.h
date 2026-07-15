@@ -35,7 +35,7 @@ public:
 	// Needed to track size for bounds checking the buffer
 	uint32_t size; 
 
-	std::unordered_map<Mesh*, GpuMesh> mesh_map;
+	std::unordered_map<uint32_t, GpuMesh> mesh_map;
 
 	MeshBuffer(int size);
 	~MeshBuffer();

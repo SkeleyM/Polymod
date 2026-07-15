@@ -1,5 +1,7 @@
 #include <Renderer/Mesh.h>
 
+uint32_t Mesh::rolling_id = 0;
+
 Mesh::Mesh(Triangle triangles[], uint32_t triangle_count) {
 	// Malloc instead of new to avoid needing a default constructor
 	Triangle* mesh_triangles = (Triangle*)malloc(sizeof(Triangle) * triangle_count);
@@ -12,6 +14,8 @@ Mesh::Mesh(Triangle triangles[], uint32_t triangle_count) {
 	}
 	this->triangles = mesh_triangles;
 	this->triangle_count = triangle_count;
+	this->id = rolling_id;
+	Mesh::rolling_id++;
 }
 
 Mesh::~Mesh() {
@@ -31,6 +35,7 @@ Mesh::Mesh(const Mesh& mesh) {
 	}
 	this->triangles = mesh_triangles;
 	this->triangle_count = mesh.triangle_count;
+	this->id = mesh.id;
 }
 
 std::vector<uint32_t> Mesh::get_indices() {

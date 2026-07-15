@@ -6,6 +6,8 @@
 
 typedef struct Mesh {
 public:
+	static uint32_t rolling_id;
+
 	// To avoid using a dynamic array for storing mesh data
 	// memory is manually allocated and tracked using the 'triangle_count' variable.
 	// A dynamic array is nessicary as meshes are different sizes;
@@ -13,6 +15,8 @@ public:
 	Triangle* triangles;
 
 	Transform transform;
+
+	uint32_t id{ rolling_id };
 
 	Mesh(Triangle triangles[], uint32_t triangle_count);
 	Mesh(const Mesh& mesh);

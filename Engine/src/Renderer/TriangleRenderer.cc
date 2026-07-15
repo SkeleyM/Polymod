@@ -34,12 +34,6 @@ void TriangleRenderer::render(Camera& camera, Mesh* mesh) {
 	gl_check_for_error();
 }
 
-void TriangleRenderer::render_all(Camera& camera) {
-	for (auto [mesh, gpumesh] : this->meshbuffer.mesh_map) {
-		this->render(camera, mesh);
-	}
-}
-
 void TriangleRenderer::set_shader(Shader shader) {
 	this->shader = shader;
 }

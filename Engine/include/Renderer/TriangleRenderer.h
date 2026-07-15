@@ -16,7 +16,6 @@ public:
 	~TriangleRenderer();
 
 	void render(Camera& camera, Mesh* mesh);
-	void render_all(Camera& camera);
 	void set_shader(Shader shader);
 	Shader& get_shader() { return this->shader; }
 };

@@ -22,7 +22,7 @@ MeshBuffer::MeshBuffer(int size) {
 	glBufferData(GL_ARRAY_BUFFER, size * sizeof(Triangle), NULL, GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->gl_ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * sizeof(uint32_t) * 3, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * sizeof(uint32_t), NULL, GL_DYNAMIC_DRAW);
 
 	// Set vertex attributes
 	// Vertex attributes allow shaders to access vertex data
@@ -66,7 +66,7 @@ void MeshBuffer::add_mesh(Mesh& mesh) {
 
 	gl_check_for_error();
 
-	this->mesh_map.insert({ &mesh, gpu_mesh });
+	this->mesh_map.insert({ mesh.id, gpu_mesh });
 }
 
 std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(Mesh& mesh) {
@@ -103,7 +103,8 @@ std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(Mesh& mesh) {
 	uint32_t vbo_offset = meshes.back().vbo_offset + meshes.back().vbo_size;
 
 	// Bounds check to ensure this doesnt overflow the buffer
-	if (((ebo_offset + ebo_size) > this->size) || ((vbo_offset + vbo_size) > size)) {
+	if (((ebo_offset + ebo_size) > this->size * sizeof(uint32_t)) 
+		|| ((vbo_offset + vbo_size) > size * sizeof(Triangle))) {
 		// This will overflow the buffer, so return no value.
 		return std::nullopt;
 	}
@@ -122,8 +123,8 @@ void MeshBuffer::clear_buffer() {
 
 GpuMesh MeshBuffer::get_gpu_mesh(Mesh& mesh) {
 	// If the mesh already exists on the gpu, return the GpuMesh for it.
-	if (this->mesh_map.find(&mesh) != this->mesh_map.end()) {
-		return this->mesh_map[&mesh];
+	if (this->mesh_map.find(mesh.id) != this->mesh_map.end()) {
+		return this->mesh_map[mesh.id];
 	}
 	
 	this->add_mesh(mesh);
