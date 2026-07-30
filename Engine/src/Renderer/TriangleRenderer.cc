@@ -21,7 +21,7 @@ void TriangleRenderer::render(Camera& camera, Mesh* mesh) {
 	glUseProgram(this->shader.gl_program_id);
 
 	this->shader.set_uniform_matrix4x4("model", mesh->transform.get_matrix());
-	this->shader.set_uniform_matrix4x4("view", camera.transform.get_matrix());
+	this->shader.set_uniform_matrix4x4("view", glm::inverse(camera.transform.get_matrix()));
 	this->shader.set_uniform_matrix4x4("projection", camera.get_projection_matrix());
 
  	glDrawElements(

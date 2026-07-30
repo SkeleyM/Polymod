@@ -63,3 +63,15 @@ void Engine::tick() {
 
 	glfwSwapBuffers(this->window);
 }
+
+Vector2 Engine::get_mouse_position() {
+	double x{ 0.0f };
+	double y{ 0.0f };
+	glfwGetCursorPos(this->window, &x, &y);
+
+	return Vector2(x, y);
+}
+
+bool Engine::get_left_mouse() {
+	return glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
+}

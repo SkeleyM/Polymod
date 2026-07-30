@@ -10,4 +10,5 @@ public:
 
 	Matrix4x4 get_view_matrix();
 	Matrix4x4 get_projection_matrix();
+	void look_at(Vector3 position);
 };
