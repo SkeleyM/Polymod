@@ -37,6 +37,7 @@ public:
 	void set_on_load(std::function<void()> callback) {
 		this->on_load_callback = callback;
 	}
+
 	void set_on_render(std::function<void()> callback) {
 		this->on_render_callback = callback;
 	}

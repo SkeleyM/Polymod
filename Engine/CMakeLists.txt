@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_SOURCE_DIR src)
 
 set(HEADERS include/Engine.h
+	include/InputManager.h
 	include/EMath.h
 	include/Scene.h
 	include/Transform.h
@@ -20,6 +21,7 @@ set(HEADERS include/Engine.h
 	src/Renderer/Glerror.h
 )
 set(SOURCES ${PROJECT_SOURCE_DIR}/Engine.cc
+	${PROJECT_SOURCE_DIR}/InputManager.cc
 	${PROJECT_SOURCE_DIR}/Scene.cc
 	${PROJECT_SOURCE_DIR}/Transform.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Camera.cc

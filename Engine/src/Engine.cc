@@ -1,4 +1,5 @@
 #include <Engine.h>
+#include <InputManager.h>
 
 #include <Renderer/Triangle.h>
 #include <Renderer/Vertex.h>
@@ -30,8 +31,13 @@ Engine::Engine(const char* window_title, int width, int height) {
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	glViewport(0, 0, width, height);
 
+	glfwSetScrollCallback(this->window, glfw_scroll_handler);
+	glfwSetCursorPosCallback(this->window, glfw_mouse_handler);
+	glfwSetKeyCallback(this->window, glfw_key_handler);
+
 	Engine::engine_instance = this;
 	this->window_size = Vector2((float)width, (float)height);
+
 	this->on_load_callback = dummy_callback;
 	this->on_render_callback = dummy_callback;
 
@@ -62,14 +68,10 @@ void Engine::tick() {
 	this->on_render_callback();
 
 	glfwSwapBuffers(this->window);
-}
 
-Vector2 Engine::get_mouse_position() {
-	double x{ 0.0f };
-	double y{ 0.0f };
-	glfwGetCursorPos(this->window, &x, &y);
-
-	return Vector2(x, y);
+	// Reset some input
+	InputManager& input_manager = InputManager::get();
+	input_manager._reset_scroll();
 }
 
 bool Engine::get_left_mouse() {
