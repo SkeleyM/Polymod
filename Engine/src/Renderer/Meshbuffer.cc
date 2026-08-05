@@ -29,8 +29,10 @@ MeshBuffer::MeshBuffer(int size) {
 	// For now my vertex struct is just the position of the vertex
 	// 
 	// Set position vertex attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vector3), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)sizeof(Vector3));
+	glEnableVertexAttribArray(1);
 	gl_check_for_error();
 }
 
@@ -53,7 +55,6 @@ void MeshBuffer::add_mesh(Mesh& mesh) {
 	for (int i = 0; i < indices.size(); i++) {
 		indices[i] = indices[i] + (gpu_mesh.ebo_offset / sizeof(uint32_t));
 	}
-
 	
 	glBindVertexArray(this->gl_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, this->gl_vbo);
@@ -70,8 +71,8 @@ void MeshBuffer::add_mesh(Mesh& mesh) {
 }
 
 std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(Mesh& mesh) {
-	uint32_t ebo_size = mesh.triangle_count * 3 * sizeof(uint32_t);
-	uint32_t vbo_size = mesh.triangle_count * 3 * sizeof(Vertex);
+	uint32_t ebo_size = (mesh.triangle_count * 3) * sizeof(uint32_t);
+	uint32_t vbo_size = mesh.triangle_count * sizeof(Triangle);
 
 	// To append to the buffer, this algorithm requires at least 1 mesh to already exist
 	if (this->mesh_map.size() == 0) {

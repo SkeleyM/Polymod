@@ -75,6 +75,18 @@ void Shader::set_uniform_matrix4x4(std::string name, Matrix4x4 value) {
 	glUniformMatrix4fv(uniform_location, 1, GL_FALSE, (float*)(&value));
 }
 
+void Shader::set_uniform_vector3(std::string name, Vector3 value) {
+	// Get the uniforms location required to set the value in the shader
+	auto uniform_location = glGetUniformLocation(this->gl_program_id, name.c_str());
+	if (uniform_location == -1) {
+		std::cerr << "Attempted to set uniform which does not exist";
+		return;
+	}
+
+	// Set the uniform value in the shader
+	glUniform3f(uniform_location, value.x, value.y, value.z);
+}
+
 void Shader::set_uniform_float(std::string name, float value) {
 	// Get the uniforms location required to set the value in the shader
 	auto uniform_location = glGetUniformLocation(this->gl_program_id, name.c_str());

@@ -8,6 +8,7 @@ set(PROJECT_SOURCE_DIR src)
 set(HEADERS include/Engine.h
 	include/InputManager.h
 	include/EMath.h
+	include/Light.h
 	include/Scene.h
 	include/Transform.h
 	include/Renderer/Camera.h
