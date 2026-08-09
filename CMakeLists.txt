@@ -6,14 +6,31 @@ set(PROJECT_SOURCE_DIR src)
 
 set(SOURCES
 	${PROJECT_SOURCE_DIR}/OrbitalCameraController.cc
-	${PROJECT_SOURCE_DIR}/Geometry/Geometry.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Face.cc
+	${PROJECT_SOURCE_DIR}/Geometry/Geometry.cc
+	${PROJECT_SOURCE_DIR}/Geometry/Timeline.cc
+
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/AbstractGeometryOperation.cc
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/ExtrudeOperation.cc
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/MoveOperation.cc
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/VertexSpinOperation.cc
 )
 
 set(HEADERS 
 	${PROJECT_SOURCE_DIR}/OrbitalCameraController.h
-	${PROJECT_SOURCE_DIR}/Geometry/Geometry.h
 	${PROJECT_SOURCE_DIR}/Geometry/Face.h
+	${PROJECT_SOURCE_DIR}/Geometry/Geometry.h
+	${PROJECT_SOURCE_DIR}/Geometry/GeometryShadingType.h
+	${PROJECT_SOURCE_DIR}/Geometry/Timeline.h
+
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/AbstractGeometryOperation.h
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/ExtrudeOperation.h
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/MoveOperation.h
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/VertexSpinOperation.h
+)
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}
+    FILES ${HEADERS} ${SOURCES}
 )
 
 add_subdirectory(Engine)
