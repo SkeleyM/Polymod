@@ -36,6 +36,7 @@ Mesh::Mesh(const Mesh& mesh) {
 	this->triangles = mesh_triangles;
 	this->triangle_count = mesh.triangle_count;
 	this->id = mesh.id;
+	this->transform = mesh.transform;
 }
 
 std::vector<uint32_t> Mesh::get_indices() {
