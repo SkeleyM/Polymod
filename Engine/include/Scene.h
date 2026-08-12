@@ -18,4 +18,6 @@ public:
 
 	void render();
 	void add_mesh(Mesh mesh);
+	void remove_mesh(int mesh_id);
+	void clear_scene();
 };

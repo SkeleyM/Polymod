@@ -19,3 +19,12 @@ void Scene::render() {
 void Scene::add_mesh(Mesh mesh) {
 	this->meshes.push_back(mesh);
 }
+
+void Scene::remove_mesh(int id) {
+	for (int i = 0; i < this->meshes.size(); i++) {
+		Mesh mesh = this->meshes[i];
+		if (mesh.id == id) {
+			this->meshes.erase(this->meshes.begin() + i);
+		}
+	}
+}

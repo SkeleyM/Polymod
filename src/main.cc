@@ -15,6 +15,8 @@
 #include <Geometry/Operations/ExtrudeOperation.h>
 #include <Geometry/Operations/MoveOperation.h>
 #include <Geometry/Operations/VertexSpinOperation.h>
+#include <Geometry/Operations/ScaleOperation.h>
+#include <Geometry/Operations/RotateOperation.h>
 
 OrbitalCameraController* camera_controller;
 
@@ -50,7 +52,7 @@ int main() {
 	scene.camera.transform.translate(Vector3(0.0f, -1.5f, -1.0f));
 
 	camera_controller = new OrbitalCameraController(&scene.camera);
-
+	
 	Geometry geometry = Geometry("Test");
 
 	geometry.add_vertex(Vector3(-0.5f, -0.5f, 0.0f));
@@ -65,9 +67,8 @@ int main() {
 
 	geometry.define_face({ 0, 1, 2, 3 });
 
-	geometry.calculate_normals(SHADE_FLAT);
-	//Mesh mesh = geometry.triangulate();
-	scene.add_mesh(geometry.triangulate());
+	Mesh mesh = geometry.triangulate();
+	scene.add_mesh(mesh);
 
 	while (engine->should_keep_ticking()) {
 		engine->tick();
