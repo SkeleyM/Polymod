@@ -97,14 +97,14 @@ std::vector<int> Geometry::get_neighbours(int vertex) {
 std::optional<std::vector<int>> Geometry::get_loop(std::vector<int> vertices) {
 	// Depth first search
 	std::vector<int> visited;
-	std::stack<int> open;
+	std::stack<int> collapsed;
 	
 	int current = vertices[0];
-	open.push(current);
+	collapsed.push(current);
 
-	while (open.size() != 0) {
-		current = open.top();
-		open.pop();
+	while (collapsed.size() != 0) {
+		current = collapsed.top();
+		collapsed.pop();
 		visited.push_back(current);
 
 		auto neighbours = this->get_neighbours(current);
@@ -113,7 +113,7 @@ std::optional<std::vector<int>> Geometry::get_loop(std::vector<int> vertices) {
 			// and it is one of the vertices in our loop
 			if (std::find(visited.begin(), visited.end(), v) == visited.end() &&
 				std::find(vertices.begin(), vertices.end(), v) != vertices.end()) {
-				open.push(v);
+				collapsed.push(v);
 				break;
 			}
 		}

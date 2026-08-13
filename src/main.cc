@@ -6,19 +6,18 @@
 #include <Renderer/Vertex.h>
 #include <Renderer/Mesh.h>
 #include <EMath.h>
-#include <GLFW/glfw3.h>
+#include <imgui.h>
 
 #include <OrbitalCameraController.h>
-#include <Geometry/Geometry.h>
-
-//TEMPY
-#include <Geometry/Operations/ExtrudeOperation.h>
-#include <Geometry/Operations/MoveOperation.h>
-#include <Geometry/Operations/VertexSpinOperation.h>
-#include <Geometry/Operations/ScaleOperation.h>
-#include <Geometry/Operations/RotateOperation.h>
+#include <GeometryEditor.h>
+#include <Ui/Toolbar.h>
+#include <Ui/MenuBar.h>
 
 OrbitalCameraController* camera_controller;
+GeometryEditor geometry_editor;
+
+Toolbar toolbar;
+MenuBar menubar;
 
 static void on_render() {
 	static Vector2 mouse_pos{ 0.0f, 0.0f };
@@ -30,19 +29,23 @@ static void on_render() {
 	Vector2 mouse_delta = new_pos - mouse_pos;
 	mouse_pos = new_pos;
 
-
 	// If left clicking rotate using the change in mouse position.
-	if (engine->get_left_mouse())
+	if (engine->get_left_mouse() && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
 		camera_controller->rotate_from_screen_xy(-mouse_delta.x, mouse_delta.y);
 
 	camera_controller->set_orbit_radius(
 		camera_controller->get_orbit_radius()
 		+ (-InputManager::get().get_scroll().y)
 	);
+
+	menubar.render();
+	toolbar.render();
+
+	InputManager::get();
 }
 
 int main() {
-	Engine* engine = new Engine("Window", 1920, 1080);
+	Engine* engine = new Engine("Modeller", 1920, 1080);
 
 	engine->set_on_render(on_render);
 	Scene& scene = engine->get_active_scene();
