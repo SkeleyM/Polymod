@@ -6,6 +6,8 @@
 #include <Renderer/Mesh.h>
 #include <Renderer/Shader.h>
 #include <Renderer/Meshbuffer.h>
+#include <imgui_impl/ImGui.h>
+
 #include <iostream>
 
 Engine* Engine::engine_instance = nullptr;
@@ -42,6 +44,9 @@ Engine::Engine(const char* window_title, int width, int height) {
 	this->on_render_callback = dummy_callback;
 
 	this->main_scene = new Scene();
+
+	// Initialise ImGui
+	ImguiWrapper::gl_glfw_imgui_init(this->window);
 }
 
 // Destroy resources and safely shut down glfw
@@ -61,17 +66,22 @@ bool Engine::should_keep_ticking() {
 }
 
 void Engine::tick() {
+	ImguiWrapper::gl_glfw_imgui_new_frame();
+
 	glfwPollEvents();
 
 	this->clear_framebuffer(Vector3(0.2f, 0.2f, 0.2f));
 	this->main_scene->render();
 	this->on_render_callback();
 
+	ImguiWrapper::gl_render();
+
 	glfwSwapBuffers(this->window);
 
 	// Reset some input
 	InputManager& input_manager = InputManager::get();
 	input_manager._reset_scroll();
+
 }
 
 bool Engine::get_left_mouse() {
