@@ -3,12 +3,12 @@
 #include <Geometry/Operations/AbstractGeometryOperation.h>
 
 class VertexSpinOperation : public AbstractGeometryOperation {
-private:
+public:
 	float angle_x;
 	float angle_y;
 	int samples;
 	Vector3 origin;
-public:
+
 	VertexSpinOperation(Geometry input_geometry, SelectedGeometry selection, Vector3 origin, int samples, float angle_x, float angle_y)
 		: AbstractGeometryOperation(input_geometry, selection) {
 		this->origin = origin;

@@ -28,7 +28,8 @@ std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, 
 	for (int v = 0; v < samples-1; v++) {
 		geometry.add_connection(new_vertex_ids[v], new_vertex_ids[v + 1]);
 	}
-	geometry.add_connection(new_vertex_ids[0], new_vertex_ids[samples-1]);
+	if (new_vertex_ids.size() != 0)
+		geometry.add_connection(new_vertex_ids[0], new_vertex_ids[samples-1]);
 
 	return new_vertex_ids;
 }

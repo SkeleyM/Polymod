@@ -3,9 +3,8 @@
 #include <Geometry/Operations/AbstractGeometryOperation.h>
 
 class ScaleOperation : public AbstractGeometryOperation {
-private:
-	Vector3 scale;
 public:
+	Vector3 scale;
 
 	ScaleOperation(Geometry geometry, SelectedGeometry selection, Vector3 scale)
 		: AbstractGeometryOperation(geometry, selection) {

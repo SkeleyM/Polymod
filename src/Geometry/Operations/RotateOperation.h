@@ -2,10 +2,10 @@
 #include <Geometry/Operations/AbstractGeometryOperation.h>
 
 class RotateOperation : public AbstractGeometryOperation {
-private:
+public:
 	Vector3 axis;
 	float angle;
-public:
+
 	RotateOperation(Geometry input, SelectedGeometry selection, Vector3 axis, float angle) : AbstractGeometryOperation(input, selection) {
 		this->axis = axis;
 		this->angle = angle;

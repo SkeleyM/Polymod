@@ -3,9 +3,9 @@
 #include <Geometry/Operations/AbstractGeometryOperation.h>
 
 class MoveOperation : public AbstractGeometryOperation {
-private:
-	Vector3 offset;
 public:
+	Vector3 offset;
+
 	MoveOperation(Geometry input_geometry, SelectedGeometry selection, Vector3 offset)
 		: AbstractGeometryOperation(input_geometry, selection) {
 		this->offset = offset;
