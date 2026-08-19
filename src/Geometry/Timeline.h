@@ -17,4 +17,6 @@ public:
 	std::shared_ptr<AbstractGeometryOperation> pop_operation();
 	// Returns a vector of pointers to the operations
 	std::vector<std::weak_ptr<AbstractGeometryOperation>> get_operations();
+	Geometry reconstruct_from_point(int offset_from_present);
+	Geometry get_present_geometry();
 };

@@ -16,7 +16,7 @@ Geometry RotateOperation::do_operation() {
 	std::vector<int> vertices = this->selection_as_vertices();
 	for (int v = 0; v < vertices.size(); v++) {
 		Vertex& vertex = new_geometry.get_vertex(vertices[v]);
-		vertex.position = Vector4(vertex.position, 1.0f) * glm::rotate(glm::mat4(1.0f), this->angle, this->axis);
+		vertex.position = Vector4(vertex.position, 1.0f) * glm::rotate(glm::mat4(1.0f), glm::radians(this->angle), this->axis);
 	}
 	return new_geometry;
 }
