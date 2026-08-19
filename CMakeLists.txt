@@ -22,6 +22,10 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBarItem.cc
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.cc
+	${PROJECT_SOURCE_DIR}/Ui/OperationArgumentPanel.cc
+	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/Vector3OperationArgument.cc
+	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/FloatOperationArgument.cc
+	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/IntOperationArgument.cc
 )
 
 set(HEADERS 
@@ -42,7 +46,18 @@ set(HEADERS
 
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar.h
 	${PROJECT_SOURCE_DIR}/Ui/MenuBarItem.h
+	${PROJECT_SOURCE_DIR}/Ui/OperationArgumentPanel.h
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.h
+	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool.h
+	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/AbstractOperationArgument.h
+	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/Vector3OperationArgument.h
+	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/FloatOperationArgument.h
+	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/IntOperationArgument.h
+	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/ExtrudeTool.h
+	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/MoveTool.h
+	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/RotateTool.h
+	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/ScaleTool.h
+	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/VertexSpinTool.h
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}

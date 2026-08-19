@@ -10,21 +10,27 @@
 
 #include <OrbitalCameraController.h>
 #include <GeometryEditor.h>
-#include <Ui/Toolbar.h>
 #include <Ui/MenuBar.h>
+
+#include <Ui/ToolbarTool/MoveTool.h>
+#include <Ui/ToolbarTool/RotateTool.h>
+#include <Ui/ToolbarTool/ScaleTool.h>
+#include <Ui/ToolbarTool/ExtrudeTool.h>
+#include <Ui/ToolbarTool/VertexSpinTool.h>
 
 OrbitalCameraController* camera_controller;
 GeometryEditor geometry_editor;
 
-Toolbar toolbar;
 MenuBar menubar;
 
 static void on_render() {
 	static Vector2 mouse_pos{ 0.0f, 0.0f };
 	
+	InputManager& input = InputManager::get();
+
 	// Calculate change in mouse position
 	Engine* engine = Engine::get_instance();
-	Vector2 new_pos = InputManager::get().get_mouse_pos();
+	Vector2 new_pos = input.get_mouse_pos();
 
 	Vector2 mouse_delta = new_pos - mouse_pos;
 	mouse_pos = new_pos;
@@ -35,13 +41,15 @@ static void on_render() {
 
 	camera_controller->set_orbit_radius(
 		camera_controller->get_orbit_radius()
-		+ (-InputManager::get().get_scroll().y)
+		+ (input.get_scroll().y)
 	);
 
 	menubar.render();
-	toolbar.render();
 
-	InputManager::get();
+	geometry_editor.render();
+	if (input.get_mouse_buttons().first) {
+		geometry_editor.select(input.get_mouse_pos());
+	}
 }
 
 int main() {
@@ -55,28 +63,44 @@ int main() {
 	scene.camera.transform.translate(Vector3(0.0f, -1.5f, -1.0f));
 
 	camera_controller = new OrbitalCameraController(&scene.camera);
+
+	geometry_editor.get_geometry_manager().create_new_geometry("Test");
+	auto geometry = geometry_editor.get_geometry_manager().get_geometry("Test");
+	geometry_editor.set_current_geometry(geometry);
+	geometry_editor.select_mode = Select_Face;
+
+	Geometry& geometry_d = *geometry.lock().get();
+
+	geometry_d.add_vertex(Vector3(-0.5f, -0.5f, 0.0f));
+	geometry_d.add_vertex(Vector3(-0.5f, 0.5f, 0.0f));
+	geometry_d.add_vertex(Vector3(0.5f, 0.5f, 0.0f));
+	geometry_d.add_vertex(Vector3(0.5f, -0.5f, 0.0f));
+			
+	geometry_d.add_connection(0, 1);
+	geometry_d.add_connection(1, 2);
+	geometry_d.add_connection(2, 3);
+	geometry_d.add_connection(3, 0);
+			
+	geometry_d.define_face({ 0, 1, 2, 3 });
+	geometry_d.calculate_normals(SHADE_FLAT);
 	
-	Geometry geometry = Geometry("Test");
-
-	geometry.add_vertex(Vector3(-0.5f, -0.5f, 0.0f));
-	geometry.add_vertex(Vector3(-0.5f, 0.5f, 0.0f));
-	geometry.add_vertex(Vector3(0.5f, 0.5f, 0.0f));
-	geometry.add_vertex(Vector3(0.5f, -0.5f, 0.0f));
-
-	geometry.add_connection(0, 1);
-	geometry.add_connection(1, 2);
-	geometry.add_connection(2, 3);
-	geometry.add_connection(3, 0);
-
-	geometry.define_face({ 0, 1, 2, 3 });
-
-	Mesh mesh = geometry.triangulate();
+	Mesh mesh = geometry_d.triangulate();
 	scene.add_mesh(mesh);
+
+
+	Toolbar& toolbar = geometry_editor.get_toolbar();
+
+	toolbar.add_tool(new MoveTool());
+	toolbar.add_tool(new ScaleTool());
+	toolbar.add_tool(new RotateTool());
+	toolbar.add_tool(new ExtrudeTool());
+	toolbar.add_tool(new VertexSpinTool());
 
 	while (engine->should_keep_ticking()) {
 		engine->tick();
-
+		
 		camera_controller->update();
 	}
+
 	return 0;
 }
