@@ -27,6 +27,7 @@ public:
 
 	Scene& get_active_scene() { return *this->main_scene; }
 	float get_aspect_ratio() { return window_size.x / window_size.y; }
+	Vector2 get_window_size() { return this->window_size; }
 
 	Vector2 get_mouse_position();
 	bool get_left_mouse();

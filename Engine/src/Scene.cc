@@ -28,3 +28,7 @@ void Scene::remove_mesh(int id) {
 		}
 	}
 }
+
+void Scene::clear_scene() {
+	this->meshes.clear();
+}

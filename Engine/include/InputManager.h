@@ -15,8 +15,8 @@ private:
 	Vector2 scroll_delta { 0.0f, 0.0f };
 	Vector2 mouse_pos { 0.0f, 0.0f };
 
-	bool mouse_1;
-	bool mouse_2;
+	bool mouse_1{ false };
+	bool mouse_2{ false };
 
 	// 400 is chosen very arbitrarily, glfw keycodes seem to max out at around ~360
 	int keyboard_state[400]{ 0 };

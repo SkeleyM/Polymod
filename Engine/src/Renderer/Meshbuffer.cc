@@ -45,7 +45,10 @@ void MeshBuffer::add_mesh(Mesh& mesh) {
 	if (!gpu_mesh_gap_result.has_value()) {
 		// Throw an error for now, in the future growing the buffer
 		// might be a better solution
-		throw std::range_error::exception();
+		this->mesh_map.clear();
+		std::cerr << "MeshBuffer: Mesh map clear" << std::endl;
+		return;
+		//throw std::range_error::exception();
 	}
 	GpuMesh gpu_mesh = *gpu_mesh_gap_result;
 

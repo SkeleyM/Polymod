@@ -35,6 +35,7 @@ Engine::Engine(const char* window_title, int width, int height) {
 
 	glfwSetScrollCallback(this->window, glfw_scroll_handler);
 	glfwSetCursorPosCallback(this->window, glfw_mouse_handler);
+	glfwSetMouseButtonCallback(this->window, glfw_mouse_click_handler);
 	glfwSetKeyCallback(this->window, glfw_key_handler);
 
 	Engine::engine_instance = this;
