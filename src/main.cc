@@ -53,7 +53,7 @@ static void on_render() {
 }
 
 int main() {
-	Engine* engine = new Engine("Modeller", 1920, 1080);
+	Engine* engine = new Engine("Polymodel", 1920, 1080);
 
 	engine->set_on_render(on_render);
 	Scene& scene = engine->get_active_scene();
