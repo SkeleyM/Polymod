@@ -23,6 +23,8 @@ private:
 	void select_vertex(Vector2 screen_coordinates);
 	void select_edge(Vector2 screen_coordinates);
 	void select_face(Vector2 screen_coordinates);
+
+	void refresh_current_geometry_in_scene();
 public:
 	SelectMode select_mode;
 	SelectedGeometry selection;

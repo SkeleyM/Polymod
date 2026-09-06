@@ -18,6 +18,39 @@ GeometryEditor::GeometryEditor() {
 	this->selection = SelectedGeometry();
 }
 
+void GeometryEditor::refresh_current_geometry_in_scene() {
+	std::string geometry_name = this->current_geometry.lock().get()->name;
+	Scene& scene = Engine::get_instance()->get_active_scene();
+
+	scene.remove_mesh(this->geometry_scene_mesh_id_map[geometry_name]);
+	auto geometry = this->current_geometry.lock();
+	geometry.get()->calculate_normals(SHADE_FLAT);
+
+	// Make copy of current geometry, as we will be changing details for visual feedback
+	// Like colouring selection, and we want to avoid making permanent changes
+	Geometry copy_of_current = Geometry(*geometry.get());
+
+	// Colour the selected faces
+	std::vector<Face>& faces = copy_of_current.get_faces();
+	for (int f = 0; f < faces.size(); f++) {
+		Face& face = faces[f];
+		// If the current face is in the selected faces, colour it differently
+		if (
+			std::find(
+			this->selection.selected_faces.value().begin(), 
+			this->selection.selected_faces.value().end(), 
+			face
+		) != this->selection.selected_faces.value().end()) {
+			faces[f].face_colour = { 1.0f, 0.4f, 0.0f };
+		}
+	}
+
+	Mesh new_mesh = copy_of_current.triangulate();
+
+	this->geometry_scene_mesh_id_map[geometry_name] = new_mesh.id;
+	scene.add_mesh(new_mesh);
+}
+
 void GeometryEditor::on_tool_clicked(ToolbarTool* tool) {
 	auto panel = tool->create_panel(this, [&](AbstractGeometryOperation* op)  {
 		this->do_operation(op);
@@ -30,24 +63,13 @@ void GeometryEditor::render() {
 	this->toolbar->render();
 
 	if (this->in_progress_operation_panel.has_value()) {
-		std::string geometry_name = this->current_geometry.lock().get()->name;
-		Scene& scene = Engine::get_instance()->get_active_scene();
-
 		// Perform the operation temporarily
 		auto operation = this->in_progress_operation_panel.value().get_operation();
-		std::weak_ptr<Timeline> timeline = this->geometry_manager.get_timeline(this->current_geometry);
-		timeline.lock().get()->push_operation(std::shared_ptr<AbstractGeometryOperation>(operation));
-		scene.remove_mesh(this->geometry_scene_mesh_id_map[geometry_name]);
 
-		Geometry present = timeline.lock().get()->get_present_geometry();
+		Geometry present = operation->do_operation();
 		*this->current_geometry.lock().get() = present;
 
-		auto current_geometry = this->current_geometry.lock();
-		current_geometry.get()->calculate_normals(SHADE_FLAT);
-		Mesh new_mesh = current_geometry.get()->triangulate();
-
-		this->geometry_scene_mesh_id_map[geometry_name] = new_mesh.id;
-		scene.add_mesh(new_mesh);
+		this->refresh_current_geometry_in_scene();
 
 		// Render operation panel
 		this->in_progress_operation_panel.value().render();
@@ -116,11 +138,9 @@ void GeometryEditor::select_face(Vector2 screen_coordinates) {
 	// If we even hit a single face
 	if (closest_face.vertices.size() != 0) {
 		SelectedGeometry selection;
-		selection.selected_faces = std::vector<Face>();
+		selection.selected_faces = {closest_face};
 		this->selection = selection;
-		this->selection.selected_faces->clear();
-		this->selection.selected_faces->push_back(closest_face);
-		
+		this->refresh_current_geometry_in_scene();
 	}
 }
 
@@ -152,23 +172,13 @@ void GeometryEditor::begin_operation(OperationArgumentPanel operation_panel) {
 void GeometryEditor::do_operation(AbstractGeometryOperation* geometry_operation) {
 	this->in_progress_operation_panel = std::nullopt;
 	std::string geometry_name = this->current_geometry.lock().get()->name;
-
-	// Remove the current geometry from the scene
-	Scene& scene = Engine::get_instance()->get_active_scene();
-	scene.remove_mesh(this->geometry_scene_mesh_id_map[geometry_name]);
-
 	std::weak_ptr<Timeline> timeline = this->geometry_manager.get_timeline(this->current_geometry);
 	timeline.lock().get()->push_operation(std::shared_ptr<AbstractGeometryOperation>(geometry_operation));
 
 	Geometry present = timeline.lock().get()->get_present_geometry();
 	*this->current_geometry.lock().get() = present;
 
-	// Add new geometry to scene to be rendered
-	auto current_geometry = this->current_geometry.lock();
-	current_geometry.get()->calculate_normals(SHADE_FLAT);
-	Mesh new_mesh = current_geometry.get()->triangulate();
-	this->geometry_scene_mesh_id_map[geometry_name] = new_mesh.id;
-	scene.add_mesh(new_mesh);
+	this->refresh_current_geometry_in_scene();
 }
 
 GeometryManager& GeometryEditor::get_geometry_manager() {

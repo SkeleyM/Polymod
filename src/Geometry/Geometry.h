@@ -33,7 +33,7 @@ public:
 	int add_vertex(Vector3 vertex);
 	Vertex& get_vertex(int v_id);
 	std::vector<int> get_all_vertex_ids();
-	std::vector<Face> get_faces();
+	std::vector<Face>& get_faces();
 	void add_connection(int v1, int v2);
 	void define_face(std::vector<int> vertices);
 	std::vector<int> get_neighbours(int vertex);

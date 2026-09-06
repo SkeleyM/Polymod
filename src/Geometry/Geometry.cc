@@ -63,7 +63,7 @@ std::vector<int> Geometry::get_all_vertex_ids() {
 	return ids;
 }
 
-std::vector<Face> Geometry::get_faces() {
+std::vector<Face>& Geometry::get_faces() {
 	return this->faces;
 }
 
@@ -145,11 +145,15 @@ Mesh Geometry::triangulate() {
 	std::vector<Triangle> triangles = std::vector<Triangle>();
 	for (Face face : this->faces) {
 		std::vector<TriangleIds> triangle_ids = face.triangulate();
-		
 		for (auto triangle : triangle_ids) {
 			Vertex v0 = this->vertices[triangle.v0];
 			Vertex v1 = this->vertices[triangle.v1];
 			Vertex v2 = this->vertices[triangle.v2];
+
+			// Set vertex colour to face colour
+			v0.colour = face.face_colour;
+			v1.colour = face.face_colour;
+			v2.colour = face.face_colour;
 
 			if (face.shading_type == SHADE_FLAT) {
 				v0.normal = face.face_normal;
@@ -161,6 +165,7 @@ Mesh Geometry::triangulate() {
 			triangles.push_back(triangle);
 		}
 	}
+
 	Mesh triangulated = Mesh(triangles.data(), triangles.size());
 	triangulated.transform = this->transform;
 
