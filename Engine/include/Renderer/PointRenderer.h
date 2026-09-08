@@ -11,7 +11,7 @@ struct Point {
 
 class PointRenderer {
 private:
-	float point_size;
+	float point_size = 1.0f;
 public:
 	void set_point_size(float size);
 	void render_points(std::vector<Point>& points);
