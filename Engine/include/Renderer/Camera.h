@@ -10,5 +10,6 @@ public:
 
 	Matrix4x4 get_view_matrix();
 	Matrix4x4 get_projection_matrix();
+	Vector3 to_view_space(Vector3 world_space);
 	void look_at(Vector3 position);
 };

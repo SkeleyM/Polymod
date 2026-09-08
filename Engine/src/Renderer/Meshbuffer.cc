@@ -31,8 +31,12 @@ MeshBuffer::MeshBuffer(int size) {
 	// Set position vertex attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glEnableVertexAttribArray(0);
+	// Normal
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)sizeof(Vector3));
 	glEnableVertexAttribArray(1);
+	// Colour
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(2*sizeof(Vector3)));
+	glEnableVertexAttribArray(2);
 	gl_check_for_error();
 }
 

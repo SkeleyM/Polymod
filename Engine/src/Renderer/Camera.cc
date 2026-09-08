@@ -22,6 +22,13 @@ Matrix4x4 Camera::get_projection_matrix() {
 	return this->projection_matrix;
 }
 
+Vector3 Camera::to_view_space(Vector3 world_space) {
+	Matrix4x4 view_matrix = this->get_view_matrix();
+
+	Vector4 view_space = view_matrix * Vector4(world_space, 1.0f);
+	return Vector3(view_space.x, view_space.y, view_space.z);
+}
+
 void Camera::look_at(Vector3 position) {
 	auto look_at_origin = glm::lookAt(
 		this->transform.position,

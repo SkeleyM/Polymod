@@ -145,10 +145,10 @@ Mesh Geometry::triangulate() {
 	std::vector<Triangle> triangles = std::vector<Triangle>();
 	for (Face face : this->faces) {
 		std::vector<TriangleIds> triangle_ids = face.triangulate();
-		for (auto triangle : triangle_ids) {
-			Vertex v0 = this->vertices[triangle.v0];
-			Vertex v1 = this->vertices[triangle.v1];
-			Vertex v2 = this->vertices[triangle.v2];
+		for (auto triangle_id : triangle_ids) {
+			Vertex v0 = this->vertices[triangle_id.v0];
+			Vertex v1 = this->vertices[triangle_id.v1];
+			Vertex v2 = this->vertices[triangle_id.v2];
 
 			// Set vertex colour to face colour
 			v0.colour = face.face_colour;

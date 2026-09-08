@@ -16,6 +16,8 @@ set(HEADERS include/Engine.h
 	include/Renderer/Vertex.h
 	include/Renderer/Triangle.h
 	include/Renderer/TriangleRenderer.h
+	include/Renderer/LineRenderer.h
+	include/Renderer/PointRenderer.h
 	include/Renderer/Mesh.h
 	include/Renderer/Meshbuffer.h
 
@@ -32,6 +34,8 @@ set(SOURCES ${PROJECT_SOURCE_DIR}/Engine.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Vertex.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Triangle.cc
 	${PROJECT_SOURCE_DIR}/Renderer/TriangleRenderer.cc
+	${PROJECT_SOURCE_DIR}/Renderer/LineRenderer.cc
+	${PROJECT_SOURCE_DIR}/Renderer/PointRenderer.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Mesh.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Meshbuffer.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Glerror.cc
@@ -43,9 +47,10 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}
     FILES ${HEADERS} ${SOURCES}
 )
 
-add_subdirectory(external/GLFW)
+# Build externals
+add_subdirectory(external/glfw)
+add_subdirectory(external/glm)
 add_subdirectory(external/glad)
-add_subdirectory(external/GLM)
 
 # Build IMGUI here
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -85,7 +90,7 @@ target_include_directories(
 # Finish building library
 
 add_library(Engine STATIC
-	${SOURCES} ${HEADERS}
+	${HEADERS} ${SOURCES}
 )
 
 target_include_directories(

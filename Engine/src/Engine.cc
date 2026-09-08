@@ -5,7 +5,7 @@
 #include <Renderer/Vertex.h>
 #include <Renderer/Mesh.h>
 #include <Renderer/Shader.h>
-#include <Renderer/Meshbuffer.h>
+#include <Renderer/MeshBuffer.h>
 #include <imgui_impl/ImGui.h>
 
 #include <iostream>
