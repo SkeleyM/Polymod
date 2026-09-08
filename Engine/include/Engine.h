@@ -29,9 +29,6 @@ public:
 	float get_aspect_ratio() { return window_size.x / window_size.y; }
 	Vector2 get_window_size() { return this->window_size; }
 
-	Vector2 get_mouse_position();
-	bool get_left_mouse();
-
 	bool should_keep_ticking();
 	void tick();
 

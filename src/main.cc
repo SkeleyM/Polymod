@@ -53,7 +53,7 @@ static void on_render() {
 	bool is_dragging = abs(mouse_delta.x + mouse_delta.y) > 10;
 
 	// If left clicking rotate using the change in mouse position.
-	if (engine->get_left_mouse() && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+	if (input.get().get_mouse_buttons().first && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
 		camera_controller->rotate_from_screen_xy(-mouse_delta.x, mouse_delta.y);
 
 	camera_controller->set_orbit_radius(

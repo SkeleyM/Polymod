@@ -84,7 +84,3 @@ void Engine::tick() {
 	input_manager._reset_scroll();
 
 }
-
-bool Engine::get_left_mouse() {
-	return glfwGetMouseButton(this->window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
-}
