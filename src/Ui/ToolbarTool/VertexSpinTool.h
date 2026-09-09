@@ -3,9 +3,9 @@
 #include <GeometryEditor.h>
 
 #include <Geometry/Operations/VertexSpinOperation.h>
-#include <Ui/OperationArguments/Vector3OperationArgument.h>;
-#include <Ui/OperationArguments/FloatOperationArgument.h>;
-#include <Ui/OperationArguments/IntOperationArgument.h>;
+#include <Ui/OperationArguments/Vector3OperationArgument.h>
+#include <Ui/OperationArguments/FloatOperationArgument.h>
+#include <Ui/OperationArguments/IntOperationArgument.h>
 
 class VertexSpinTool : public ToolbarTool {
 public:

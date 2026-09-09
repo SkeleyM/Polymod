@@ -3,7 +3,7 @@
 #include <GeometryEditor.h>
 
 #include <Geometry/Operations/MoveOperation.h>
-#include <Ui/OperationArguments/Vector3OperationArgument.h>;
+#include <Ui/OperationArguments/Vector3OperationArgument.h>
 
 class MoveTool : public ToolbarTool {
 public:

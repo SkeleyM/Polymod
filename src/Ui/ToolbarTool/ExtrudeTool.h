@@ -3,7 +3,7 @@
 #include <GeometryEditor.h>
 
 #include <Geometry/Operations/ExtrudeOperation.h>
-#include <Ui/OperationArguments/Vector3OperationArgument.h>;
+#include <Ui/OperationArguments/Vector3OperationArgument.h>
 
 class ExtrudeTool : public ToolbarTool {
 public:

@@ -3,8 +3,8 @@
 #include <GeometryEditor.h>
 
 #include <Geometry/Operations/RotateOperation.h>
-#include <Ui/OperationArguments/Vector3OperationArgument.h>;
-#include <Ui/OperationArguments/FloatOperationArgument.h>;
+#include <Ui/OperationArguments/Vector3OperationArgument.h>
+#include <Ui/OperationArguments/FloatOperationArgument.h>
 
 class RotateTool : public ToolbarTool {
 public:
