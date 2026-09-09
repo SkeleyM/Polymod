@@ -19,7 +19,7 @@ set(HEADERS include/Engine.h
 	include/Renderer/LineRenderer.h
 	include/Renderer/PointRenderer.h
 	include/Renderer/Mesh.h
-	include/Renderer/Meshbuffer.h
+	include/Renderer/MeshBuffer.h
 
 	src/Renderer/Glerror.h
 
