@@ -10,8 +10,9 @@
 
 #include <OrbitalCameraController.h>
 #include <GeometryEditor.h>
-#include <Ui/MenuBar.h>
+#include <GeometryWireframeRenderer.h>
 
+#include <Ui/MenuBar.h>
 #include <Ui/ToolbarTool/MoveTool.h>
 #include <Ui/ToolbarTool/RotateTool.h>
 #include <Ui/ToolbarTool/ScaleTool.h>
@@ -19,9 +20,11 @@
 #include <Ui/ToolbarTool/VertexSpinTool.h>
 
 #include <Renderer/LineRenderer.h>
+#include <Renderer/PointRenderer.h>
 
-OrbitalCameraController* camera_controller;
+OrbitalCameraController* camera_controller = nullptr;
 GeometryEditor geometry_editor;
+GeometryWireframeRenderer wireframe_renderer;
 
 MenuBar menubar;
 
@@ -68,6 +71,15 @@ static void on_render() {
 	if (clicked_this_frame && !is_dragging) {
 		geometry_editor.select(input.get_mouse_pos());
 	}
+
+	std::weak_ptr<Geometry> current_geometry = geometry_editor.get_current_geometry();
+	if (!current_geometry.expired()) {
+		Geometry& geometry = *current_geometry.lock().get();
+		wireframe_renderer.render_wireframe(
+			geometry, 
+			geometry_editor.selection
+		);
+	}
 }
 
 int main() {
@@ -80,7 +92,11 @@ int main() {
 	// Move the camera back so that we are not in the same position as the square
 	scene.camera.transform.translate(Vector3(0.0f, -1.5f, -1.0f));
 
+	// Create all global variables
 	camera_controller = new OrbitalCameraController(&scene.camera);
+
+	wireframe_renderer.set_edge_size(3.0f);
+	wireframe_renderer.set_vertex_size(4.0f);	
 
 	geometry_editor.get_geometry_manager().create_new_geometry("Test");
 	auto geometry = geometry_editor.get_geometry_manager().get_geometry("Test");
