@@ -11,7 +11,7 @@ void PointRenderer::render_points(std::vector<Point>& points) {
 	glBegin(GL_POINTS);
 
 	for (Point& point : points) {
-		glColor4f(point.colour.x, point.colour.y, point.colour.z);
+		glColor3f(point.colour.x, point.colour.y, point.colour.z);
 		glVertex3f(point.position.x, point.position.y, point.position.z);
 	}
 	
