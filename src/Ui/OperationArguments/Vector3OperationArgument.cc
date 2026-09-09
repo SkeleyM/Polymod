@@ -11,5 +11,5 @@ Vector3OperationArgument::Vector3OperationArgument(std::string name, Vector3* ar
 void Vector3OperationArgument::render() {
 	assert(this->argument != nullptr);
 
-	ImGui::DragFloat3(this->name.c_str(), (float*)this->argument);
+	ImGui::DragFloat3(this->name.c_str(), (float*)this->argument, 0.1f);
 }

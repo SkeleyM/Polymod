@@ -14,7 +14,7 @@ public:
 		VertexSpinOperation* spin = new VertexSpinOperation(*
 			editor->get_current_geometry().lock().get(),
 			editor->selection,
-			{}, {}, {}, {}
+			{}, 12, {}, {}
 		);
 
 		OperationArgumentPanel spin_panel(spin, done_callback);

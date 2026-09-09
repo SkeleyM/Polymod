@@ -12,7 +12,7 @@ public:
 		ScaleOperation* scale = new ScaleOperation(*
 			editor->get_current_geometry().lock().get(),
 			editor->selection,
-			{}
+			{1.0f, 1.0f, 1.0f}
 		);
 
 		OperationArgumentPanel scale_panel(scale, done_callback);

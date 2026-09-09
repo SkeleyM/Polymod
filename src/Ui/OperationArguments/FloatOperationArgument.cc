@@ -11,5 +11,5 @@ FloatOperationArgument::FloatOperationArgument(std::string name, float* argument
 void FloatOperationArgument::render() {
 	assert(this->argument != nullptr);
 
-	ImGui::DragFloat(this->name.c_str(), this->argument);
+	ImGui::DragFloat(this->name.c_str(), this->argument, 0.1f);
 }
