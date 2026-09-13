@@ -12,5 +12,5 @@ private:
 public:
     void set_edge_size(float size);
     void set_vertex_size(float size);
-    void render_wireframe(Geometry& geometry, SelectedGeometry& highlight_selection);
+    void render_wireframe(Camera& camera, Geometry& geometry, SelectedGeometry& highlight_selection);
 };

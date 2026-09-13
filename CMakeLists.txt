@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_SOURCE_DIR src)
 
 set(SOURCES
+	${PROJECT_SOURCE_DIR}/AxisGrid.cc
 	${PROJECT_SOURCE_DIR}/OrbitalCameraController.cc
 	${PROJECT_SOURCE_DIR}/GeometryManager.cc
 	${PROJECT_SOURCE_DIR}/GeometryEditor.cc
@@ -30,6 +31,8 @@ set(SOURCES
 )
 
 set(HEADERS 
+	${PROJECT_SOURCE_DIR}/AxisFlags.h
+	${PROJECT_SOURCE_DIR}/AxisGrid.h
 	${PROJECT_SOURCE_DIR}/OrbitalCameraController.h
 	${PROJECT_SOURCE_DIR}/GeometryManager.h
 	${PROJECT_SOURCE_DIR}/GeometryEditor.h

@@ -8,7 +8,7 @@ void GeometryWireframeRenderer::set_vertex_size(float size) {
     this->vertex_renderer.set_point_size(size);
 }
 
-void GeometryWireframeRenderer::render_wireframe(Geometry& geometry, SelectedGeometry& highlight_selection) {
+void GeometryWireframeRenderer::render_wireframe(Camera& camera, Geometry& geometry, SelectedGeometry& highlight_selection) {
 	// Render the wireframe of the mesh
 	auto all_vertex_id = geometry.get_all_vertex_ids();
 	std::vector<Point> points;
@@ -36,7 +36,7 @@ void GeometryWireframeRenderer::render_wireframe(Geometry& geometry, SelectedGeo
 	std::vector<Line> edges;
 	std::vector<std::set<int>> visited;
 	for (int i = 0; i < all_vertex_id.size(); i++) {
-		Vector3 edge_colour = {0.0f, 0.0f, 0.0f};
+		Vector3 edge_colour = {0.2f, 0.2f, 0.2f};
 		// Check every neighbour
 		int current_vertex_id = all_vertex_id[i];
 		auto neighbour_ids = geometry.get_neighbours(current_vertex_id);
@@ -56,7 +56,7 @@ void GeometryWireframeRenderer::render_wireframe(Geometry& geometry, SelectedGeo
 	}
 
 	// Render all the vertices
-	this->vertex_renderer.render_points(points);
-	this->edge_renderer.render_lines(edges);
+	this->vertex_renderer.render_points(camera, points);
+	this->edge_renderer.render_lines(camera, edges);
 }
 

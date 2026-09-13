@@ -8,6 +8,7 @@
 #include <EMath.h>
 #include <imgui.h>
 
+#include <AxisGrid.h>
 #include <OrbitalCameraController.h>
 #include <GeometryEditor.h>
 #include <GeometryWireframeRenderer.h>
@@ -23,8 +24,10 @@
 #include <Renderer/PointRenderer.h>
 
 OrbitalCameraController* camera_controller = nullptr;
+AxisGrid* axis_grid = nullptr;
+GeometryWireframeRenderer* wireframe_renderer = nullptr;
 GeometryEditor geometry_editor;
-GeometryWireframeRenderer wireframe_renderer;
+
 
 MenuBar menubar;
 
@@ -48,6 +51,7 @@ static void on_render() {
 
 	// Calculate change in mouse position
 	Engine* engine = Engine::get_instance();
+	Camera& active_camera = engine->get_active_scene().camera;
 	Vector2 new_pos = input.get_mouse_pos();
 
 	Vector2 mouse_delta = new_pos - mouse_pos;
@@ -65,8 +69,9 @@ static void on_render() {
 	);
 
 	menubar.render();
-
 	geometry_editor.render();
+	axis_grid->render(active_camera);
+
 	// Check that the mouse hasnt moved much this frame before we click
 	if (clicked_this_frame && !is_dragging) {
 		geometry_editor.select(input.get_mouse_pos());
@@ -75,7 +80,8 @@ static void on_render() {
 	std::weak_ptr<Geometry> current_geometry = geometry_editor.get_current_geometry();
 	if (!current_geometry.expired()) {
 		Geometry& geometry = *current_geometry.lock().get();
-		wireframe_renderer.render_wireframe(
+		wireframe_renderer->render_wireframe(
+			active_camera,
 			geometry, 
 			geometry_editor.selection
 		);
@@ -93,10 +99,12 @@ int main() {
 	scene.camera.transform.translate(Vector3(0.0f, -1.5f, -1.0f));
 
 	// Create all global variables
+	wireframe_renderer = new GeometryWireframeRenderer();
 	camera_controller = new OrbitalCameraController(&scene.camera);
+	axis_grid = new AxisGrid();
 
-	wireframe_renderer.set_edge_size(3.0f);
-	wireframe_renderer.set_vertex_size(4.0f);	
+	wireframe_renderer->set_edge_size(2.0f);
+	wireframe_renderer->set_vertex_size(4.0f);	
 
 	geometry_editor.get_geometry_manager().create_new_geometry("Test");
 	auto geometry = geometry_editor.get_geometry_manager().get_geometry("Test");
