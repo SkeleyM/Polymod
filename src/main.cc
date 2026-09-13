@@ -13,7 +13,9 @@
 #include <GeometryEditor.h>
 #include <GeometryWireframeRenderer.h>
 
-#include <Ui/MenuBar.h>
+#include <Ui/MenuBar/Menu.h>
+#include <Ui/MenuBar/MenuBar.h>
+#include <Ui/MenuBar/MenuBarItem.h>
 #include <Ui/ToolbarTool/MoveTool.h>
 #include <Ui/ToolbarTool/RotateTool.h>
 #include <Ui/ToolbarTool/ScaleTool.h>
@@ -27,7 +29,6 @@ OrbitalCameraController* camera_controller = nullptr;
 AxisGrid* axis_grid = nullptr;
 GeometryWireframeRenderer* wireframe_renderer = nullptr;
 GeometryEditor geometry_editor;
-
 
 MenuBar menubar;
 
@@ -106,11 +107,13 @@ int main() {
 	wireframe_renderer->set_edge_size(2.0f);
 	wireframe_renderer->set_vertex_size(4.0f);	
 
+	// Create initial geometry, consider moving this to the geometry editor
 	geometry_editor.get_geometry_manager().create_new_geometry("Test");
 	auto geometry = geometry_editor.get_geometry_manager().get_geometry("Test");
 	geometry_editor.set_current_geometry(geometry);
 	geometry_editor.select_mode = Select_Face;
 
+	// Create initial plane
 	Geometry& geometry_d = *geometry.lock().get();
 
 	geometry_d.add_vertex(Vector3(-0.5f, -0.5f, 0.0f));
@@ -129,7 +132,24 @@ int main() {
 	Mesh mesh = geometry_d.triangulate();
 	scene.add_mesh(mesh);
 
+	// Initialise menus
+	Menu file_menu("File");
+	Menu edit_menu("Edit");
 
+	MenuBarItem undo("Undo", []() {
+		geometry_editor.undo();
+	});
+	MenuBarItem redo("Redo", []() {
+		geometry_editor.redo();
+	});
+
+	edit_menu.add_menu_item(undo);
+	edit_menu.add_menu_item(redo);
+
+	menubar.add_menu(file_menu);
+	menubar.add_menu(edit_menu);
+
+	// Initialise toolbar
 	Toolbar& toolbar = geometry_editor.get_toolbar();
 
 	toolbar.add_tool(new MoveTool());

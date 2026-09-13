@@ -1,13 +1,13 @@
-#include <Ui/MenuBarItem.h>
+#include <Ui/MenuBar/MenuBarItem.h>
 #include <imgui.h>
 
-MenuBarItem::MenuBarItem(std::string text, std::function<void()> action) {
-	this->text = text;
+MenuBarItem::MenuBarItem(std::string name, std::function<void()> action) {
+	this->name = name;
 	this->action = action;
 }
 
 void MenuBarItem::render() {
-	if (ImGui::MenuItem(text.c_str(), NULL, nullptr, this->enabled)) {
+	if (ImGui::MenuItem(name.c_str(), NULL, nullptr, this->enabled)) {
 		action();
 	}
 }

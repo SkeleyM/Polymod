@@ -43,4 +43,7 @@ public:
 	std::weak_ptr<Geometry> get_current_geometry();
 
 	void on_tool_clicked(ToolbarTool* tool);
+
+	void undo();
+	void redo();
 };

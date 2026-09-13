@@ -4,7 +4,7 @@
 
 class MenuBarItem {
 private:
-	std::string text;
+	std::string name;
 	std::function<void()> action;
 	bool enabled;
 public:

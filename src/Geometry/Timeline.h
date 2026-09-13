@@ -8,7 +8,7 @@
 
 class Timeline {
 	std::vector<std::shared_ptr<AbstractGeometryOperation>> operations;
-
+	int current_operation_index = -1;
 public:
 	Timeline();
 
@@ -19,4 +19,7 @@ public:
 	std::vector<std::weak_ptr<AbstractGeometryOperation>> get_operations();
 	Geometry reconstruct_from_point(int offset_from_present);
 	Geometry get_present_geometry();
+	void rewind(int from_current = 1);
+	void forward(int from_current = 1);
+	void to_present();
 };

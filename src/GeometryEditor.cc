@@ -192,3 +192,21 @@ Toolbar& GeometryEditor::get_toolbar() {
 std::weak_ptr<Geometry> GeometryEditor::get_current_geometry() {
 	return this->current_geometry;
 }
+
+void GeometryEditor::undo() {
+	Timeline* timeline = this->geometry_manager.get_timeline(this->current_geometry).lock().get();
+	timeline->pop_operation();
+	Geometry present = timeline->get_present_geometry();
+
+	*this->current_geometry.lock().get() = present;
+	this->refresh_current_geometry_in_scene();
+}
+
+void GeometryEditor::redo() {
+	Timeline* timeline = this->geometry_manager.get_timeline(this->current_geometry).lock().get();
+	timeline->forward();
+	Geometry present = timeline->get_present_geometry();
+
+	*this->current_geometry.lock().get() = present;
+	this->refresh_current_geometry_in_scene();
+}
