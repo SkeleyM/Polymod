@@ -53,6 +53,7 @@ public:
 	Shader();
 	~Shader();
 
+	int get_uniform_location(std::string name);
 	void set_uniform_matrix4x4(std::string name, Matrix4x4 value);
 	void set_uniform_vector3(std::string name, Vector3 value);
 	void set_uniform_float(std::string name, float value);

@@ -12,6 +12,8 @@ void TriangleRenderer::render(Camera& camera, Mesh* mesh) {
 	// Get the info about the mesh on the gpu and draw it
 	GpuMesh gpumesh = this->meshbuffer.get_gpu_mesh(*mesh);
 
+	gl_check_for_error();
+
 	// Bind the buffer objects
 	glBindVertexArray(this->meshbuffer.gl_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, this->meshbuffer.gl_vbo);
@@ -24,12 +26,17 @@ void TriangleRenderer::render(Camera& camera, Mesh* mesh) {
 	this->shader.set_uniform_matrix4x4("view", glm::inverse(camera.transform.get_matrix()));
 	this->shader.set_uniform_matrix4x4("projection", camera.get_projection_matrix());
 
+
  	glDrawElements(
 		GL_TRIANGLES, 
 		mesh->triangle_count * 3, 
 		GL_UNSIGNED_INT, 
 		(void*)gpumesh.ebo_offset
 	); 
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	gl_check_for_error();
 }

@@ -44,6 +44,10 @@ MeshBuffer::~MeshBuffer() {
 }
 
 void MeshBuffer::add_mesh(Mesh& mesh) {
+	glBindVertexArray(this->gl_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, this->gl_vbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->gl_ebo);
+
 	auto gpu_mesh_gap_result = this->create_gpu_mesh(mesh);
 
 	if (!gpu_mesh_gap_result.has_value()) {

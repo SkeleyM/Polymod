@@ -19,6 +19,9 @@ Engine::Engine(const char* window_title, int width, int height) {
 		glfwTerminate();
 		std::cerr << "Failed to initialise GLFW" << std::endl;
 	}
+
+	// Enable multisample anti-aliasing
+	glfwWindowHint(GLFW_SAMPLES, 4);
 	this->window = glfwCreateWindow(width, height, window_title, NULL, NULL);
 	if (!this->window) {
 		glfwTerminate();
@@ -45,6 +48,8 @@ Engine::Engine(const char* window_title, int width, int height) {
 	this->on_render_callback = dummy_callback;
 
 	this->main_scene = new Scene();
+
+	glEnable(GL_MULTISAMPLE);
 
 	// Initialise ImGui
 	ImguiWrapper::gl_glfw_imgui_init(this->window);
