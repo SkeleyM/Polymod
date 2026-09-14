@@ -6,7 +6,7 @@ class MenuBarItem {
 private:
 	std::string name;
 	std::function<void()> action;
-	bool enabled;
+	bool enabled { true };
 public:
 	MenuBarItem(std::string text, std::function<void()> action);
 	void render();

@@ -3,7 +3,8 @@
 #include <imgui.h>
 #include <assert.h>
 
-FloatOperationArgument::FloatOperationArgument(std::string name, float* argument) {
+FloatOperationArgument::FloatOperationArgument(std::string name, float* argument, float increment) {
+	this->increment = increment;
 	this->name = name;
 	this->argument = argument;
 }
@@ -11,5 +12,5 @@ FloatOperationArgument::FloatOperationArgument(std::string name, float* argument
 void FloatOperationArgument::render() {
 	assert(this->argument != nullptr);
 
-	ImGui::DragFloat(this->name.c_str(), this->argument, 0.1f);
+	ImGui::DragFloat(this->name.c_str(), this->argument, this->increment);
 }

@@ -19,7 +19,7 @@ public:
 
 		OperationArgumentPanel spin_panel(spin, done_callback);
 		spin_panel.add_argument(new IntOperationArgument(std::string("Samples"), &spin->samples));
-		spin_panel.add_argument(new FloatOperationArgument(std::string("Angle"), &spin->angle_x));
+		spin_panel.add_argument(new FloatOperationArgument(std::string("Angle"), &spin->angle_x, 5.0f));
 		spin_panel.add_argument(new Vector3OperationArgument(std::string("Origin"), &spin->origin));
 		return spin_panel;
 	}
