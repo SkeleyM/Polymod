@@ -45,6 +45,6 @@ public:
 	PointRenderer();
 
 	void set_point_size(float size);
-	void render_points(Camera& camera, std::vector<Point>& points);
-	void render_point(Camera& camera, Point& point);
+	void render_points(Camera& camera, const std::vector<Point>& points);
+	void render_point(Camera& camera, const Point& point);
 };

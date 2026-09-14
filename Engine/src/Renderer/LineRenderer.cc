@@ -22,7 +22,7 @@ void LineRenderer::set_line_width(float width) {
 	this->line_width = width;
 }
 
-void LineRenderer::render_lines(Camera& camera, std::vector<Line>& lines) {
+void LineRenderer::render_lines(Camera& camera, const std::vector<Line>& lines) {
 	glBindVertexArray(this->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 	glUseProgram(this->shader->gl_program_id);
@@ -33,7 +33,7 @@ void LineRenderer::render_lines(Camera& camera, std::vector<Line>& lines) {
 
 	// Data for the lines needs to be structured differently.
 	std::vector<Vector3> line_data;
-	for (Line& line : lines) {
+	for (const Line& line : lines) {
 		line_data.push_back(line.start);
 		line_data.push_back(line.colour);
 		line_data.push_back(line.end);
@@ -52,7 +52,7 @@ void LineRenderer::render_lines(Camera& camera, std::vector<Line>& lines) {
 	gl_check_for_error();
 }
 
-void LineRenderer::render_line(Camera& camera, Line& line) {
+void LineRenderer::render_line(Camera& camera, const Line& line) {
 	glBindVertexArray(this->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 	glUseProgram(this->shader->gl_program_id);

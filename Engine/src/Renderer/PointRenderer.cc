@@ -21,7 +21,7 @@ void PointRenderer::set_point_size(float size) {
 	point_size = size;
 }
 
-void PointRenderer::render_points(Camera& camera, std::vector<Point>& points) {
+void PointRenderer::render_points(Camera& camera, const std::vector<Point>& points) {
 	glBindVertexArray(this->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 
@@ -43,7 +43,7 @@ void PointRenderer::render_points(Camera& camera, std::vector<Point>& points) {
 	gl_check_for_error();
 }
 
-void PointRenderer::render_point(Camera& camera, Point& point) {
+void PointRenderer::render_point(Camera& camera, const Point& point) {
 	glBindVertexArray(this->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 	glUseProgram(this->shader->gl_program_id);

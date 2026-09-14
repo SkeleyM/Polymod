@@ -46,6 +46,6 @@ public:
 	LineRenderer();
 
 	void set_line_width(float width);
-	void render_lines(Camera& camera, std::vector<Line>& lines);
-	void render_line(Camera& camera, Line& line);
+	void render_lines(Camera& camera, const std::vector<Line>& lines);
+	void render_line(Camera& camera, const Line& line);
 };
