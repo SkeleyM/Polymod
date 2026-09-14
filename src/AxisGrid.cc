@@ -33,7 +33,7 @@ void AxisGrid::render(Camera& camera) {
 		});
 	}
 	if (this->render_axis & Z) {
-		this->axis_renderer.render_line(camera, Line{
+		this->axis_renderer.render_line(camera, Line {
 			Vector3(0.0f, 0.0f, -this->grid_radius),
 			Vector3(0.0f, 0.0f, this->grid_radius),
 			Vector3(0.0f, 0.0f, 1.0f)

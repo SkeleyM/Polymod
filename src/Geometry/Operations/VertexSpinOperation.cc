@@ -1,4 +1,5 @@
 #include <Geometry/Operations/VertexSpinOperation.h>
+#include <math.h>
 
 std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, int samples, float angle_x, float angle_y) {
 	std::vector<int> new_vertex_ids;
@@ -7,16 +8,22 @@ std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, 
 	for (int s = 1; s < samples + 1; s++) {
 		Vertex& vertex = geometry.get_vertex(vertex_id);
 
-		Vector3 origin_offset = Vector3(origin.x, vertex.position.y, origin.z);
+		const Vector3 origin_epsilon(0.1e-6);
+		Vector3 origin_offset = Vector3(origin.x, vertex.position.y, origin.z) + origin_epsilon;
 
 		float radius = fabs(glm::length(vertex.position - origin_offset));
+
+		Vector3 origin_to_vert = origin_offset - vertex.position;
+		Vector3 origin_to_incorrect = origin_offset - Vector3(0.0f, 0.0f, 1.0f);
+
+		float angle_offset = acos(glm::dot(glm::normalize(origin_to_vert), glm::normalize(origin_to_incorrect)));
 
 		float new_angle_x = (angle_x / samples) * s;
 		float new_angle_y = (angle_y / samples) * s;
 		Vector3 vertex_position = Vector3(
-			radius * sin(glm::radians(new_angle_x)),
+			radius * sin(glm::radians(new_angle_x) - angle_offset),
 			0,
-			radius * cos(glm::radians(new_angle_x))
+			radius * cos(glm::radians(new_angle_x) - angle_offset)
 		) + Vector3(0, vertex.position.y, 0);
 
 		// Add the new vertex
@@ -28,7 +35,6 @@ std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, 
 	for (int v = 0; v < samples-1; v++) {
 		geometry.add_connection(new_vertex_ids[v], new_vertex_ids[v + 1]);
 	}
-	geometry.add_connection(new_vertex_ids[0], new_vertex_ids[samples-1]);
 
 	return new_vertex_ids;
 }
@@ -69,6 +75,26 @@ Geometry VertexSpinOperation::do_operation() {
 					new_ids[(new_id_index + 1) % new_ids.size()][(sample + 1) % samples] });
 			}
 		}
+
+		// Create a face between the new edges and the original face
+		for (int i = 0; i < face.vertices.size(); i++) {
+			new_geometry.add_connection(face.vertices[i], new_ids[i][0]);
+			new_geometry.add_connection(face.vertices[(i + 1) % face.vertices.size()], new_ids[(i + 1) % face.vertices.size()][0]);
+
+			new_geometry.define_face({
+				face.vertices[i],
+				new_ids[i][0],
+				face.vertices[(i + 1) % face.vertices.size()],
+				new_ids[(i + 1) % face.vertices.size()][0],
+			});
+		}
+
+		// Define endcap face
+		std::vector<int> endcap_face_vertex_ids;
+		for (int i = 0; i < face.vertices.size(); i++) {
+			endcap_face_vertex_ids.push_back(new_ids[i][new_ids[i].size()-1]);
+		}
+		new_geometry.define_face(endcap_face_vertex_ids);
 
 		// Set affected vertices
 		this->affected_vertices = std::vector<int>();

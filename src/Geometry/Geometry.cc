@@ -1,6 +1,5 @@
 #include <Geometry/Geometry.h>
 
-
 Geometry::Geometry(std::string name) {
 	this->name = name;
 	this->connections.reserve(100);
