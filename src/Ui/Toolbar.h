@@ -1,9 +1,13 @@
 #pragma once
 
+#include <EMath.h>
+
 #include <Ui/ToolbarTool.h>
 
 #include <vector>
 #include <functional>
+
+const Vector2 TOOLBAR_SIZE = {70.0f, 600.0f};
 
 class Toolbar {
 private:
@@ -18,6 +22,7 @@ public:
 	Toolbar(std::function<void(ToolbarTool*)>);
 
 	void render();
+	void render_tooltip(ToolbarTool* tool);
 	void collapse();
 	void expand();
 

@@ -22,4 +22,9 @@ public:
 	std::string get_name() {
 		return "Move";
 	}
+
+
+	std::string get_tooltip() {
+		return "Moves the current selection by an offset";
+	}
 };

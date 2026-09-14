@@ -24,4 +24,9 @@ public:
 	std::string get_name() {
 		return "Rotate";
 	}
+
+
+	std::string get_tooltip() {
+		return "Rotates the selection on the specified axis by an angle";
+	}
 };

@@ -23,4 +23,9 @@ public:
 	std::string get_name() {
 		return "Scale";
 	}
+
+
+	std::string get_tooltip() {
+		return "Shrinks or enlarges by amount specified";
+	}
 };

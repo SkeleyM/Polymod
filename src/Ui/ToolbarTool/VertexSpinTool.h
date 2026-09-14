@@ -27,4 +27,9 @@ public:
 	std::string get_name() {
 		return "Spin";
 	}
+
+
+	std::string get_tooltip() {
+		return "Spins the selection in an arc by a specific angle";
+	}
 };

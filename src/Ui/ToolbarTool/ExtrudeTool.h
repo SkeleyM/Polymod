@@ -22,4 +22,8 @@ public:
 	std::string get_name() {
 		return "Extrude";
 	}
+
+	std::string get_tooltip() {
+		return "Extends the current face in a specified direction";
+	}
 };
