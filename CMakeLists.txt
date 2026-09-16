@@ -21,6 +21,8 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/ScaleOperation.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/VertexSpinOperation.cc
 
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/WavefrontObj.cc
+
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/Menu.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBar.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBarItem.cc
@@ -49,6 +51,8 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/RotateOperation.h
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/ScaleOperation.h
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/VertexSpinOperation.h
+
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/WavefrontObj.h
 
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/Menu.h
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBar.h

@@ -13,6 +13,8 @@
 #include <GeometryEditor.h>
 #include <GeometryWireframeRenderer.h>
 
+#include <Geometry/Formats/WavefrontObj.h>
+
 #include <Ui/MenuBar/Menu.h>
 #include <Ui/MenuBar/MenuBar.h>
 #include <Ui/MenuBar/MenuBarItem.h>
@@ -136,12 +138,22 @@ int main() {
 	Menu file_menu("File");
 	Menu edit_menu("Edit");
 
+	MenuBarItem obj("Export as .obj", []() {
+		auto file = std::string("./out.obj");
+		GeometryFormats::WavefrontObj::export_file(
+			*geometry_editor.get_current_geometry().lock().get(), 
+			file
+		);
+	});
+
 	MenuBarItem undo("Undo", []() {
 		geometry_editor.undo();
 	});
 	MenuBarItem redo("Redo", []() {
 		geometry_editor.redo();
 	});
+
+	file_menu.add_menu_item(obj);
 
 	edit_menu.add_menu_item(undo);
 	edit_menu.add_menu_item(redo);
