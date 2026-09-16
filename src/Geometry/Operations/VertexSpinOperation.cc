@@ -1,7 +1,9 @@
 #include <Geometry/Operations/VertexSpinOperation.h>
 #include <math.h>
 
-std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, int samples, float angle_x, float angle_y) {
+#include <iostream>
+
+std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, Vector3 spin_offset, int samples, float angle_x, float angle_y) {
 	std::vector<int> new_vertex_ids;
 	new_vertex_ids.reserve(samples);
 
@@ -14,9 +16,10 @@ std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, 
 		float radius = fabs(glm::length(vertex.position - origin_offset));
 
 		Vector3 origin_to_vert = origin_offset - vertex.position;
-		Vector3 origin_to_incorrect = origin_offset - Vector3(0.0f, 0.0f, 1.0f);
+		Vector3 origin_to_incorrect = origin_offset - spin_offset;
 
 		float angle_offset = acos(glm::dot(glm::normalize(origin_to_vert), glm::normalize(origin_to_incorrect)));
+		std::cout << angle_offset << std::endl;
 
 		float new_angle_x = (angle_x / samples) * s;
 		float new_angle_y = (angle_y / samples) * s;
@@ -52,7 +55,8 @@ Geometry VertexSpinOperation::do_operation() {
 		Face face = faces[0];
 
 		for (int vertex_id : face.vertices) {
-			std::vector<int> ids = spin_vertex(new_geometry, vertex_id, this->origin, this->samples, this->angle_x, this->angle_y);
+			Vector3 spin_offset = new_geometry.get_vertex(face.vertices[0]).position - new_geometry.get_vertex(face.vertices[1]).position;
+			std::vector<int> ids = spin_vertex(new_geometry, vertex_id, this->origin, spin_offset, this->samples, this->angle_x, this->angle_y);
 			new_ids.push_back(ids);
 		}
 
