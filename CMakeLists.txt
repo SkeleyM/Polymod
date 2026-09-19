@@ -10,6 +10,7 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/GeometryManager.cc
 	${PROJECT_SOURCE_DIR}/GeometryEditor.cc
 	${PROJECT_SOURCE_DIR}/GeometryWireframeRenderer.cc
+	${PROJECT_SOURCE_DIR}/ShortcutManager.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Face.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Geometry.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Timeline.cc
@@ -38,6 +39,7 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/GeometryManager.h
 	${PROJECT_SOURCE_DIR}/GeometryEditor.h
 	${PROJECT_SOURCE_DIR}/GeometryWireframeRenderer.h
+	${PROJECT_SOURCE_DIR}/ShortcutManager.h
 	${PROJECT_SOURCE_DIR}/Geometry/Face.h
 	${PROJECT_SOURCE_DIR}/Geometry/Geometry.h
 	${PROJECT_SOURCE_DIR}/Geometry/GeometryShadingType.h

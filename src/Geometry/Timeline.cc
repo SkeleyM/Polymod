@@ -17,6 +17,7 @@ std::weak_ptr<AbstractGeometryOperation> Timeline::peek_operation(int offset) {
 }
 
 std::shared_ptr<AbstractGeometryOperation> Timeline::pop_operation() {
+	if (this->operations.size() == 0) return nullptr;
 	std::shared_ptr<AbstractGeometryOperation> op = this->operations[this->current_operation_index];
 	this->rewind();
 	return op;

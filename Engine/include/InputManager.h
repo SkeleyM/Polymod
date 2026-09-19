@@ -3,7 +3,15 @@
 #include <EMath.h>
 
 #include <GLFW/glfw3.h>
-#include <iostream>
+
+enum KeyModifiers {
+	MODIFIER_NONE = 0b0,
+	MODIFIER_SHIFT = 0b1,
+	MODIFIER_CONTROL = 0b10,
+	MODIFIER_SUPER = 0b100,
+	MODIFIER_CAPS_LOCK = 0b1000,
+	MODIFIER_NUM_LOCK = 0b10000,
+};
 
 class InputManager {
 private:
@@ -20,6 +28,7 @@ private:
 
 	// 400 is chosen very arbitrarily, glfw keycodes seem to max out at around ~360
 	int keyboard_state[400]{ 0 };
+	int modifiers { MODIFIER_NONE };
 public:
 	static InputManager& get() {
 		if (instance == nullptr) {
@@ -36,12 +45,14 @@ public:
 	std::pair<bool, bool> get_mouse_buttons();
 
 	bool get_key_down(int key);
+	bool is_modifiers_active(int modifiers);
 	
 	void _set_scroll_delta(Vector2 delta);
 	void _set_mouse_pos(Vector2 pos);
 	void _set_mouse_button(bool mouse_1, bool mouse_2);
 
 	void _set_keyboard_state(int key, bool pressed);
+	void _set_keyboard_modifiers(int modifiers);
 
 	void _reset_scroll();
 };
@@ -74,4 +85,5 @@ static void glfw_mouse_click_handler(GLFWwindow* window, int button, int action,
 static void glfw_key_handler(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	InputManager& input = InputManager::get();
 	input._set_keyboard_state(key, action == GLFW_PRESS ? true : false);
+	input._set_keyboard_modifiers(mods);
 }

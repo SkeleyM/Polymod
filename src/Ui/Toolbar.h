@@ -27,4 +27,5 @@ public:
 	void expand();
 
 	void add_tool(ToolbarTool* tool);
+	void simulate_tool_click(ToolbarTool* tool);
 };

@@ -19,6 +19,7 @@ public:
 	std::vector<std::weak_ptr<AbstractGeometryOperation>> get_operations();
 	Geometry reconstruct_from_point(int offset_from_present);
 	Geometry get_present_geometry();
+	int get_current_operation_index() { return this->current_operation_index; }
 	void rewind(int from_current = 1);
 	void forward(int from_current = 1);
 	void to_present();

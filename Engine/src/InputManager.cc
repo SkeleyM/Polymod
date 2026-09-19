@@ -26,6 +26,10 @@ bool InputManager::get_key_down(int key) {
 	return this->keyboard_state[key];
 }
 
+bool InputManager::is_modifiers_active(int modifiers) {
+	return (this->modifiers & modifiers) == modifiers;
+}
+
 void InputManager::_set_scroll_delta(Vector2 delta) {
 	this->scroll_delta = delta;
 }
@@ -41,6 +45,10 @@ void InputManager::_set_mouse_button(bool mouse_1, bool mouse_2) {
 
 void InputManager::_set_keyboard_state(int key, bool pressed) {
 	this->keyboard_state[key] = pressed;
+}
+
+void InputManager::_set_keyboard_modifiers(int modifiers) {
+	this->modifiers = modifiers;
 }
 
 void InputManager::_reset_scroll() {

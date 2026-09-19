@@ -85,3 +85,7 @@ void Toolbar::expand() {
 void Toolbar::add_tool(ToolbarTool* tool) {
 	this->tools.push_back(tool);
 }
+
+void Toolbar::simulate_tool_click(ToolbarTool* tool) {
+	this->on_tool_click(tool);
+}

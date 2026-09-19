@@ -12,6 +12,7 @@
 #include <OrbitalCameraController.h>
 #include <GeometryEditor.h>
 #include <GeometryWireframeRenderer.h>
+#include <ShortcutManager.h>
 
 #include <Ui/MenuBar/Menu.h>
 #include <Ui/MenuBar/MenuBar.h>
@@ -29,6 +30,7 @@ OrbitalCameraController* camera_controller = nullptr;
 AxisGrid* axis_grid = nullptr;
 GeometryWireframeRenderer* wireframe_renderer = nullptr;
 GeometryEditor geometry_editor;
+ShortcutManager shortcut_manager;
 
 MenuBar menubar;
 
@@ -158,9 +160,40 @@ int main() {
 	toolbar.add_tool(new ExtrudeTool());
 	toolbar.add_tool(new VertexSpinTool());
 
+	// Add shortcuts
+	shortcut_manager.add_shortcut({GLFW_KEY_Z, MODIFIER_CONTROL, [](){
+		geometry_editor.undo();
+	}, true});
+
+	shortcut_manager.add_shortcut({GLFW_KEY_Z, MODIFIER_CONTROL | MODIFIER_SHIFT, [](){
+		geometry_editor.redo();
+	}, true});
+
+	// Tool shortcuts
+	shortcut_manager.add_shortcut({GLFW_KEY_E, MODIFIER_NONE, [](){
+		Toolbar& toolbar = geometry_editor.get_toolbar();
+		toolbar.simulate_tool_click(new ExtrudeTool());
+	}, true});
+
+	shortcut_manager.add_shortcut({GLFW_KEY_S, MODIFIER_NONE, [](){
+		Toolbar& toolbar = geometry_editor.get_toolbar();
+		toolbar.simulate_tool_click(new ScaleTool());
+	}, true});
+
+	shortcut_manager.add_shortcut({GLFW_KEY_R, MODIFIER_NONE, [](){
+		Toolbar& toolbar = geometry_editor.get_toolbar();
+		toolbar.simulate_tool_click(new RotateTool());
+	}, true});
+
+	shortcut_manager.add_shortcut({GLFW_KEY_M, MODIFIER_NONE, [](){
+		Toolbar& toolbar = geometry_editor.get_toolbar();
+		toolbar.simulate_tool_click(new MoveTool());
+	}, true});
+
 	while (engine->should_keep_ticking()) {
 		engine->tick();
 		
+		shortcut_manager.update();
 		camera_controller->update();
 	}
 
