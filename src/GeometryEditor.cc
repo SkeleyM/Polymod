@@ -195,6 +195,8 @@ std::weak_ptr<Geometry> GeometryEditor::get_current_geometry() {
 
 void GeometryEditor::undo() {
 	Timeline* timeline = this->geometry_manager.get_timeline(this->current_geometry).lock().get();
+	if (timeline->get_operations().size() == 0) return;
+
 	timeline->pop_operation();
 	Geometry present = timeline->get_present_geometry();
 
@@ -204,6 +206,7 @@ void GeometryEditor::undo() {
 
 void GeometryEditor::redo() {
 	Timeline* timeline = this->geometry_manager.get_timeline(this->current_geometry).lock().get();
+	if (timeline->get_operations().size() == 0) return;
 	timeline->forward();
 	Geometry present = timeline->get_present_geometry();
 
