@@ -12,6 +12,12 @@
 
 Engine* Engine::engine_instance = nullptr;
 
+void glfw_framebuffer_resize_handler(GLFWwindow* window, int width, int height) {
+	Engine* engine = Engine::get_instance();
+
+	engine->set_window_size(Vector2((float)width, (float)height));
+}
+
 void dummy_callback() {}
 
 Engine::Engine(const char* window_title, int width, int height) {
@@ -40,6 +46,8 @@ Engine::Engine(const char* window_title, int width, int height) {
 	glfwSetCursorPosCallback(this->window, glfw_mouse_handler);
 	glfwSetMouseButtonCallback(this->window, glfw_mouse_click_handler);
 	glfwSetKeyCallback(this->window, glfw_key_handler);
+
+	glfwSetFramebufferSizeCallback(this->window, glfw_framebuffer_resize_handler);
 
 	Engine::engine_instance = this;
 	this->window_size = Vector2((float)width, (float)height);
@@ -87,5 +95,13 @@ void Engine::tick() {
 	// Reset some input
 	InputManager& input_manager = InputManager::get();
 	input_manager._reset_scroll();
+}
 
+void Engine::set_window_size(Vector2 new_size) {
+	this->window_size = new_size;
+
+	Camera& cam = this->get_active_scene().camera;
+	this->get_active_scene().camera = Camera(cam.get_fov(), cam.get_near_plane(), cam.get_far_plane());
+
+	glViewport(0, 0, (int)new_size.x, (int)new_size.y);
 }

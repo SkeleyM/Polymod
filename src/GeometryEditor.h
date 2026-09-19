@@ -20,9 +20,9 @@ private:
 	// Maps Geometry pointers to the ID of the corresponding mesh in the scene
 	std::unordered_map<std::string, int> geometry_scene_mesh_id_map;
 
-	void select_vertex(Vector2 screen_coordinates);
-	void select_edge(Vector2 screen_coordinates);
-	void select_face(Vector2 screen_coordinates);
+	void select_vertex(Vector3 ray_origin, Vector3 ray_direction);
+	void select_edge(Vector3 ray_origin, Vector3 ray_direction);
+	void select_face(Vector3 ray_origin, Vector3 ray_direction);
 
 	void refresh_current_geometry_in_scene();
 public:

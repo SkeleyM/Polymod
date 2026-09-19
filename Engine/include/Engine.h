@@ -28,7 +28,7 @@ public:
 	Scene& get_active_scene() { return *this->main_scene; }
 	float get_aspect_ratio() { return window_size.x / window_size.y; }
 	Vector2 get_window_size() { return this->window_size; }
-
+	
 	bool should_keep_ticking();
 	void tick();
 
@@ -39,4 +39,6 @@ public:
 	void set_on_render(std::function<void()> callback) {
 		this->on_render_callback = callback;
 	}
+
+	void set_window_size(Vector2 new_size);
 };
