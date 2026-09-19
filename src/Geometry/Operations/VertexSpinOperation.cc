@@ -1,8 +1,6 @@
 #include <Geometry/Operations/VertexSpinOperation.h>
 #include <math.h>
 
-#include <iostream>
-
 std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, Vector3 spin_offset, int samples, float angle_x, float angle_y) {
 	std::vector<int> new_vertex_ids;
 	new_vertex_ids.reserve(samples);
@@ -19,7 +17,6 @@ std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, 
 		Vector3 origin_to_incorrect = origin_offset - spin_offset;
 
 		float angle_offset = acos(glm::dot(glm::normalize(origin_to_vert), glm::normalize(origin_to_incorrect)));
-		std::cout << angle_offset << std::endl;
 
 		float new_angle_x = (angle_x / samples) * s;
 		float new_angle_y = (angle_y / samples) * s;
