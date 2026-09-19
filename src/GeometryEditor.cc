@@ -36,6 +36,7 @@ void GeometryEditor::refresh_current_geometry_in_scene() {
 		Face& face = faces[f];
 		// If the current face is in the selected faces, colour it differently
 		if (
+			this->selection.selected_faces != std::nullopt &&
 			std::find(
 			this->selection.selected_faces.value().begin(), 
 			this->selection.selected_faces.value().end(), 
@@ -76,36 +77,39 @@ void GeometryEditor::render() {
 	}
 }
 
-void GeometryEditor::select_vertex(Vector2 screen_coordinates) {
+void GeometryEditor::select_vertex(Vector3 ray_origin, Vector3 ray_direction) {
+	auto geometry = this->current_geometry.lock().get();
+
+	int closest_vertex_id{ -1 };
+	float closest_vertex_distance{ INFINITY };
+	for (int vertex_id : geometry->get_all_vertex_ids()) {
+		Vertex vertex = geometry->get_vertex(vertex_id);
+		float scale = glm::length(ray_origin - vertex.position);
+
+		float distance{ 0.0f };
+		// BUG: Doesn't scale too well
+		float click_radius = 2.0f * scale;
+		bool intersects = glm::intersectRaySphere(ray_origin, ray_direction, vertex.position, click_radius * click_radius, distance);
+		if (intersects && distance < closest_vertex_distance) {
+			closest_vertex_id = vertex_id;
+			closest_vertex_distance = distance;
+		}
+	}
+
+	// If we even hit a vertex
+	if (closest_vertex_id != -1) {
+		SelectedGeometry selection;
+		selection.selected_vertices = { closest_vertex_id };
+		this->selection = selection;
+		this->refresh_current_geometry_in_scene();
+	}
+}
+
+void GeometryEditor::select_edge(Vector3 ray_origin, Vector3 ray_direction) {
 
 }
 
-void GeometryEditor::select_edge(Vector2 screen_coordinates) {
-
-}
-
-void GeometryEditor::select_face(Vector2 screen_coordinates) {
-	// Selection occurs from the prespective of the camera
-	Camera camera = Engine::get_instance()->get_active_scene().camera;
-
-	auto inv_proj = glm::inverse(camera.get_projection_matrix());
-	auto inv_view = glm::inverse(camera.get_view_matrix());
-
-	Vector2 screen_size = Engine::get_instance()->get_window_size();
-	Vector2 ndc_coordinates = { 
-		((screen_coordinates.x / screen_size.x) * 2) - 1,
-		1 - ((screen_coordinates.y / screen_size.y) * 2)
-	};
-
-	auto view_space = Vector4(ndc_coordinates, -1, 1) * inv_proj;
-	view_space.z = -1;
-	view_space.w = 0;
-
-	auto world = view_space * inv_view;
-
-	Vector3 ray_origin = camera.transform.position;
-	Vector3 ray_direction = glm::normalize(world);
-
+void GeometryEditor::select_face(Vector3 ray_origin, Vector3 ray_direction) {
 	Vector2 out_barycentric;
 	float out_distance;
 
@@ -145,17 +149,38 @@ void GeometryEditor::select_face(Vector2 screen_coordinates) {
 }
 
 void GeometryEditor::select(Vector2 screen_coordinates) {
+	// Selection occurs from the prespective of the camera
+	Camera camera = Engine::get_instance()->get_active_scene().camera;
+
+	auto inv_proj = glm::inverse(camera.get_projection_matrix());
+	auto inv_view = glm::inverse(camera.get_view_matrix());
+
+	Vector2 screen_size = Engine::get_instance()->get_window_size();
+	Vector2 ndc_coordinates = {
+		((screen_coordinates.x / screen_size.x) * 2) - 1,
+		1 - ((screen_coordinates.y / screen_size.y) * 2)
+	};
+
+	auto view_space = Vector4(ndc_coordinates, -1, 1) * inv_proj;
+	view_space.z = -1;
+	view_space.w = 0;
+
+	auto world = view_space * inv_view;
+
+	Vector3 ray_origin = camera.transform.position;
+	Vector3 ray_direction = glm::normalize(world);
+
 	switch (this->select_mode) {
 		case (Select_Vertex): {
-			this->select_vertex(screen_coordinates);
+			this->select_vertex(ray_origin, ray_direction);
 			break;
 		}
 		case (Select_Edge): {
-			this->select_edge(screen_coordinates);
+			this->select_edge(ray_origin, ray_direction);
 			break;
 		}
 		case (Select_Face): {
-			this->select_face(screen_coordinates);
+			this->select_face(ray_origin, ray_direction);
 			break;
 		}
 	}
