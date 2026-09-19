@@ -9,6 +9,10 @@
 Camera::Camera(float fov, float near_plane, float far_plane) {
 	Engine* engine_instance = Engine::get_instance();
 
+	this->fov = fov;
+	this->near_plane = near_plane;
+	this->far_plane = far_plane;
+
 	// Get the aspect ratio from the window dimensions.
 	float aspect_ratio = engine_instance->get_aspect_ratio();
 	this->projection_matrix = glm::perspective(glm::radians(fov), aspect_ratio, near_plane, far_plane);
