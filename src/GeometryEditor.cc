@@ -195,15 +195,25 @@ void GeometryEditor::begin_operation(OperationArgumentPanel operation_panel) {
 }
 
 void GeometryEditor::do_operation(AbstractGeometryOperation* geometry_operation) {
+	// Complete operation
 	this->in_progress_operation_panel = std::nullopt;
 	std::string geometry_name = this->current_geometry.lock().get()->name;
 	std::weak_ptr<Timeline> timeline = this->geometry_manager.get_timeline(this->current_geometry);
 	timeline.lock().get()->push_operation(std::shared_ptr<AbstractGeometryOperation>(geometry_operation));
-
+	
+	// Set current geometry
 	Geometry present = timeline.lock().get()->get_present_geometry();
 	*this->current_geometry.lock().get() = present;
 
 	this->refresh_current_geometry_in_scene();
+}
+
+void GeometryEditor::set_select_mode(SelectMode mode) {
+	this->select_mode = mode;
+}
+
+SelectMode GeometryEditor::get_select_mode() {
+	return this->select_mode;
 }
 
 GeometryManager& GeometryEditor::get_geometry_manager() {

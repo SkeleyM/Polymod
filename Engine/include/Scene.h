@@ -11,7 +11,7 @@ class Scene {
 	std::vector<Mesh> meshes;
 public:
 	Light light;
-	Camera camera{Camera(90.0f, 0.001f, 1000.0f)};
+	Camera camera{Camera(50.0f, 0.001f, 1000.0f)};
 
 	Scene();
 	~Scene();

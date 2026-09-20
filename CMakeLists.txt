@@ -22,10 +22,12 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/ScaleOperation.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/VertexSpinOperation.cc
 
+	${PROJECT_SOURCE_DIR}/Ui/Toolbar.cc
+	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/EditorModeSelector.cc
+	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/Menu.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBar.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBarItem.cc
-	${PROJECT_SOURCE_DIR}/Ui/Toolbar.cc
 	${PROJECT_SOURCE_DIR}/Ui/OperationArgumentPanel.cc
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/Vector3OperationArgument.cc
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/FloatOperationArgument.cc
@@ -52,11 +54,13 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/ScaleOperation.h
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/VertexSpinOperation.h
 
+	${PROJECT_SOURCE_DIR}/Ui/OperationArgumentPanel.h
+	${PROJECT_SOURCE_DIR}/Ui/Toolbar.h
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/Menu.h
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBar.h
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBarItem.h
-	${PROJECT_SOURCE_DIR}/Ui/OperationArgumentPanel.h
-	${PROJECT_SOURCE_DIR}/Ui/Toolbar.h
+	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/EditorModeSelector.h
+	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/AbstractOperationArgument.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/Vector3OperationArgument.h

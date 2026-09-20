@@ -17,7 +17,7 @@ private:
 	std::function<void(ToolbarTool*)> on_tool_click;
 
 	// Either will render the collapse button next to the toolbar or just the button to re collapsed
-	void render_collapse();
+	void render_collapse(float toolbar_y);
 public:
 	Toolbar(std::function<void(ToolbarTool*)>);
 

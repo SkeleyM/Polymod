@@ -17,6 +17,8 @@ private:
 	std::optional<OperationArgumentPanel> in_progress_operation_panel;
 	Toolbar* toolbar;
 
+	SelectMode select_mode;
+
 	// Maps Geometry pointers to the ID of the corresponding mesh in the scene
 	std::unordered_map<std::string, int> geometry_scene_mesh_id_map;
 
@@ -26,7 +28,6 @@ private:
 
 	void refresh_current_geometry_in_scene();
 public:
-	SelectMode select_mode;
 	SelectedGeometry selection;
 
 	GeometryEditor();
@@ -37,6 +38,9 @@ public:
 	void set_current_geometry(std::weak_ptr<Geometry> geometry);
 	void begin_operation(OperationArgumentPanel operation_panel);
 	void do_operation(AbstractGeometryOperation* geometry_operation);
+
+	void set_select_mode(SelectMode mode);
+	SelectMode get_select_mode();
 
 	GeometryManager& get_geometry_manager();
 	Toolbar& get_toolbar();

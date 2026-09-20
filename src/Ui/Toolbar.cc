@@ -1,5 +1,8 @@
+#include <Engine.h>
+
 #include <Ui/Toolbar.h>
 #include <InputManager.h>
+#include <Ui/UiConstants.h>
 
 #include <imgui.h>
 
@@ -8,8 +11,16 @@ Toolbar::Toolbar(std::function<void(ToolbarTool*)> on_tool_click) {
 }
 
 void Toolbar::render() {
+	Vector2 window_size = Engine::get_instance()->get_window_size();
+	float toolbar_top_y_pos = (window_size.y + TOOLBAR_SIZE.y) / 2 - TOOLBAR_SIZE.y;
+
+	ImGui::PushStyleColor(ImGuiCol_Button, COLOUR_CONST_FOURTHIARY);
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, COLOUR_CONST_SECONDARY);
+	ImGui::PushStyleColor(ImGuiCol_Text, COLOUR_CONST_TEXT);
+
 	if (this->collapsed) {
-		this->render_collapse();
+		this->render_collapse(toolbar_top_y_pos);
+		ImGui::PopStyleColor(3);
 		return;
 	}
 
@@ -18,10 +29,11 @@ void Toolbar::render() {
 		&this->collapsed, 
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration
 	);
-	ImGui::SetWindowPos({0.0f, (1080 - 600) / 2});
+	
+	ImGui::SetWindowPos({ 0.0f, toolbar_top_y_pos });
 	ImGui::SetWindowSize({ TOOLBAR_SIZE.x, TOOLBAR_SIZE.y });
 
-	this->render_collapse();
+	this->render_collapse(toolbar_top_y_pos);
 
 	for (ToolbarTool* tool : this->tools) {
 		if (ImGui::Button(tool->get_name().c_str(), {55.0f, 55.0f})) {
@@ -32,6 +44,8 @@ void Toolbar::render() {
 		}
 	}
 	
+	ImGui::PopStyleColor(3);
+
 	ImGui::End();
 }
 
@@ -46,16 +60,15 @@ void Toolbar::render_tooltip(ToolbarTool* tool) {
 	ImGui::End();
 }
 
-void Toolbar::render_collapse() {
+void Toolbar::render_collapse(float toolbar_y) {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
-	
+
 	// Change text and position depending on if the toolbar is collapsed
 	char button_text[2] = { this->collapsed ? '>' : '<', '\0' };
-	float collapse_button_y_pos = 240.0f;
 	float collapse_button_x_pos = this->collapsed ? 0.0f : TOOLBAR_SIZE.x;
 
 	ImGui::SetNextWindowSize({ 1.0f, 1.0f });
-	ImGui::SetNextWindowPos({ collapse_button_x_pos, collapse_button_y_pos });
+	ImGui::SetNextWindowPos({ collapse_button_x_pos, toolbar_y });
 	ImGui::Begin(
 		"Collapse_Button",
 		&this->collapsed,

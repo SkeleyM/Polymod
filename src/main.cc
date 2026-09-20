@@ -14,6 +14,8 @@
 #include <GeometryWireframeRenderer.h>
 #include <ShortcutManager.h>
 
+#include <Ui/GeometryEditor/EditorModeSelector.h>
+#include <Ui/GeometryEditor/SceneTree.h>
 #include <Ui/MenuBar/Menu.h>
 #include <Ui/MenuBar/MenuBar.h>
 #include <Ui/MenuBar/MenuBarItem.h>
@@ -28,6 +30,8 @@
 
 OrbitalCameraController* camera_controller = nullptr;
 AxisGrid* axis_grid = nullptr;
+EditorModeSelector* editor_mode_selector = nullptr;
+SceneTree* scene_tree = nullptr;
 GeometryWireframeRenderer* wireframe_renderer = nullptr;
 GeometryEditor geometry_editor;
 ShortcutManager shortcut_manager;
@@ -71,9 +75,12 @@ static void on_render() {
 		+ (input.get_scroll().y)
 	);
 
+	// Render all the UI
 	menubar.render();
 	geometry_editor.render();
 	axis_grid->render(active_camera);
+	editor_mode_selector->render();
+	scene_tree->render();
 
 	// Check that the mouse hasnt moved much this frame before we click
 	if (clicked_this_frame && !is_dragging) {
@@ -105,6 +112,8 @@ int main() {
 	wireframe_renderer = new GeometryWireframeRenderer();
 	camera_controller = new OrbitalCameraController(&scene.camera);
 	axis_grid = new AxisGrid();
+	editor_mode_selector = new EditorModeSelector(&geometry_editor);
+	scene_tree = new SceneTree(&geometry_editor);
 
 	wireframe_renderer->set_edge_size(2.0f);
 	wireframe_renderer->set_vertex_size(4.0f);	
@@ -113,7 +122,7 @@ int main() {
 	geometry_editor.get_geometry_manager().create_new_geometry("Test");
 	auto geometry = geometry_editor.get_geometry_manager().get_geometry("Test");
 	geometry_editor.set_current_geometry(geometry);
-	geometry_editor.select_mode = Select_Face;
+	geometry_editor.set_select_mode(Select_Face);
 
 	// Create initial plane
 	Geometry& geometry_d = *geometry.lock().get();
