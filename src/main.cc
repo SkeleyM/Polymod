@@ -38,6 +38,7 @@ ShortcutManager shortcut_manager;
 
 MenuBar menubar;
 
+// main application render function, called by the engine
 static void on_render() {
 	InputManager& input = InputManager::get();
 	static Vector2 mouse_pos{ 0.0f, 0.0f };
@@ -177,6 +178,10 @@ int main() {
 	shortcut_manager.add_shortcut({GLFW_KEY_Z, MODIFIER_CONTROL | MODIFIER_SHIFT, [](){
 		geometry_editor.redo();
 	}, true});
+
+	shortcut_manager.add_shortcut({ GLFW_KEY_ESCAPE, MODIFIER_NONE, []() {
+		geometry_editor.cancel_operation();
+	}, true });
 
 	// Tool shortcuts
 	shortcut_manager.add_shortcut({GLFW_KEY_E, MODIFIER_NONE, [](){

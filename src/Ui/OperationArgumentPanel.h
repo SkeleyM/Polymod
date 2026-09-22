@@ -12,8 +12,13 @@ private:
 	std::vector<AbstractOperationArgument*> arguments;
 
 	std::function<void(AbstractGeometryOperation*)> done_callback;
+	std::function<void()> cancel_callback;
 public:
-	OperationArgumentPanel(AbstractGeometryOperation* operation, std::function<void(AbstractGeometryOperation*)> done_callback);
+	OperationArgumentPanel(
+		AbstractGeometryOperation* operation, 
+		std::function<void(AbstractGeometryOperation*)> done_callback,
+		std::function<void()> cancel_callback
+	);
 
 	void render();
 

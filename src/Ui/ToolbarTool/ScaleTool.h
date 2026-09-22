@@ -8,14 +8,18 @@
 
 class ScaleTool : public ToolbarTool {
 public:
-	OperationArgumentPanel create_panel(GeometryEditor* editor, std::function<void(AbstractGeometryOperation*)> done_callback) override {
+	OperationArgumentPanel create_panel(
+		GeometryEditor* editor,
+		std::function<void(AbstractGeometryOperation*)> done_callback,
+		std::function<void()> cancel_callback
+	) override {
 		ScaleOperation* scale = new ScaleOperation(*
 			editor->get_current_geometry().lock().get(),
 			editor->selection,
 			{1.0f, 1.0f, 1.0f}
 		);
 
-		OperationArgumentPanel scale_panel(scale, done_callback);
+		OperationArgumentPanel scale_panel(scale, done_callback, cancel_callback);
 		scale_panel.add_argument(new Vector3OperationArgument(std::string("Scale"), &scale->scale));
 		return scale_panel;
 	}

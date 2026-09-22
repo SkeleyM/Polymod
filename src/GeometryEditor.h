@@ -38,6 +38,7 @@ public:
 	void set_current_geometry(std::weak_ptr<Geometry> geometry);
 	void begin_operation(OperationArgumentPanel operation_panel);
 	void do_operation(AbstractGeometryOperation* geometry_operation);
+	void cancel_operation();
 
 	void set_select_mode(SelectMode mode);
 	SelectMode get_select_mode();

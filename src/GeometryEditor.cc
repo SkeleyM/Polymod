@@ -7,8 +7,6 @@
 
 #include <glm/gtx/intersect.hpp>
 
-#include <iostream>
-
 GeometryEditor::GeometryEditor() {
 	this->toolbar = new Toolbar([&](ToolbarTool* tool) {
 		this->on_tool_clicked(tool);
@@ -55,6 +53,8 @@ void GeometryEditor::refresh_current_geometry_in_scene() {
 void GeometryEditor::on_tool_clicked(ToolbarTool* tool) {
 	auto panel = tool->create_panel(this, [&](AbstractGeometryOperation* op)  {
 		this->do_operation(op);
+		}, [&]() {
+			this->cancel_operation();
 		}
 	);
 	this->begin_operation(panel);
@@ -84,12 +84,10 @@ void GeometryEditor::select_vertex(Vector3 ray_origin, Vector3 ray_direction) {
 	float closest_vertex_distance{ INFINITY };
 	for (int vertex_id : geometry->get_all_vertex_ids()) {
 		Vertex vertex = geometry->get_vertex(vertex_id);
-		float scale = glm::length(ray_origin - vertex.position);
 
 		float distance{ 0.0f };
-		// BUG: Doesn't scale too well
-		float click_radius = 2.0f * scale;
-		bool intersects = glm::intersectRaySphere(ray_origin, ray_direction, vertex.position, click_radius * click_radius, distance);
+		float click_radius = 2.0f;
+		bool intersects = glm::intersectRaySphere(ray_origin, ray_direction, vertex.position, click_radius, distance);
 		if (intersects && distance < closest_vertex_distance) {
 			closest_vertex_id = vertex_id;
 			closest_vertex_distance = distance;
@@ -205,6 +203,15 @@ void GeometryEditor::do_operation(AbstractGeometryOperation* geometry_operation)
 	Geometry present = timeline.lock().get()->get_present_geometry();
 	*this->current_geometry.lock().get() = present;
 
+	this->refresh_current_geometry_in_scene();
+}
+
+void GeometryEditor::cancel_operation() {
+	// Get input from the operation and restore the geometry
+	Geometry restored_geometry = this->in_progress_operation_panel.value().get_operation()->input_geometry;
+	*this->current_geometry.lock().get() = restored_geometry;
+
+	this->in_progress_operation_panel = std::nullopt;
 	this->refresh_current_geometry_in_scene();
 }
 

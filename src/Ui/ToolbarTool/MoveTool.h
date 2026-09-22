@@ -7,14 +7,18 @@
 
 class MoveTool : public ToolbarTool {
 public:
-	OperationArgumentPanel create_panel(GeometryEditor* editor, std::function<void(AbstractGeometryOperation*)> done_callback) override {
+	OperationArgumentPanel create_panel(
+		GeometryEditor* editor,
+		std::function<void(AbstractGeometryOperation*)> done_callback,
+		std::function<void()> cancel_callback
+	) override {
 		MoveOperation* move = new MoveOperation(*
 			editor->get_current_geometry().lock().get(),
 			editor->selection,
 			{}
 		);
 
-		OperationArgumentPanel move_panel(move, done_callback);
+		OperationArgumentPanel move_panel(move, done_callback, cancel_callback);
 		move_panel.add_argument(new Vector3OperationArgument(std::string("Offset"), &move->offset));
 		return move_panel;
 	}
