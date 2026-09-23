@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(3Dmodelling)
+project(Polymod)
 
 set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_SOURCE_DIR src)
@@ -79,7 +79,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}
 
 add_subdirectory(Engine)
 
-add_executable(3Dmodelling)
+add_executable(Polymod)
 
 
 if (MSVC)
@@ -89,16 +89,16 @@ if (MSVC)
     target_link_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:/INCREMENTAL>)
 endif()
 
-target_link_libraries(3Dmodelling
+target_link_libraries(Polymod
 	PUBLIC
 	Engine
 )
 
-target_include_directories(3Dmodelling
+target_include_directories(Polymod
 	PUBLIC 	${PROJECT_SOURCE_DIR}/
 )
 
-target_sources(3Dmodelling
+target_sources(Polymod
 	PRIVATE
 	${PROJECT_SOURCE_DIR}/main.cc
 	${SOURCES}
