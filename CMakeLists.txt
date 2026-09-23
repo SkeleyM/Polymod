@@ -13,6 +13,7 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/ShortcutManager.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Face.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Geometry.cc
+	${PROJECT_SOURCE_DIR}/Geometry/GeometryRaycasting.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Timeline.cc
 
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/AbstractGeometryOperation.cc
@@ -44,6 +45,7 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/ShortcutManager.h
 	${PROJECT_SOURCE_DIR}/Geometry/Face.h
 	${PROJECT_SOURCE_DIR}/Geometry/Geometry.h
+	${PROJECT_SOURCE_DIR}/Geometry/GeometryRaycasting.h
 	${PROJECT_SOURCE_DIR}/Geometry/GeometryShadingType.h
 	${PROJECT_SOURCE_DIR}/Geometry/Timeline.h
 
@@ -103,4 +105,4 @@ target_sources(Polymod
 	${PROJECT_SOURCE_DIR}/main.cc
 	${SOURCES}
 	${HEADERS}
-)
+ "src/Geometry/GeometryRaycasting.h")
