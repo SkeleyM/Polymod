@@ -76,9 +76,10 @@ set(HEADERS
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}
-    FILES ${HEADERS} ${SOURCES}
+    FILES ${HEADERS} ${SOURCES} 
 )
 
+# Build the main executable
 add_subdirectory(Engine)
 
 add_executable(Polymod)
@@ -105,4 +106,35 @@ target_sources(Polymod
 	${PROJECT_SOURCE_DIR}/main.cc
 	${SOURCES}
 	${HEADERS}
- "src/Geometry/GeometryRaycasting.h")
+)
+
+set(TESTS 
+	tests/Geometry_Tests/test_raycasting.h
+	tests/Geometry_Tests/test_loops.h
+)
+
+ # Build the tests
+ add_executable(PolymodTests
+	tests/testmain.cc
+	tests/Common/test_log.h
+ )
+
+ target_sources(PolymodTests
+	PRIVATE
+	${SOURCES}
+	${HEADERS}
+	${TESTS}
+ )
+
+ target_link_libraries(PolymodTests
+	PUBLIC
+	Engine
+)
+
+target_include_directories(PolymodTests
+	PUBLIC 	${PROJECT_SOURCE_DIR}/ tests/
+)
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}
+    FILES ${TESTS}
+)
