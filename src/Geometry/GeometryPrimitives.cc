@@ -6,6 +6,7 @@
 
 Geometry GeometryPrimitives::create_primitive_cube(Vector3 position, float diameter) {
 	Geometry geometry = GeometryPrimitives::create_primitive_plane(Vector3(0.0f, 0.0f, -(diameter / 2)), diameter);
+	geometry.name = "Cube";
 
 	// extrude by the diameter
 	// This will give a cube centered around the origin.
@@ -20,7 +21,8 @@ Geometry GeometryPrimitives::create_primitive_cube(Vector3 position, float diame
 
 Geometry GeometryPrimitives::create_primitive_cylinder(Vector3 position, float diameter, int iterations, float height) {
 	Geometry geometry = create_primitive_circle(position, diameter, iterations);
-	
+	geometry.name = "Cylinder";
+
 	SelectedGeometry selection;
 	selection.selected_faces = { geometry.get_faces() };
 	ExtrudeOperation extrude(geometry, selection, Vector3(0.0f, height, 0.0f));
@@ -32,15 +34,15 @@ Geometry GeometryPrimitives::create_primitive_cylinder(Vector3 position, float d
 }
 
 Geometry GeometryPrimitives::create_primitive_sphere_uv(Vector3 position, float diameter, int iterations) {
-	return Geometry();
+	return Geometry("Uv_Sphere");
 }
 
 Geometry GeometryPrimitives::create_primitive_torus(Vector3 position, float diameter, int iterations) {
-	return Geometry();
+	return Geometry("Torus");
 }
 
 Geometry GeometryPrimitives::create_primitive_circle(Vector3 position, float diameter, int iterations) {
-	Geometry geometry;
+	Geometry geometry("Circle");
 	geometry.add_vertex(Vector3(0.0f, 0.0f, diameter / 2));
 	
 	SelectedGeometry selection;
@@ -57,7 +59,7 @@ Geometry GeometryPrimitives::create_primitive_circle(Vector3 position, float dia
 }
 
 Geometry GeometryPrimitives::create_primitive_plane(Vector3 position, float diameter) {
-	Geometry geometry;
+	Geometry geometry("Plane");
 
 	geometry.add_vertex((Vector3(-0.5f, -0.5f, 0.0f) * diameter) + position);
 	geometry.add_vertex((Vector3(-0.5f, 0.5f, 0.0f) * diameter) + position);
