@@ -13,6 +13,7 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/ShortcutManager.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Face.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Geometry.cc
+	${PROJECT_SOURCE_DIR}/Geometry/GeometryPrimitives.cc
 	${PROJECT_SOURCE_DIR}/Geometry/GeometryRaycasting.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Timeline.cc
 
@@ -45,6 +46,7 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/ShortcutManager.h
 	${PROJECT_SOURCE_DIR}/Geometry/Face.h
 	${PROJECT_SOURCE_DIR}/Geometry/Geometry.h
+	${PROJECT_SOURCE_DIR}/Geometry/GeometryPrimitives.cc
 	${PROJECT_SOURCE_DIR}/Geometry/GeometryRaycasting.h
 	${PROJECT_SOURCE_DIR}/Geometry/GeometryShadingType.h
 	${PROJECT_SOURCE_DIR}/Geometry/Timeline.h

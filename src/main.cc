@@ -13,6 +13,7 @@
 #include <GeometryEditor.h>
 #include <GeometryWireframeRenderer.h>
 #include <ShortcutManager.h>
+#include <Geometry/GeometryPrimitives.h>
 
 #include <Ui/GeometryEditor/EditorModeSelector.h>
 #include <Ui/GeometryEditor/SceneTree.h>
@@ -127,18 +128,7 @@ int main() {
 
 	// Create initial plane
 	Geometry& geometry_d = *geometry.lock().get();
-
-	geometry_d.add_vertex(Vector3(-0.5f, -0.5f, 0.0f));
-	geometry_d.add_vertex(Vector3(-0.5f, 0.5f, 0.0f));
-	geometry_d.add_vertex(Vector3(0.5f, 0.5f, 0.0f));
-	geometry_d.add_vertex(Vector3(0.5f, -0.5f, 0.0f));
-			
-	geometry_d.add_connection(0, 1);
-	geometry_d.add_connection(1, 2);
-	geometry_d.add_connection(2, 3);
-	geometry_d.add_connection(3, 0);
-			
-	geometry_d.define_face({ 0, 1, 2, 3 });
+	geometry_d = GeometryPrimitives::create_primitive_cylinder({ 0.0f, 0.0f, 0.0f }, 1.0f, 16, 1.0f);
 	geometry_d.calculate_normals(SHADE_FLAT);
 	
 	Mesh mesh = geometry_d.triangulate();

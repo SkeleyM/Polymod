@@ -8,23 +8,25 @@ std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, 
 	for (int s = 1; s < samples + 1; s++) {
 		Vertex& vertex = geometry.get_vertex(vertex_id);
 
-		const Vector3 origin_epsilon(0.1e-6);
-		Vector3 origin_offset = Vector3(origin.x, vertex.position.y, origin.z) + origin_epsilon;
+		const Vector3 origin_epsilon(0.1e-42);
+		Vector3 origin_offset = origin + origin_epsilon;
 
 		float radius = fabs(glm::length(vertex.position - origin_offset));
 
 		Vector3 origin_to_vert = origin_offset - vertex.position;
-		Vector3 origin_to_incorrect = origin_offset - spin_offset;
-
+		Vector3 origin_to_incorrect = origin_offset - Vector3(0.0f, 0.0f, -1.0f);
+		origin_to_vert.y = vertex.position.y;
+		origin_to_incorrect.y = vertex.position.y;
+		
 		float angle_offset = acos(glm::dot(glm::normalize(origin_to_vert), glm::normalize(origin_to_incorrect)));
 
 		float new_angle_x = (angle_x / samples) * s;
 		float new_angle_y = (angle_y / samples) * s;
 		Vector3 vertex_position = Vector3(
-			radius * sin(glm::radians(new_angle_x) - angle_offset),
+			radius * sin(glm::radians(new_angle_x) + angle_offset),
 			0,
-			radius * cos(glm::radians(new_angle_x) - angle_offset)
-		) + Vector3(0, vertex.position.y, 0);
+			radius * cos(glm::radians(new_angle_x) + angle_offset)
+		) + Vector3(0.0f, vertex.position.y, 0.0f);
 
 		// Add the new vertex
 		int id = geometry.add_vertex(vertex_position + origin);
@@ -96,6 +98,30 @@ Geometry VertexSpinOperation::do_operation() {
 			endcap_face_vertex_ids.push_back(new_ids[i][new_ids[i].size()-1]);
 		}
 		new_geometry.define_face(endcap_face_vertex_ids);
+
+		// Set affected vertices
+		this->affected_vertices = std::vector<int>();
+		for (auto v : new_ids) {
+			this->affected_vertices.value().insert(this->affected_vertices.value().end(), v.begin(), v.end());
+		}
+	}
+	else if (selection.selected_vertices.has_value()) {
+		auto vertices = selection.selected_vertices.value();
+
+		std::vector <std::vector<int>> new_ids;
+
+		for (int vertex_id : vertices) {
+			Vector3 spin_offset = Vector3(0.0f, 0.0f, -1.0f);
+			std::vector<int> ids = spin_vertex(new_geometry, vertex_id, this->origin, spin_offset, this->samples, this->angle_x, this->angle_y);
+			new_ids.push_back(ids);
+		}
+
+		// Create connections between each of the samples
+		for (int s = 0; s < new_ids.size(); s++) {
+			for (int v = 0; v < samples; v++) {
+				new_geometry.add_connection(new_ids[0][v], new_ids[0][(v + 1) % samples]);
+			}
+		}
 
 		// Set affected vertices
 		this->affected_vertices = std::vector<int>();
