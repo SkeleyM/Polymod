@@ -2,6 +2,7 @@
 
 #include <Geometry/Operations/ExtrudeOperation.h>
 #include <Geometry/Operations/MoveOperation.h>
+#include <Geometry/Operations/RotateOperation.h>
 #include <Geometry/Operations/VertexSpinOperation.h>
 
 Geometry GeometryPrimitives::create_primitive_cube(Vector3 position, float diameter) {
@@ -38,7 +39,23 @@ Geometry GeometryPrimitives::create_primitive_sphere_uv(Vector3 position, float 
 }
 
 Geometry GeometryPrimitives::create_primitive_torus(Vector3 position, float diameter, int iterations) {
-	return Geometry("Torus");
+	Geometry geometry = create_primitive_circle(Vector3(1.0f, 0.0f, 0.0f), diameter, iterations);
+	geometry.name = "Torus";
+
+	SelectedGeometry selection;
+	selection.selected_vertices = geometry.get_all_vertex_ids();
+	RotateOperation rotate(geometry, selection, Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+	geometry = rotate.do_operation();
+
+	MoveOperation move(geometry, {}, Vector3(1.0f, 0.0f, 0.0f));
+	geometry = move.do_operation();
+
+	selection.selected_vertices = std::nullopt;
+	selection.selected_faces = geometry.get_faces();
+	VertexSpinOperation torus_spin(geometry, selection, Vector3(0.0f, 0.0f, 0.0f), 16, 360.0f, 0.0f);
+	geometry = torus_spin.do_operation();
+
+	return geometry;
 }
 
 Geometry GeometryPrimitives::create_primitive_circle(Vector3 position, float diameter, int iterations) {
