@@ -40,6 +40,8 @@ public:
 	std::optional<std::vector<int>> get_loop(std::vector<int> vertices);
 	bool are_vertices_connected(int v1, int v2);
 	void calculate_normals(GeometryShadingType shading_type);
+	Vector3 get_center();
+	Vector3 get_center_of_faces(std::vector<Face> faces);
 	Geometry copy();
 	Mesh triangulate();
 };

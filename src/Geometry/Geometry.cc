@@ -140,6 +140,28 @@ void Geometry::calculate_normals(GeometryShadingType shading_type) {
 		this->calculate_face_normals(f, shading_type);
 } 
 
+Vector3 Geometry::get_center() {
+	Vector3 total = { 0.0f, 0.0f, 0.0f };
+	for (Vertex& v : this->vertices) 
+		total += v.position;
+	total /= this->vertices.size();
+	return total;
+}
+
+Vector3 Geometry::get_center_of_faces(std::vector<Face> faces) {
+	Vector3 total = { 0.0f, 0.0f, 0.0f };
+	int total_vertices = 0;
+	for (Face& face: faces) {
+		total_vertices += face.vertices.size();
+		for (int& vertex_id: face.vertices) {
+			Vertex vertex = this->get_vertex(vertex_id);
+			total += vertex.position;
+		}
+	}
+	total /= total_vertices;
+	return total;
+}
+
 Mesh Geometry::triangulate() {
 	std::vector<Triangle> triangles = std::vector<Triangle>();
 	for (Face face : this->faces) {
