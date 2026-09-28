@@ -8,8 +8,8 @@
 namespace GeometryPrimitives {
 	Geometry create_primitive_cube(Vector3 position, float diameter);
 	Geometry create_primitive_cylinder(Vector3 position, float diameter, int iterations, float height);
-	Geometry create_primitive_sphere_uv(Vector3 position, float diameter, int iterations);
-	Geometry create_primitive_torus(Vector3 position, float diameter, int iterations);
+	Geometry create_primitive_sphere_uv(Vector3 position, float diameter, int segments, int curve);
+	Geometry create_primitive_torus(Vector3 position, float hole, float diameter, int segments, int curve);
 	Geometry create_primitive_circle(Vector3 position, float diameter, int iterations);
 	Geometry create_primitive_plane(Vector3 position, float diameter);
 }
