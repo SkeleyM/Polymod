@@ -1,7 +1,7 @@
 #include <Geometry/Operations/VertexSpinOperation.h>
 #include <math.h>
 
-std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, Vector3 spin_offset, int samples, float angle_x, float angle_y) {
+std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, Vector3 center_of_selection, int samples, float angle_x, float angle_y) {
 	std::vector<int> new_vertex_ids;
 	new_vertex_ids.reserve(samples);
 
@@ -11,12 +11,11 @@ std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, 
 		const Vector3 origin_epsilon(0.1e-42);
 		Vector3 origin_offset = origin + origin_epsilon;
 
-		float radius = fabs(glm::length(vertex.position - origin_offset));
+		Vector3 origin_at_correct_y_level = Vector3(origin_offset.x, vertex.position.y, origin_offset.z);
+		float radius = fabs(glm::length(vertex.position - origin_at_correct_y_level));
 
-		Vector3 origin_to_vert = origin_offset - vertex.position;
-		Vector3 origin_to_incorrect = origin_offset - Vector3(0.0f, 0.0f, -1.0f);
-		origin_to_vert.y = vertex.position.y;
-		origin_to_incorrect.y = vertex.position.y;
+		Vector3 origin_to_vert = origin_at_correct_y_level - vertex.position;
+		Vector3 origin_to_incorrect = origin_at_correct_y_level - Vector3(0.0f, vertex.position.y, -1.0f);
 		
 		float angle_offset = acos(glm::dot(glm::normalize(origin_to_vert), glm::normalize(origin_to_incorrect)));
 
@@ -24,9 +23,9 @@ std::vector<int> spin_vertex(Geometry& geometry, int vertex_id, Vector3 origin, 
 		float new_angle_y = (angle_y / samples) * s;
 		Vector3 vertex_position = Vector3(
 			radius * sin(glm::radians(new_angle_x) + angle_offset),
-			0,
+			vertex.position.y,
 			radius * cos(glm::radians(new_angle_x) + angle_offset)
-		) + Vector3(0.0f, vertex.position.y, 0.0f);
+		);
 
 		// Add the new vertex
 		int id = geometry.add_vertex(vertex_position + origin);
