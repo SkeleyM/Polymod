@@ -162,6 +162,35 @@ Vector3 Geometry::get_center_of_faces(std::vector<Face> faces) {
 	return total;
 }
 
+void Geometry::join(std::vector<Geometry> geometry) {
+	for (Geometry& current : geometry) {
+		// this will be the base we will add the vertex ids to
+		int vertex_offset = this->vertices.size() - 1;
+
+		for (int v = 0; v < current.vertices.size(); v++) {
+			Vertex vertex = current.get_vertex(v);
+			this->vertices.push_back(vertex);
+
+			// Add all the connections between vertices
+			auto connections = current.connections[v];
+			for (int c = 0; c < connections.size(); c++) 
+				connections[c] += vertex_offset;
+
+			this->connections.push_back(connections);
+
+			// Add all the faces
+			auto faces = current.faces;
+			for (int f = 0; f < faces.size(); f++) {
+				for (int i = 0; i < faces[f].vertices.size(); i++) {
+					faces[f].vertices[i] += vertex_offset;
+				}
+				this->faces.push_back(faces[f]);
+			}
+			
+		}
+	}
+}
+
 Mesh Geometry::triangulate() {
 	std::vector<Triangle> triangles = std::vector<Triangle>();
 	for (Face face : this->faces) {

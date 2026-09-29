@@ -6,6 +6,17 @@
 #include <Geometry/Geometry.h>
 
 namespace GeometryPrimitives {
+	enum GeometryPrimitive {
+		Cube,
+		Cylinder,
+		Sphere_Uv,
+		Torus,
+		Circle,
+		Plane,
+		Vertex,
+	};
+
+
 	Geometry create_primitive_cube(Vector3 position, float diameter);
 	Geometry create_primitive_cylinder(Vector3 position, float diameter, int iterations, float height);
 	Geometry create_primitive_sphere_uv(Vector3 position, float diameter, int segments, int curve);

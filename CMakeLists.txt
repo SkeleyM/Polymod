@@ -18,6 +18,7 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Geometry/Timeline.cc
 
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/AbstractGeometryOperation.cc
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/CreatePrimitiveOperation.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/ExtrudeOperation.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/MoveOperation.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/RotateOperation.cc
@@ -34,6 +35,8 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/Vector3OperationArgument.cc
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/FloatOperationArgument.cc
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/IntOperationArgument.cc
+	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveOperationPanels.cc
+	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveSelector.cc
 )
 
 set(HEADERS 
@@ -52,6 +55,7 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Geometry/Timeline.h
 
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/AbstractGeometryOperation.h
+	${PROJECT_SOURCE_DIR}/Geometry/Operations/CreatePrimitiveOperation.h
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/ExtrudeOperation.h
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/MoveOperation.h
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/RotateOperation.h
@@ -70,6 +74,8 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/Vector3OperationArgument.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/FloatOperationArgument.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/IntOperationArgument.h
+	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveOperationPanels.h
+	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveSelector.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/ExtrudeTool.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/MoveTool.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/RotateTool.h

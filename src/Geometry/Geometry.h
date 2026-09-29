@@ -42,6 +42,7 @@ public:
 	void calculate_normals(GeometryShadingType shading_type);
 	Vector3 get_center();
 	Vector3 get_center_of_faces(std::vector<Face> faces);
+	void join(std::vector<Geometry> geometry);
 	Geometry copy();
 	Mesh triangulate();
 };

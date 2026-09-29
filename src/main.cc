@@ -128,7 +128,7 @@ int main() {
 
 	// Create initial plane
 	Geometry& geometry_d = *geometry.lock().get();
-	geometry_d = GeometryPrimitives::create_primitive_cylinder({ 0.0f, 0.0f, 0.0f }, 1.0f, 16, 1.0f);
+	geometry_d = GeometryPrimitives::create_primitive_sphere_uv({ 0.0f, 0.0f, 0.0f }, 1.0f, 16, 20);
 	geometry_d.calculate_normals(SHADE_FLAT);
 	
 	Mesh mesh = geometry_d.triangulate();

@@ -1,19 +1,25 @@
 #pragma once
 
 #include <Geometry/Operations/AbstractGeometryOperation.h>
+#include <Geometry/GeometryPrimitives.h>
 
-class MoveOperation : public AbstractGeometryOperation {
+class CreatePrimitiveOperation : public AbstractGeometryOperation {
 public:
-	Vector3 offset;
+	GeometryPrimitives::GeometryPrimitive primitive_type{ GeometryPrimitives::Cube };
+	Vector3 position{ 0.0f };
+	float diameter{ 1.0f };
 
-	MoveOperation(Geometry input_geometry, SelectedGeometry selection, Vector3 offset)
+	int iterations{ 16 };
+	int segments{ 16 };
+	float height{ 1.0f };
+	float hole { 1.0f };
+
+	CreatePrimitiveOperation(Geometry input_geometry, SelectedGeometry selection, GeometryPrimitives::GeometryPrimitive primitive_type, Vector3 position, float diameter)
 		: AbstractGeometryOperation(input_geometry, selection) {
-		this->offset = offset;
+		this->primitive_type = primitive_type;
+		this->position = position;
+		this->diameter = diameter;
 	}
 
 	Geometry do_operation() override;
-
-	void set_offset(Vector3 offset) {
-		this->offset = offset;
-	}
 };
