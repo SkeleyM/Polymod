@@ -45,11 +45,14 @@ static const char* DEFAULT_FRAGMENT_SHADER =
 
 class Shader
 {
+private:
+	bool destroy_shader_on_destructor{ true };
 public:
 	GLuint gl_program_id;
 	bool compilation_status;
 
 	Shader(std::string vertex_source, std::string fragment_source);
+	Shader(const Shader& shader);
 	Shader();
 	~Shader();
 
@@ -57,4 +60,7 @@ public:
 	void set_uniform_matrix4x4(std::string name, Matrix4x4 value);
 	void set_uniform_vector3(std::string name, Vector3 value);
 	void set_uniform_float(std::string name, float value);
+	void dont_destroy() {
+		this->destroy_shader_on_destructor = false;
+	}
 };

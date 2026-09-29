@@ -3,6 +3,11 @@
 
 Shader::Shader() : Shader::Shader(DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER) {}
 
+Shader::Shader(const Shader& shader) {
+	this->compilation_status = shader.compilation_status;
+	this->gl_program_id = shader.gl_program_id;
+}
+
 Shader::Shader(std::string vertex_source, std::string fragment_source)
 {
 	compilation_status = false;
@@ -58,12 +63,13 @@ Shader::Shader(std::string vertex_source, std::string fragment_source)
 
 Shader::~Shader()
 {
-	glDeleteProgram(gl_program_id);
-	this->compilation_status = false;
+	if (this->destroy_shader_on_destructor) {
+		glDeleteProgram(gl_program_id);
+		this->compilation_status = false;
+	}
 }
 
 int Shader::get_uniform_location(std::string name) {
-	glUseProgram(this->gl_program_id);
 	auto uniform_location = glGetUniformLocation(this->gl_program_id, name.c_str());
 	if (uniform_location == -1) {
 		std::cerr << "Attempted to set uniform ('" << name << "') which does not exist" << std::endl;
@@ -74,6 +80,7 @@ int Shader::get_uniform_location(std::string name) {
 }
 
 void Shader::set_uniform_matrix4x4(std::string name, Matrix4x4 value) {
+	glUseProgram(this->gl_program_id);
 	// Get the uniforms location required to set the value in the shader
 	int uniform_location = this->get_uniform_location(name);
 
@@ -82,6 +89,7 @@ void Shader::set_uniform_matrix4x4(std::string name, Matrix4x4 value) {
 }
 
 void Shader::set_uniform_vector3(std::string name, Vector3 value) {
+	glUseProgram(this->gl_program_id);
 	// Get the uniforms location required to set the value in the shader
 	int uniform_location = this->get_uniform_location(name);
 
@@ -90,6 +98,7 @@ void Shader::set_uniform_vector3(std::string name, Vector3 value) {
 }
 
 void Shader::set_uniform_float(std::string name, float value) {
+	glUseProgram(this->gl_program_id);
 	// Get the uniforms location required to set the value in the shader
 	int uniform_location = this->get_uniform_location(name);
 

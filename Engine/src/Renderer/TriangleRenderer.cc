@@ -42,5 +42,6 @@ void TriangleRenderer::render(Camera& camera, Mesh* mesh) {
 }
 
 void TriangleRenderer::set_shader(Shader shader) {
+	shader.dont_destroy();
 	this->shader = shader;
 }
