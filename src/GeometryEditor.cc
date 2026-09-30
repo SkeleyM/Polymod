@@ -1,6 +1,7 @@
 #include <GeometryEditor.h>
 #include <Geometry/GeometryRaycasting.h>
 #include <Geometry/Operations/ExtrudeOperation.h>
+#include <Geometry/GeometryPrimitives.h>
 
 #include <Scene.h>
 #include <Engine.h>
@@ -15,6 +16,20 @@ GeometryEditor::GeometryEditor() {
 	);
 	this->select_mode = Select_Vertex;
 	this->selection = SelectedGeometry();
+
+	// Create initial geometry
+	this->get_geometry_manager().create_new_geometry("Cube");
+	auto geometry = this->get_geometry_manager().get_geometry("Cube");
+	this->set_current_geometry(geometry);
+	this->set_select_mode(Select_Face);
+
+	// Add the geometry
+	Geometry& geometry_d = *geometry.lock().get();
+	geometry_d = GeometryPrimitives::create_primitive_cube({ 0.0f, 0.0f, 0.0f }, 1.0f);
+	geometry_d.calculate_normals(SHADE_FLAT);
+
+	// refresh so that it appears in the scene
+	this->refresh_current_geometry_in_scene();
 }
 
 void GeometryEditor::refresh_current_geometry_in_scene() {
@@ -115,6 +130,9 @@ void GeometryEditor::select_face(Vector3 ray_origin, Vector3 ray_direction) {
 }
 
 void GeometryEditor::select(Vector2 screen_coordinates) {
+	if (this->current_geometry.expired())
+		return;
+
 	// Selection occurs from the prespective of the camera
 	Camera camera = Engine::get_instance()->get_active_scene().camera;
 
@@ -154,6 +172,7 @@ void GeometryEditor::select(Vector2 screen_coordinates) {
 
 void GeometryEditor::set_current_geometry(std::weak_ptr<Geometry> geometry) {
 	this->current_geometry = geometry;
+	this->refresh_current_geometry_in_scene();
 }
 
 void GeometryEditor::begin_operation(OperationArgumentPanel operation_panel) {
@@ -175,6 +194,9 @@ void GeometryEditor::do_operation(AbstractGeometryOperation* geometry_operation)
 }
 
 void GeometryEditor::cancel_operation() {
+	if (!this->in_progress_operation_panel.has_value())
+		return;
+
 	// Get input from the operation and restore the geometry
 	Geometry restored_geometry = this->in_progress_operation_panel.value().get_operation()->input_geometry;
 	*this->current_geometry.lock().get() = restored_geometry;
@@ -183,12 +205,25 @@ void GeometryEditor::cancel_operation() {
 	this->refresh_current_geometry_in_scene();
 }
 
+bool GeometryEditor::is_performing_operation() {
+	return this->in_progress_operation_panel.has_value();
+}
+
 void GeometryEditor::set_select_mode(SelectMode mode) {
 	this->select_mode = mode;
 }
 
 SelectMode GeometryEditor::get_select_mode() {
 	return this->select_mode;
+}
+
+void GeometryEditor::set_selection(SelectedGeometry selection) {
+	this->selection = selection;
+	this->refresh_current_geometry_in_scene();
+}
+
+SelectedGeometry GeometryEditor::get_selection() {
+	return this->selection;
 }
 
 GeometryManager& GeometryEditor::get_geometry_manager() {

@@ -34,7 +34,7 @@ AxisGrid* axis_grid = nullptr;
 EditorModeSelector* editor_mode_selector = nullptr;
 SceneTree* scene_tree = nullptr;
 GeometryWireframeRenderer* wireframe_renderer = nullptr;
-GeometryEditor geometry_editor;
+GeometryEditor* geometry_editor = nullptr;
 ShortcutManager shortcut_manager;
 
 MenuBar menubar;
@@ -79,23 +79,23 @@ static void on_render() {
 
 	// Render all the UI
 	menubar.render();
-	geometry_editor.render();
+	geometry_editor->render();
 	axis_grid->render(active_camera);
 	editor_mode_selector->render();
 	scene_tree->render();
 
 	// Check that the mouse hasnt moved much this frame before we click
 	if (clicked_this_frame && !is_dragging) {
-		geometry_editor.select(input.get_mouse_pos());
+		geometry_editor->select(input.get_mouse_pos());
 	}
 
-	std::weak_ptr<Geometry> current_geometry = geometry_editor.get_current_geometry();
+	std::weak_ptr<Geometry> current_geometry = geometry_editor->get_current_geometry();
 	if (!current_geometry.expired()) {
 		Geometry& geometry = *current_geometry.lock().get();
 		wireframe_renderer->render_wireframe(
 			active_camera,
 			geometry, 
-			geometry_editor.selection
+			geometry_editor->get_selection()
 		);
 	}
 }
@@ -111,38 +111,25 @@ int main() {
 	scene.camera.transform.translate(Vector3(0.0f, -1.5f, -1.0f));
 
 	// Create all global variables
+	geometry_editor = new GeometryEditor();
 	wireframe_renderer = new GeometryWireframeRenderer();
 	camera_controller = new OrbitalCameraController(&scene.camera);
 	axis_grid = new AxisGrid();
-	editor_mode_selector = new EditorModeSelector(&geometry_editor);
-	scene_tree = new SceneTree(&geometry_editor);
+	editor_mode_selector = new EditorModeSelector(geometry_editor);
+	scene_tree = new SceneTree(geometry_editor);
 
 	wireframe_renderer->set_edge_size(2.0f);
 	wireframe_renderer->set_vertex_size(4.0f);	
-
-	// Create initial geometry, consider moving this to the geometry editor
-	geometry_editor.get_geometry_manager().create_new_geometry("Test");
-	auto geometry = geometry_editor.get_geometry_manager().get_geometry("Test");
-	geometry_editor.set_current_geometry(geometry);
-	geometry_editor.set_select_mode(Select_Face);
-
-	// Create initial plane
-	Geometry& geometry_d = *geometry.lock().get();
-	geometry_d = GeometryPrimitives::create_primitive_sphere_uv({ 0.0f, 0.0f, 0.0f }, 1.0f, 16, 20);
-	geometry_d.calculate_normals(SHADE_FLAT);
-	
-	Mesh mesh = geometry_d.triangulate();
-	scene.add_mesh(mesh);
 
 	// Initialise menus
 	Menu file_menu("File");
 	Menu edit_menu("Edit");
 
 	MenuBarItem undo("Undo", []() {
-		geometry_editor.undo();
+		geometry_editor->undo();
 	});
 	MenuBarItem redo("Redo", []() {
-		geometry_editor.redo();
+		geometry_editor->redo();
 	});
 
 	edit_menu.add_menu_item(undo);
@@ -152,7 +139,7 @@ int main() {
 	menubar.add_menu(edit_menu);
 
 	// Initialise toolbar
-	Toolbar& toolbar = geometry_editor.get_toolbar();
+	Toolbar& toolbar = geometry_editor->get_toolbar();
 
 	toolbar.add_tool(new MoveTool());
 	toolbar.add_tool(new ScaleTool());
@@ -162,35 +149,39 @@ int main() {
 
 	// Add shortcuts
 	shortcut_manager.add_shortcut({GLFW_KEY_Z, MODIFIER_CONTROL, [](){
-		geometry_editor.undo();
+		geometry_editor->undo();
 	}, true});
 
 	shortcut_manager.add_shortcut({GLFW_KEY_Z, MODIFIER_CONTROL | MODIFIER_SHIFT, [](){
-		geometry_editor.redo();
+		geometry_editor->redo();
 	}, true});
 
 	shortcut_manager.add_shortcut({ GLFW_KEY_ESCAPE, MODIFIER_NONE, []() {
-		geometry_editor.cancel_operation();
+		if (geometry_editor->is_performing_operation())
+			geometry_editor->cancel_operation();
+		else {
+			geometry_editor->set_selection({});
+		}
 	}, true });
 
 	// Tool shortcuts
 	shortcut_manager.add_shortcut({GLFW_KEY_E, MODIFIER_NONE, [](){
-		Toolbar& toolbar = geometry_editor.get_toolbar();
+		Toolbar& toolbar = geometry_editor->get_toolbar();
 		toolbar.simulate_tool_click(new ExtrudeTool());
 	}, true});
 
 	shortcut_manager.add_shortcut({GLFW_KEY_S, MODIFIER_NONE, [](){
-		Toolbar& toolbar = geometry_editor.get_toolbar();
+		Toolbar& toolbar = geometry_editor->get_toolbar();
 		toolbar.simulate_tool_click(new ScaleTool());
 	}, true});
 
 	shortcut_manager.add_shortcut({GLFW_KEY_R, MODIFIER_NONE, [](){
-		Toolbar& toolbar = geometry_editor.get_toolbar();
+		Toolbar& toolbar = geometry_editor->get_toolbar();
 		toolbar.simulate_tool_click(new RotateTool());
 	}, true});
 
 	shortcut_manager.add_shortcut({GLFW_KEY_M, MODIFIER_NONE, [](){
-		Toolbar& toolbar = geometry_editor.get_toolbar();
+		Toolbar& toolbar = geometry_editor->get_toolbar();
 		toolbar.simulate_tool_click(new MoveTool());
 	}, true});
 

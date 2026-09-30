@@ -12,7 +12,7 @@ private:
 	std::vector<std::shared_ptr<Geometry>> geometry;
 	std::unordered_map<std::string, std::shared_ptr<Timeline>> geometry_timelines;
 public:
-	void create_new_geometry(std::string name);
+	std::weak_ptr<Geometry> create_new_geometry(std::string name);
 	void delete_geometry(std::string name);
 	std::weak_ptr<Timeline> get_timeline(std::weak_ptr<Geometry> geometry);
 	std::weak_ptr<Geometry> get_geometry(std::string name);

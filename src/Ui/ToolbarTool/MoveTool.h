@@ -14,7 +14,7 @@ public:
 	) override {
 		MoveOperation* move = new MoveOperation(*
 			editor->get_current_geometry().lock().get(),
-			editor->selection,
+			editor->get_selection(),
 			{}
 		);
 

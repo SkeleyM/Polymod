@@ -14,7 +14,7 @@ public:
 	) override {
 		ExtrudeOperation* extrude = new ExtrudeOperation(*
 			editor->get_current_geometry().lock().get(),
-			editor->selection,
+			editor->get_selection(),
 			{}
 		);
 

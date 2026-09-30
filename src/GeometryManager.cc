@@ -1,8 +1,9 @@
 #include <GeometryManager.h>
 
-void GeometryManager::create_new_geometry(std::string name) {
+std::weak_ptr<Geometry> GeometryManager::create_new_geometry(std::string name) {
 	std::shared_ptr<Geometry> new_geometry = std::make_shared<Geometry>(name);
 	this->geometry.push_back(new_geometry);
+	return new_geometry;
 }
 
 void GeometryManager::delete_geometry(std::string name) {

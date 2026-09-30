@@ -18,6 +18,7 @@ private:
 	Toolbar* toolbar;
 
 	SelectMode select_mode;
+	SelectedGeometry selection;
 
 	// Maps Geometry pointers to the ID of the corresponding mesh in the scene
 	std::unordered_map<std::string, int> geometry_scene_mesh_id_map;
@@ -28,8 +29,6 @@ private:
 
 	void refresh_current_geometry_in_scene();
 public:
-	SelectedGeometry selection;
-
 	GeometryEditor();
 
 	void render();
@@ -39,9 +38,12 @@ public:
 	void begin_operation(OperationArgumentPanel operation_panel);
 	void do_operation(AbstractGeometryOperation* geometry_operation);
 	void cancel_operation();
+	bool is_performing_operation();
 
 	void set_select_mode(SelectMode mode);
 	SelectMode get_select_mode();
+	void set_selection(SelectedGeometry selection);
+	SelectedGeometry get_selection();
 
 	GeometryManager& get_geometry_manager();
 	Toolbar& get_toolbar();

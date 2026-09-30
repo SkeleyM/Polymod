@@ -15,7 +15,7 @@ public:
 	) override {
 		ScaleOperation* scale = new ScaleOperation(*
 			editor->get_current_geometry().lock().get(),
-			editor->selection,
+			editor->get_selection(),
 			{1.0f, 1.0f, 1.0f}
 		);
 

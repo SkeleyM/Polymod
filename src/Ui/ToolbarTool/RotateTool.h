@@ -15,7 +15,7 @@ public:
 	) override {
 		RotateOperation* rotate = new RotateOperation(*
 			editor->get_current_geometry().lock().get(),
-			editor->selection,
+			editor->get_selection(),
 			{}, {}
 		);
 

@@ -17,7 +17,7 @@ public:
 	) override {
 		VertexSpinOperation* spin = new VertexSpinOperation(*
 			editor->get_current_geometry().lock().get(),
-			editor->selection,
+			editor->get_selection(),
 			{}, 12, {}, {}
 		);
 
