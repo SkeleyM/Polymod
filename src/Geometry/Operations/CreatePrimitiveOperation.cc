@@ -38,6 +38,7 @@ Geometry CreatePrimitiveOperation::do_operation() {
 	}
 
 	if (new_geometry.get_all_vertex_ids().size() == 0) {
+		primitive_geometry.name = this->input_geometry.name;
 		return primitive_geometry;
 	}
 

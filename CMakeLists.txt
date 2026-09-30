@@ -35,7 +35,7 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/Vector3OperationArgument.cc
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/FloatOperationArgument.cc
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/IntOperationArgument.cc
-	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveOperationPanels.cc
+	${PROJECT_SOURCE_DIR}/Ui/Primitives/CreateNewGeometryPanel.cc
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveSelector.cc
 )
 
@@ -74,6 +74,7 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/Vector3OperationArgument.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/FloatOperationArgument.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/IntOperationArgument.h
+	${PROJECT_SOURCE_DIR}/Ui/Primitives/CreateNewGeometryPanel.h
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveOperationPanels.h
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveSelector.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/ExtrudeTool.h

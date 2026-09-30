@@ -3,6 +3,8 @@
 #include <Ui/GeometryEditor/SceneTree.h>
 #include <Ui/UiConstants.h>
 
+#include <Ui/Primitives/PrimitiveOperationPanels.h>
+
 #include <imgui.h>
 
 SceneTree::SceneTree(GeometryEditor* geometry_editor) {
@@ -50,6 +52,23 @@ void SceneTree::render() {
 	ImGui::SetNextWindowPos({window_size.x - 300, 20}, ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize({ 300, 200 });
 	ImGui::Begin("Scene Tree", nullptr, ImGuiWindowFlags_NoSavedSettings);
+	if (ImGui::Button("New")) {
+		this->new_geometry_panel = CreateNewGeometryPanel();
+	}
+
+	if (this->new_geometry_panel) {
+		this->new_geometry_panel->render();
+	}
+	// If the panel is completed then it has created the new geometry;
+	// and can be destroyed
+	if (this->new_geometry_panel != std::nullopt && this->new_geometry_panel->completed) {
+		GeometryManager& manager = this->geometry_editor->get_geometry_manager();
+		auto new_geometry = manager.create_new_geometry(this->new_geometry_panel->get_name());
+		this->geometry_editor->set_current_geometry(new_geometry);
+		this->geometry_editor->on_tool_clicked(new CreatePrimitiveTool(this->new_geometry_panel->get_primitive()));
+		this->new_geometry_panel = std::nullopt;
+	}
+
 	this->render_geometry_tree();
 	ImGui::End();
 
