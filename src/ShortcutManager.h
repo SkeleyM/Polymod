@@ -16,7 +16,9 @@ typedef struct Shortcut {
 class ShortcutManager {
 private:
     std::vector<Shortcut> shortcuts;
+    bool should_listen_for_shortcuts{ true };
 public:
     void update();
     void add_shortcut(Shortcut shortcut);
+    void ignore_shortcuts(bool);
 };

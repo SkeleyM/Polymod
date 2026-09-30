@@ -197,6 +197,12 @@ int main() {
 	while (engine->should_keep_ticking()) {
 		engine->tick();
 		
+		// Avoid using shortcuts whilst typing into an input field
+		if (ImGui::GetIO().WantCaptureKeyboard) 
+			shortcut_manager.ignore_shortcuts(true);
+		else 
+			shortcut_manager.ignore_shortcuts(false);
+		
 		shortcut_manager.update();
 		camera_controller->update();
 	}
