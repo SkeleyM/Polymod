@@ -65,6 +65,9 @@ Geometry GeometryPrimitives::create_primitive_torus(Vector3 position, float hole
 	VertexSpinOperation torus_spin(geometry, selection, Vector3(0.0f, 0.0f, 0.0f), segments, 360.0f, 0.0f);
 	geometry = torus_spin.do_operation();
 
+	MoveOperation move(geometry, {}, position);
+	geometry = move.do_operation();
+
 	return geometry;
 }
 
