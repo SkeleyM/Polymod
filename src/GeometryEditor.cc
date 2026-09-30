@@ -172,7 +172,7 @@ void GeometryEditor::select(Vector2 screen_coordinates) {
 
 void GeometryEditor::set_current_geometry(std::weak_ptr<Geometry> geometry) {
 	this->current_geometry = geometry;
-	this->refresh_current_geometry_in_scene();
+	this->set_selection({});
 }
 
 void GeometryEditor::begin_operation(OperationArgumentPanel operation_panel) {
