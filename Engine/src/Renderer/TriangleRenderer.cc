@@ -45,3 +45,7 @@ void TriangleRenderer::set_shader(Shader shader) {
 	shader.dont_destroy();
 	this->shader = shader;
 }
+
+void TriangleRenderer::delete_mesh_from_buffer(Mesh& mesh) {
+	this->meshbuffer.delete_mesh(mesh);
+}

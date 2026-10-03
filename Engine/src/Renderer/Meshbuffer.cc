@@ -106,13 +106,48 @@ std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(Mesh& mesh) {
 		return a.ebo_offset < b.ebo_offset;
 	});
 
-	uint32_t ebo_offset = meshes.back().ebo_offset + meshes.back().ebo_size ;
+	// Check if the first element has a gap before it, if so use that
+	uint32_t ebo_offset = meshes.front().ebo_offset + meshes.front().ebo_size;
+	if (ebo_offset >= ebo_size)
+		ebo_offset = 0;
+	else
+		// Otherwise, set the offset to the end of the last element
+		ebo_offset = meshes.back().ebo_offset + meshes.back().ebo_size;
+
+	// Iterate through and find a gap, otherwise just append to the end of the buffer
+	for (int i = 0; i < meshes.size() - 1; i++) {
+		GpuMesh a = meshes[i];
+		GpuMesh b = meshes[i + 1];
+
+		uint32_t gap_size = b.ebo_offset - (a.ebo_offset + a.ebo_size);
+		if (gap_size >= ebo_size) {
+			ebo_offset = a.ebo_offset + a.ebo_size;
+			break;
+		}
+	}
 
 	// Sort in vbo offset ascending
 	std::sort(meshes.begin(), meshes.end(), [](GpuMesh a, GpuMesh b) {
 		return a.vbo_offset < b.vbo_offset;
 		});
-	uint32_t vbo_offset = meshes.back().vbo_offset + meshes.back().vbo_size;
+
+	uint32_t vbo_offset = meshes.front().vbo_offset + meshes.front().vbo_size;
+	if (vbo_offset >= vbo_size)
+		vbo_offset = 0;
+	else
+		// Otherwise, set the offset to the end of the last element
+		vbo_offset = meshes.back().vbo_offset + meshes.back().vbo_size;
+	// Iterate through and find a gap, otherwise just append to the end of the buffer
+	for (int i = 0; i < meshes.size() - 1; i++) {
+		GpuMesh a = meshes[i];
+		GpuMesh b = meshes[i + 1];
+
+		uint32_t gap_size = b.vbo_offset - (a.vbo_offset + a.vbo_size);
+		if (gap_size >= vbo_size) {
+			vbo_offset = a.vbo_offset + a.vbo_size;
+			break;
+		}
+	}
 
 	// Bounds check to ensure this doesnt overflow the buffer
 	if (((ebo_offset + ebo_size) > this->size * sizeof(uint32_t)) 
@@ -127,6 +162,10 @@ std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(Mesh& mesh) {
 		vbo_offset,
 		vbo_size
 	);
+}
+
+void MeshBuffer::delete_mesh(Mesh& mesh) {
+	this->mesh_map.erase(mesh.id);
 }
 
 void MeshBuffer::clear_buffer() {
