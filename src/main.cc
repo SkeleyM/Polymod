@@ -70,7 +70,8 @@ static void on_render() {
 	bool is_dragging = abs(mouse_delta.x + mouse_delta.y) > 10;
 
 	// If left clicking rotate using the change in mouse position.
-	if (input.get().get_mouse_buttons().first && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+	if (input.get().get_mouse_buttons().first
+		&& !(ImGui::GetIO().WantCaptureKeyboard || ImGui::GetIO().WantCaptureMouse))
 		camera_controller->rotate_from_screen_xy(-mouse_delta.x, mouse_delta.y);
 
 	camera_controller->set_orbit_radius(
@@ -95,7 +96,7 @@ static void on_render() {
 		Geometry& geometry = *current_geometry.lock().get();
 		wireframe_renderer->render_wireframe(
 			active_camera,
-			geometry, 
+			geometry,
 			geometry_editor->get_selection()
 		);
 	}
@@ -120,7 +121,7 @@ int main() {
 	scene_tree = new SceneTree(geometry_editor);
 
 	wireframe_renderer->set_edge_size(2.0f);
-	wireframe_renderer->set_vertex_size(4.0f);	
+	wireframe_renderer->set_vertex_size(4.0f);
 
 	// Initialise toolbar
 	Toolbar& toolbar = geometry_editor->get_toolbar();
@@ -139,10 +140,10 @@ int main() {
 	// Edit menu items
 	MenuBarItem undo("Undo", []() {
 		geometry_editor->undo();
-	});
+		});
 	MenuBarItem redo("Redo", []() {
 		geometry_editor->redo();
-	});
+		});
 	edit_menu.add_menu_item(undo);
 	edit_menu.add_menu_item(redo);
 
@@ -150,7 +151,7 @@ int main() {
 	MenuBarItem add_selector("Add Primitive", [&]() {
 		auto create_primitive_tool = new CreatePrimitiveTool(GeometryPrimitives::Cube);
 		toolbar.simulate_tool_click(create_primitive_tool);
-	});
+		});
 	add_menu.add_menu_item(add_selector);
 
 
@@ -159,13 +160,13 @@ int main() {
 	menubar.add_menu(add_menu);
 
 	// Add shortcuts
-	shortcut_manager.add_shortcut({GLFW_KEY_Z, MODIFIER_CONTROL, [](){
+	shortcut_manager.add_shortcut({ GLFW_KEY_Z, MODIFIER_CONTROL, []() {
 		geometry_editor->undo();
-	}, true});
+	}, true });
 
-	shortcut_manager.add_shortcut({GLFW_KEY_Z, MODIFIER_CONTROL | MODIFIER_SHIFT, [](){
+	shortcut_manager.add_shortcut({ GLFW_KEY_Z, MODIFIER_CONTROL | MODIFIER_SHIFT, []() {
 		geometry_editor->redo();
-	}, true});
+	}, true });
 
 	shortcut_manager.add_shortcut({ GLFW_KEY_ESCAPE, MODIFIER_NONE, []() {
 		if (geometry_editor->is_performing_operation())
@@ -176,35 +177,35 @@ int main() {
 	}, true });
 
 	// Tool shortcuts
-	shortcut_manager.add_shortcut({GLFW_KEY_E, MODIFIER_NONE, [](){
+	shortcut_manager.add_shortcut({ GLFW_KEY_E, MODIFIER_NONE, []() {
 		Toolbar& toolbar = geometry_editor->get_toolbar();
 		toolbar.simulate_tool_click(new ExtrudeTool());
-	}, true});
+	}, true });
 
-	shortcut_manager.add_shortcut({GLFW_KEY_S, MODIFIER_NONE, [](){
+	shortcut_manager.add_shortcut({ GLFW_KEY_S, MODIFIER_NONE, []() {
 		Toolbar& toolbar = geometry_editor->get_toolbar();
 		toolbar.simulate_tool_click(new ScaleTool());
-	}, true});
+	}, true });
 
-	shortcut_manager.add_shortcut({GLFW_KEY_R, MODIFIER_NONE, [](){
+	shortcut_manager.add_shortcut({ GLFW_KEY_R, MODIFIER_NONE, []() {
 		Toolbar& toolbar = geometry_editor->get_toolbar();
 		toolbar.simulate_tool_click(new RotateTool());
-	}, true});
+	}, true });
 
-	shortcut_manager.add_shortcut({GLFW_KEY_M, MODIFIER_NONE, [](){
+	shortcut_manager.add_shortcut({ GLFW_KEY_M, MODIFIER_NONE, []() {
 		Toolbar& toolbar = geometry_editor->get_toolbar();
 		toolbar.simulate_tool_click(new MoveTool());
-	}, true});
+	}, true });
 
 	while (engine->should_keep_ticking()) {
 		engine->tick();
-		
+
 		// Avoid using shortcuts whilst typing into an input field
-		if (ImGui::GetIO().WantCaptureKeyboard) 
+		if (ImGui::GetIO().WantCaptureKeyboard || ImGui::GetIO().WantCaptureMouse)
 			shortcut_manager.ignore_shortcuts(true);
-		else 
+		else
 			shortcut_manager.ignore_shortcuts(false);
-		
+
 		shortcut_manager.update();
 		camera_controller->update();
 	}
