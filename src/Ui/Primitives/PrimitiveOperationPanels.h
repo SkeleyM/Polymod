@@ -3,6 +3,7 @@
 #include <GeometryEditor.h>
 
 #include <Geometry/Operations/CreatePrimitiveOperation.h>
+#include <Ui/OperationArguments/DropdownOperationArgument.h>
 #include <Ui/OperationArguments/Vector3OperationArgument.h>
 #include <Ui/OperationArguments/FloatOperationArgument.h>
 #include <Ui/OperationArguments/IntOperationArgument.h>
@@ -28,6 +29,17 @@ public:
 		);
 
 		OperationArgumentPanel create_panel(create, done_callback, cancel_callback);
+		create_panel.add_argument(new DropdownOperationArgument<GeometryPrimitives::GeometryPrimitive>(
+			std::string("Primitive Type"), &create->primitive_type, {
+				{ "Cube", GeometryPrimitives::Cube },
+				{ "Cylinder", GeometryPrimitives::Cylinder },
+				{ "UV Sphere", GeometryPrimitives::Sphere_Uv },
+				{ "Torus", GeometryPrimitives::Torus },
+				{ "Circle", GeometryPrimitives::Circle },
+				{ "Plane", GeometryPrimitives::Plane },
+				{ "Vertex", GeometryPrimitives::Vertex }
+			}
+		));
 		create_panel.add_argument(new Vector3OperationArgument(std::string("Offset"), &create->position));
 		create_panel.add_argument(new FloatOperationArgument(std::string("Diameter"), &create->diameter));
 		create_panel.add_argument(new IntOperationArgument(std::string("Iterations"), &create->iterations));

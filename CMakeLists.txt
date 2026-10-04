@@ -71,6 +71,7 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/AbstractOperationArgument.h
+	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/DropdownOperationArgument.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/Vector3OperationArgument.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/FloatOperationArgument.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/IntOperationArgument.h

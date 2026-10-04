@@ -15,6 +15,7 @@ std::string Menu::get_name() {
 }
 
 void Menu::render() {
+	if (!this->enabled) return;
 	if (ImGui::BeginMenu(this->name.c_str(), true)) {
 		for (MenuBarItem& item : this->items) {
 			item.render();

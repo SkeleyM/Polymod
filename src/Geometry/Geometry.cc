@@ -165,28 +165,27 @@ Vector3 Geometry::get_center_of_faces(std::vector<Face> faces) {
 void Geometry::join(std::vector<Geometry> geometry) {
 	for (Geometry& current : geometry) {
 		// this will be the base we will add the vertex ids to
-		int vertex_offset = this->vertices.size() - 1;
+		int vertex_offset = this->vertices.size();
 
 		for (int v = 0; v < current.vertices.size(); v++) {
-			Vertex vertex = current.get_vertex(v);
+			Vertex& vertex = current.get_vertex(v);
 			this->vertices.push_back(vertex);
 
 			// Add all the connections between vertices
-			auto connections = current.connections[v];
-			for (int c = 0; c < connections.size(); c++) 
-				connections[c] += vertex_offset;
+			auto& current_connections = current.connections[v];
+			for (int c = 0; c < current_connections.size(); c++)
+				current_connections[c] += vertex_offset;
 
-			this->connections.push_back(connections);
+			this->connections.push_back(current_connections);
+		}
 
-			// Add all the faces
-			auto faces = current.faces;
-			for (int f = 0; f < faces.size(); f++) {
-				for (int i = 0; i < faces[f].vertices.size(); i++) {
-					faces[f].vertices[i] += vertex_offset;
-				}
-				this->faces.push_back(faces[f]);
+		// Add all the faces
+		auto& current_faces = current.faces;
+		for (int f = 0; f < current_faces.size(); f++) {
+			for (int i = 0; i < current_faces[f].vertices.size(); i++) {
+				current_faces[f].vertices[i] += vertex_offset;
 			}
-			
+			this->faces.push_back(current_faces[f]);
 		}
 	}
 }

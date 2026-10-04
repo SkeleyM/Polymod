@@ -20,6 +20,7 @@
 #include <Ui/MenuBar/Menu.h>
 #include <Ui/MenuBar/MenuBar.h>
 #include <Ui/MenuBar/MenuBarItem.h>
+#include <Ui/Primitives/PrimitiveOperationPanels.h>
 #include <Ui/ToolbarTool/MoveTool.h>
 #include <Ui/ToolbarTool/RotateTool.h>
 #include <Ui/ToolbarTool/ScaleTool.h>
@@ -121,23 +122,6 @@ int main() {
 	wireframe_renderer->set_edge_size(2.0f);
 	wireframe_renderer->set_vertex_size(4.0f);	
 
-	// Initialise menus
-	Menu file_menu("File");
-	Menu edit_menu("Edit");
-
-	MenuBarItem undo("Undo", []() {
-		geometry_editor->undo();
-	});
-	MenuBarItem redo("Redo", []() {
-		geometry_editor->redo();
-	});
-
-	edit_menu.add_menu_item(undo);
-	edit_menu.add_menu_item(redo);
-
-	menubar.add_menu(file_menu);
-	menubar.add_menu(edit_menu);
-
 	// Initialise toolbar
 	Toolbar& toolbar = geometry_editor->get_toolbar();
 
@@ -146,6 +130,33 @@ int main() {
 	toolbar.add_tool(new RotateTool());
 	toolbar.add_tool(new ExtrudeTool());
 	toolbar.add_tool(new VertexSpinTool());
+
+	// Initialise menus
+	Menu file_menu("File");
+	Menu edit_menu("Edit");
+	Menu add_menu("Add");
+
+	// Edit menu items
+	MenuBarItem undo("Undo", []() {
+		geometry_editor->undo();
+	});
+	MenuBarItem redo("Redo", []() {
+		geometry_editor->redo();
+	});
+	edit_menu.add_menu_item(undo);
+	edit_menu.add_menu_item(redo);
+
+	// Add menu items
+	MenuBarItem add_selector("Add Primitive", [&]() {
+		auto create_primitive_tool = new CreatePrimitiveTool(GeometryPrimitives::Cube);
+		toolbar.simulate_tool_click(create_primitive_tool);
+	});
+	add_menu.add_menu_item(add_selector);
+
+
+	menubar.add_menu(file_menu);
+	menubar.add_menu(edit_menu);
+	menubar.add_menu(add_menu);
 
 	// Add shortcuts
 	shortcut_manager.add_shortcut({GLFW_KEY_Z, MODIFIER_CONTROL, [](){

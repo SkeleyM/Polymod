@@ -9,6 +9,7 @@ class Menu {
 private:
 	std::string name;
 	std::vector<MenuBarItem> items;
+	bool enabled{ true };
 public:
 	Menu(std::string name);
 
