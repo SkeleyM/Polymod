@@ -49,11 +49,12 @@ Vector3 read_vector3_from_line(std::string line, size_t offset) {
     float f[] = {0.0f, 0.0f, 0.0f};
     size_t current_float = 0;
 
-    while (line.size() <= offset) {
+    while (line.size() > offset) {
         size_t decimal_start = offset;
-        while (line[offset] != ' ' || line.size() <= offset) 
+        while (line[offset] != ' ' && line.size() > offset) 
             offset++;
-        std::string float_str = line.substr(decimal_start, offset);
+        std::string float_str = line.substr(decimal_start, offset-decimal_start);
+        offset++;
         
         f[current_float++] = std::atof(float_str.c_str());
     }
@@ -68,11 +69,12 @@ struct face_ids {
 
 std::vector<face_ids> read_face(std::string line, size_t offset) {
     std::vector<std::string> vert_entries;
-    while (line.size() <= offset) {
+    while (line.size() > offset) {
         size_t entry_start = offset;
-        while (line.size() <= offset && line[offset] != ' ')
+        while (line.size() > offset && line[offset] != ' ')
             offset++;
-        vert_entries.push_back(line.substr(entry_start, offset));
+        auto substr = line.substr(entry_start, offset-entry_start);
+        vert_entries.push_back(substr);
         offset++;
     }
 
@@ -80,36 +82,47 @@ std::vector<face_ids> read_face(std::string line, size_t offset) {
 
     for (auto& vert_entry : vert_entries) {
         // Read position
+        size_t offset = 0;
         size_t id_pos = vert_entry.find('/');
-        std::string pos_string = vert_entry.substr(id_pos);
-        int position = std::atoi(pos_string.c_str()); 
+        std::string pos_string = vert_entry.substr(0, id_pos);
+        int position = std::atoi(pos_string.c_str()) - 1; 
 
         // Read texture
-        id_pos = vert_entry.find('/', id_pos+1);
+        offset = id_pos + 1;
+        id_pos = vert_entry.find('/', offset);
         // No more ids to read
         if (id_pos == std::string::npos) {
             ids.push_back({position, -1, -1});
             continue;
         }
-        std::string texture_string = vert_entry.substr(id_pos);
-        int texture = std::atoi(texture_string.c_str()); 
+        std::string texture_string = vert_entry.substr(offset, id_pos-offset);
+        int texture;
+        // If they are the same, then the string looks like 'a//b', which omits the texture coordinate
+        if (id_pos == offset) {
+            texture = -1;
+        }
+        else {
+            texture = std::atoi(texture_string.c_str()) - 1;
+        }
 
         // Read normal
-        id_pos = vert_entry.find('/', id_pos+1);
-        // No more ids to read
-        if (id_pos == std::string::npos) {
-            ids.push_back({position, texture, -1});
+        // If theres no more ids then it is omitted
+        if (offset >= vert_entry.size()) {
+            ids.push_back({ position, texture, -1 });
             continue;
         }
-        std::string normal_string = vert_entry.substr(id_pos);
-        int normal = std::atoi(normal_string.c_str()); 
+        offset = id_pos + 1;
+        id_pos = vert_entry.find('/', id_pos+1);
+        // No more ids to read
+        std::string normal_string = vert_entry.substr(offset, id_pos-offset);
+        int normal = std::atoi(normal_string.c_str()) - 1; 
         ids.push_back({position, texture, normal});
     }
 
     return ids;
 }
 
-Geometry GeometryFormat::WavefrontObj::deserialize(std::string source) {
+std::optional<Geometry> GeometryFormat::WavefrontObj::deserialize(std::string source) {
     Geometry geometry;
 
     std::stringstream source_stream(source);
@@ -117,8 +130,8 @@ Geometry GeometryFormat::WavefrontObj::deserialize(std::string source) {
 
     std::vector<Vector3> normals;
 
-    size_t index = 0;
     while (std::getline(source_stream, current_line)) {
+        size_t index = 0;
         if (current_line[index] == 'v') {
             index++;
             // vertex pos
@@ -128,6 +141,7 @@ Geometry GeometryFormat::WavefrontObj::deserialize(std::string source) {
             }
             // vertex normal
             if (current_line[index] == 'n') {
+                index++;
                 Vector3 normal_vector = read_vector3_from_line(current_line, ++index);
                 normals.push_back(normal_vector);
             } else continue;
@@ -135,7 +149,36 @@ Geometry GeometryFormat::WavefrontObj::deserialize(std::string source) {
         if (current_line[index] == 'f') {
             index += 2;
             auto ids = read_face(current_line, index);
+
+            std::vector<int> vertex_ids;
+            vertex_ids.reserve(ids.size());
+
+            // Set all the normals
+            for (auto& id : ids) {
+                // Invalid vertex id
+                if (id.position > geometry.get_vertex_count()) {
+                    return std::nullopt;
+                }
+                Vertex& get_vertex = geometry.get_vertex(id.position);
+                if (id.normal != -1) {
+                    // Invalid normal id
+                    if (id.normal > normals.size()) {
+                        return std::nullopt;
+                    }
+                    get_vertex.normal = normals[id.normal];
+                }
+
+                vertex_ids.push_back(id.position);
+            }
+
+            // Add the connections.
+            for (int i = 0; i < ids.size() - 1; i++) {
+				geometry.add_connection(ids[i].position, ids[i + 1].position);
+            }
+
+            // Define the face
+            geometry.define_face(vertex_ids);
         }
     }
-    return Geometry();
+    return geometry;
 }

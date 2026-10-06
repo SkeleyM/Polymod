@@ -7,7 +7,7 @@
 
 namespace GeometryFormat {
     namespace GeometryFileHandler {
-        std::optional<Geometry> import_geometry(AbstractGeometryFormat* format, std::string source);
-        void export_geometry(AbstractGeometryFormat* format, Geometry geometry, std::filesystem::path path, std::string name);
+        std::optional<Geometry> import_geometry(GeometryFormat::AbstractGeometryFormat* format, std::filesystem::path path);
+        bool export_geometry(AbstractGeometryFormat* format, Geometry geometry, std::filesystem::path path, std::string name);
     };
 }

@@ -53,6 +53,11 @@ Vertex& Geometry::get_vertex(int v_id) {
 	return this->vertices[v_id];
 }
 
+size_t Geometry::get_vertex_count() {
+	return this->vertices.size();
+}
+
+
 std::vector<int> Geometry::get_all_vertex_ids() {
 	std::vector<int> ids;
 	ids.reserve(this->vertices.size());

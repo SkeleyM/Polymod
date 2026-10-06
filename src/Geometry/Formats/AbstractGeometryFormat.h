@@ -4,6 +4,7 @@
 #include <Geometry/Formats/GeometryFormatSpec.h>
 
 #include <string>
+#include <optional>
 
 namespace GeometryFormat {
     class AbstractGeometryFormat {
@@ -12,6 +13,6 @@ namespace GeometryFormat {
     public:
         Geometry preprocess_geometry_with_spec(Geometry);
         virtual std::string serialize(Geometry) = 0;
-        virtual Geometry deserialize(std::string) = 0;
+        virtual std::optional<Geometry> deserialize(std::string) = 0;
     };
 }

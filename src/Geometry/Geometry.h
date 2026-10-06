@@ -32,6 +32,7 @@ public:
 
 	int add_vertex(Vector3 vertex);
 	Vertex& get_vertex(int v_id);
+	size_t get_vertex_count();
 	std::vector<int> get_all_vertex_ids();
 	std::vector<Face>& get_faces();
 	void add_connection(int v1, int v2);

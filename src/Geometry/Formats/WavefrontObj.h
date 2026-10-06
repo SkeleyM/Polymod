@@ -10,6 +10,6 @@ namespace GeometryFormat {
         } 
         
         std::string serialize(Geometry geometry);
-        Geometry deserialize(std::string source);
+        std::optional<Geometry> deserialize(std::string source);
     };
 }
