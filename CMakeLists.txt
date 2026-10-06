@@ -107,6 +107,7 @@ add_subdirectory(Engine)
 
 add_executable(Polymod)
 
+add_subdirectory(external/nativefiledialog-extended)
 
 if (MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:/ZI>)
@@ -118,6 +119,8 @@ endif()
 target_link_libraries(Polymod
 	PUBLIC
 	Engine
+	PRIVATE
+	nfd
 )
 
 target_include_directories(Polymod

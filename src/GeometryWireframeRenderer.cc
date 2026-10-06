@@ -18,7 +18,7 @@ void GeometryWireframeRenderer::render_wireframe(Camera& camera, Geometry& geome
 
 		// Check if current vertex is selected
 		if (highlight_selection.selected_vertices.has_value()){
-			auto selected_vertices = highlight_selection.selected_vertices.value();
+			auto& selected_vertices = highlight_selection.selected_vertices.value();
 			if (std::find(selected_vertices.begin(), selected_vertices.end(), current_vertex_id) != selected_vertices.end()) {
 				vertex_colour = Vector3(1.0f, 0.4f, 0.0f);
 			}
