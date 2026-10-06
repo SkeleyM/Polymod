@@ -25,6 +25,11 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/ScaleOperation.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/VertexSpinOperation.cc
 
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFileHandler.cc
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFormatFactory.cc
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/PolymodelGeometry.cc
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/WavefrontObj.cc
+
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/EditorModeSelector.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.cc
@@ -61,6 +66,14 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/RotateOperation.h
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/ScaleOperation.h
 	${PROJECT_SOURCE_DIR}/Geometry/Operations/VertexSpinOperation.h
+
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/AbstractGeometryFormat.h
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFileHandler.h
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFormatFactory.h
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFormatSpec.h
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFormats.h
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/PolymodelGeometry.h
+	${PROJECT_SOURCE_DIR}/Geometry/Formats/WavefrontObj.h
 
 	${PROJECT_SOURCE_DIR}/Ui/OperationArgumentPanel.h
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.h

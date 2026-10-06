@@ -30,6 +30,8 @@
 #include <Renderer/LineRenderer.h>
 #include <Renderer/PointRenderer.h>
 
+#include <Geometry/Formats/GeometryFormats.h>
+
 OrbitalCameraController* camera_controller = nullptr;
 AxisGrid* axis_grid = nullptr;
 EditorModeSelector* editor_mode_selector = nullptr;
@@ -94,10 +96,11 @@ static void on_render() {
 	std::weak_ptr<Geometry> current_geometry = geometry_editor->get_current_geometry();
 	if (!current_geometry.expired()) {
 		Geometry& geometry = *current_geometry.lock().get();
+		SelectedGeometry selection = geometry_editor->get_selection();
 		wireframe_renderer->render_wireframe(
 			active_camera,
 			geometry,
-			geometry_editor->get_selection()
+			selection
 		);
 	}
 }
@@ -196,6 +199,15 @@ int main() {
 		Toolbar& toolbar = geometry_editor->get_toolbar();
 		toolbar.simulate_tool_click(new MoveTool());
 	}, true });
+
+	//	 test code
+	auto format_factory = GeometryFormat::GeometryFormatFactory();
+	auto spec = GeometryFormat::GeometryFormatSpec();
+	spec.geometry_format = GeometryFormat::GeometryFormatType::WavefrontObj;
+
+	auto format = format_factory.create_format(spec);
+	GeometryFormat::GeometryFileHandler::export_geometry(format.get(), *geometry_editor->get_current_geometry().lock(), "./", "yay.obj");
+
 
 	while (engine->should_keep_ticking()) {
 		engine->tick();

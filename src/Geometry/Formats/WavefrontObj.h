@@ -1,0 +1,15 @@
+#pragma once
+
+#include <Geometry/Formats/AbstractGeometryFormat.h>
+
+namespace GeometryFormat {
+    class WavefrontObj : public AbstractGeometryFormat {
+    public:
+        WavefrontObj(GeometryFormatSpec spec) {
+            this->spec = spec;
+        } 
+        
+        std::string serialize(Geometry geometry);
+        Geometry deserialize(std::string source);
+    };
+}
