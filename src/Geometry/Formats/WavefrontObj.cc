@@ -29,7 +29,7 @@ std::string GeometryFormat::WavefrontObj::serialize(Geometry geometry) {
     }
 
     // Build the face table
-    auto all_faces = geometry.get_faces();
+    auto& all_faces = geometry.get_faces();
     for (int f = 0; f < all_faces.size(); f++) {
         Face& face = all_faces[f];
 

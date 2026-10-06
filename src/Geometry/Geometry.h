@@ -32,18 +32,21 @@ public:
 
 	int add_vertex(Vector3 vertex);
 	Vertex& get_vertex(int v_id);
+	const std::vector<int>& get_neighbours(int vertex);
 	size_t get_vertex_count();
 	std::vector<int> get_all_vertex_ids();
-	std::vector<Face>& get_faces();
-	void add_connection(int v1, int v2);
-	void define_face(std::vector<int> vertices);
-	std::vector<int> get_neighbours(int vertex);
-	std::optional<std::vector<int>> get_loop(std::vector<int> vertices);
 	bool are_vertices_connected(int v1, int v2);
+	void add_connection(int v1, int v2);
+
+	std::vector<Face>& get_faces();
+	void define_face(std::vector<int> vertices);
+	std::optional<std::vector<int>> get_loop(std::vector<int> vertices);
+
 	void calculate_normals(GeometryShadingType shading_type);
 	Vector3 get_center();
 	Vector3 get_center_of_faces(std::vector<Face> faces);
 	void join(std::vector<Geometry> geometry);
+
 	Geometry copy();
 	Mesh triangulate();
 };

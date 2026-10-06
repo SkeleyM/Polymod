@@ -12,7 +12,7 @@ void Geometry::calculate_face_normals(int face_index, GeometryShadingType shadin
 		for (int v = 0; v < this->faces[face_index].vertices.size(); v++) {
 			int vertex_id = face.vertices[v];
 			Vector3 normal_vector = Vector3(0.0f);
-			auto neighbours = this->get_neighbours(face.vertices[v]);
+			auto& neighbours = this->get_neighbours(face.vertices[v]);
 			for (int n = 0; n < neighbours.size(); n++) {
 				if (std::find(face.vertices.begin(), face.vertices.end(), neighbours[n]) == face.vertices.end()) {
 					Vector3 current_vertex_pos = this->get_vertex(vertex_id).position;
@@ -29,7 +29,7 @@ void Geometry::calculate_face_normals(int face_index, GeometryShadingType shadin
 		for (int v = 0; v < this->faces[face_index].vertices.size(); v++) {
 			int vertex_id = face.vertices[v];
 			Vector3 normal_vector = Vector3(0.0f);
-			auto neighbours = this->get_neighbours(face.vertices[v]);
+			auto& neighbours = this->get_neighbours(face.vertices[v]);
 			for (int n = 0; n < neighbours.size(); n++) {
 					Vector3 current_vertex_pos = this->get_vertex(vertex_id).position;
 					Vector3 edge_vertex_pos = this->get_vertex(neighbours[n]).position;
@@ -92,7 +92,7 @@ void Geometry::define_face(std::vector<int> vertices) {
 	this->faces.push_back(Face(loop_result.value()));
 }
 
-std::vector<int> Geometry::get_neighbours(int vertex) {
+const std::vector<int>& Geometry::get_neighbours(int vertex) {
 	return this->connections[vertex];
 }
 
@@ -111,7 +111,7 @@ std::optional<std::vector<int>> Geometry::get_loop(std::vector<int> vertices) {
 		collapsed.pop();
 		visited.push_back(current);
 
-		auto neighbours = this->get_neighbours(current);
+		auto& neighbours = this->get_neighbours(current);
 		for (int v : neighbours) {
 			// If we havent already visited this node (prevents backtracking and repeating)
 			// and it is one of the vertices in our loop
@@ -199,7 +199,7 @@ Mesh Geometry::triangulate() {
 	std::vector<Triangle> triangles = std::vector<Triangle>();
 	for (Face face : this->faces) {
 		std::vector<TriangleIds> triangle_ids = face.triangulate();
-		for (auto triangle_id : triangle_ids) {
+		for (auto& triangle_id : triangle_ids) {
 			Vertex v0 = this->vertices[triangle_id.v0];
 			Vertex v1 = this->vertices[triangle_id.v1];
 			Vertex v2 = this->vertices[triangle_id.v2];
