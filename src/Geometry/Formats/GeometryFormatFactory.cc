@@ -7,7 +7,7 @@ std::unique_ptr<GeometryFormat::AbstractGeometryFormat> GeometryFormat::Geometry
     switch (spec.geometry_format)
     {
     case (GeometryFormatType::Polymodel): {
-        abort();
+		return std::make_unique<PolymodelGeometry>(spec);
         break;
     }
     case (GeometryFormatType::WavefrontObj): {

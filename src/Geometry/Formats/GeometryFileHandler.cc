@@ -5,7 +5,6 @@
 #include <iostream>
 
 std::optional<Geometry> GeometryFormat::GeometryFileHandler::import_geometry(GeometryFormat::AbstractGeometryFormat* format, std::filesystem::path path) {
-    path = std::filesystem::canonical(path);
     if (!std::filesystem::exists(path)) {
         return std::nullopt;
     }

@@ -200,6 +200,30 @@ int main() {
 
 		
 		});
+	MenuBarItem export_polymod("Export as polymod", []() {
+		// Save file dialogue boilerplate
+		nfdu8char_t* out_path;
+		nfdu8filteritem_t filters[2] = { { "Polymod Format", "poly" } };
+		nfdsavedialogu8args_t args = { 0 };
+		args.defaultName = "exported.poly";
+		args.filterList = filters;
+		args.filterCount = 1;
+		auto result = NFD_SaveDialog_With(&out_path, &args);
+
+		if (result == NFD_OKAY) {
+			GeometryFormat::GeometryFormatSpec export_spec;
+			export_spec.geometry_format = GeometryFormat::GeometryFormatType::Polymodel;
+			GeometryFormat::GeometryFormatFactory format_factory;
+			auto format = format_factory.create_format(export_spec);
+			GeometryFormat::GeometryFileHandler::export_geometry(format.get(), *geometry_editor->get_current_geometry().lock().get(), std::string((char*)out_path));
+			NFD_FreePathU8(out_path);
+		}
+		else if (result == NFD_CANCEL) {
+			// Cancelled
+		}
+
+
+		});
 	file_menu.add_menu_item(import_obj);
 	file_menu.add_menu_item(export_obj);
 
