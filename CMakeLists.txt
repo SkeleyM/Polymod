@@ -137,6 +137,7 @@ target_sources(Polymod
 set(TESTS 
 	tests/Geometry_Tests/test_raycasting.h
 	tests/Geometry_Tests/test_loops.h
+	tests/Geometry_Tests/Format/test_wavefront_obj.h
 )
 
  # Build the tests
