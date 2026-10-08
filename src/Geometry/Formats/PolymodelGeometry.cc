@@ -1,22 +1,29 @@
 #include <Geometry/Formats/PolymodelGeometry.h>
 
-#include <memory>
+#include <cstring>
+#include <iostream>
 
 #define FILE_VERSION_MAJOR 0
 #define FILE_VERSION_MINOR 0
 
 // Geometry Header impl
-std::unique_ptr<uint8_t[]> GeometryFormat::PolymodelGeometry::GeometryHeader::to_bytes() {
+std::unique_ptr<uint8_t[]> GeometryFormat::PolymodelGeometry::GeometryHeader::to_bytes(size_t* table_size_bytes) {
 	// +1 for null terminator
-	size_t buffer_size = this->name.size() + sizeof(this->data_size_prefix) + 1; 
-	auto bytes = std::make_unique<uint8_t[]>(buffer_size);
+	size_t buffer_size = this->name.size() + 1 + sizeof(this->data_size_prefix); 
+
+	std::cout << "Gheader_size " <<	buffer_size << std::endl;
+
+	//CRASHES HERE
+	auto bytes = std::unique_ptr<uint8_t[]>(new uint8_t[buffer_size]);
+	std::cout << "post " <<	buffer_size << std::endl;
 
 	std::memcpy(bytes.get(), this->name.c_str(), this->name.size() + 1);
 	std::memcpy(bytes.get() + this->name.size() + 1, &this->data_size_prefix, sizeof(this->data_size_prefix));
 
+	*table_size_bytes = buffer_size;
+
 	return bytes;
 };
-
 
 GeometryFormat::PolymodelGeometry::GeometryHeader GeometryFormat::PolymodelGeometry::GeometryHeader::from_bytes(uint8_t* bytes, size_t& bytes_read) {
 	GeometryFormat::PolymodelGeometry::GeometryHeader header;
@@ -33,12 +40,17 @@ GeometryFormat::PolymodelGeometry::GeometryHeader GeometryFormat::PolymodelGeome
 };
 
 // Table Header impl
-std::unique_ptr<uint8_t[]> GeometryFormat::PolymodelGeometry::TableHeader::to_bytes() {
+std::unique_ptr<uint8_t[]> GeometryFormat::PolymodelGeometry::TableHeader::to_bytes(size_t* table_size_bytes) {
 	// +1 for null terminator
-	size_t buffer_size = sizeof(TableHeader);
-	auto bytes = std::make_unique<uint8_t[]>(buffer_size);
+	size_t buffer_size = this->name.size() + 1 + 2*(sizeof(uint32_t));
 
-	abort();
+	std::cout << "Tbh_size " << buffer_size << std::endl;
+	auto bytes = std::unique_ptr<uint8_t[]>(new uint8_t[buffer_size]);
+
+	std::memcpy(bytes.get(), this->name.c_str(), this->name.size() + 1);
+	std::memcpy(bytes.get() + this->name.size() + 1, &this->table_element_count, 2 * sizeof(uint32_t));
+
+	*table_size_bytes = buffer_size;
 
 	return bytes;
 };
@@ -52,18 +64,22 @@ GeometryFormat::PolymodelGeometry::TableHeader GeometryFormat::PolymodelGeometry
 // Table impl
 template <typename TableType>
 std::unique_ptr<uint8_t[]> GeometryFormat::PolymodelGeometry::Table<TableType>::to_bytes(size_t* table_size) {
-	size_t buffer_size = sizeof(TableType) * this->data.size() + sizeof(this->header);
-	auto bytes = std::make_unique<uint8_t[]>(buffer_size);
-
+	// Configure header
 	this->header.table_size_prefix = this->data.size() * sizeof(TableType);
 	this->header.table_element_count = this->data.size();
+	size_t header_bytes_size;
+	auto header_bytes = this->header.to_bytes(&header_bytes_size);
+
+	size_t buffer_size = sizeof(TableType) * this->data.size() + header_bytes_size;
+
+	std::cout << "Tble_size " << buffer_size << std::endl;
+	auto bytes = std::unique_ptr<uint8_t[]>(new uint8_t[buffer_size]);
 
 	// Copy header bytes
-	auto header_bytes = this->header.to_bytes();
-	std::memcpy(bytes.get(), header_bytes.get(), sizeof(this->header));
+	std::memcpy(bytes.get(), header_bytes.get(), header_bytes_size);
 
 	// Copy data bytes
-	std::memcpy(bytes.get() + sizeof(this->header), this->data.data(), this->data.size() * sizeof(TableType));
+	std::memcpy(bytes.get() + header_bytes_size, this->data.data(), this->data.size() * sizeof(TableType));
 
 	return bytes;
 }
@@ -98,13 +114,14 @@ std::string GeometryFormat::PolymodelGeometry::serialize(Geometry geometry) {
 	std::vector<uint8_t> bytes;
 
 	// Write data to the buffer;
-	
-	auto header_bytes = geometry_header.to_bytes();
+	size_t header_size_bytes;
+	auto header_bytes = geometry_header.to_bytes(&header_size_bytes);
 
-	bytes.insert(bytes.end(), &header, &header + sizeof(header));
-	//bytes.insert(bytes.end(), header_bytes.get(), header_bytes.get() + sizeof(GeometryHeader));
+	bytes.insert(bytes.end(), (uint8_t*)&header, (uint8_t*)(&header + sizeof(FileHeader)));
+	bytes.insert(bytes.end(), header_bytes.get(), header_bytes.get() + header_size_bytes);
 	bytes.insert(bytes.end(), position_bytes.get(), position_bytes.get() + position_bytes_size);
 	bytes.insert(bytes.end(), normal_bytes.get(), normal_bytes.get() + normal_bytes_size);
+
 
 	return std::string(reinterpret_cast<const char*>(bytes.data()), bytes.size());
 }

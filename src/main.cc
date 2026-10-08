@@ -226,6 +226,7 @@ int main() {
 		});
 	file_menu.add_menu_item(import_obj);
 	file_menu.add_menu_item(export_obj);
+	file_menu.add_menu_item(export_polymod);
 
 	// Edit menu items
 	MenuBarItem undo("Undo", []() {

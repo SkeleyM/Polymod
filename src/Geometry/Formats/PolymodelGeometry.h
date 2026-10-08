@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace GeometryFormat {
-	class PolymodelGeometry : AbstractGeometryFormat {
+	class PolymodelGeometry : public AbstractGeometryFormat {
 	public:
 		class FileHeader {
 		public:
@@ -21,7 +21,7 @@ namespace GeometryFormat {
 			std::string name;
 			uint32_t data_size_prefix;
 
-			std::unique_ptr<uint8_t[]> to_bytes();
+			std::unique_ptr<uint8_t[]> to_bytes(size_t* table_size_bytes);
 			static GeometryHeader from_bytes(uint8_t* bytes, size_t& bytes_read);
 		};
 
@@ -30,7 +30,7 @@ namespace GeometryFormat {
 			std::string name;
 			uint32_t table_element_count;
 			uint32_t table_size_prefix;
-			std::unique_ptr<uint8_t[]> to_bytes();
+			std::unique_ptr<uint8_t[]> to_bytes(size_t* table_size_bytes);
 			static TableHeader from_bytes(uint8_t* bytes, size_t& bytes_read);
 		};
 
@@ -44,7 +44,7 @@ namespace GeometryFormat {
 			std::vector<TableType> data;
 
 			// Has non constant size, so table_size is the size of the bytes
-			std::unique_ptr<uint8_t[]> to_bytes(size_t* table_size);
+			std::unique_ptr<uint8_t[]> to_bytes(size_t* table_size_bytes);
 			static Table<TableType> from_bytes(uint8_t* bytes, size_t& bytes_read);
 		};
 
