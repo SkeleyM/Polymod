@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Engine.h>
 #include <InputManager.h>
+#include <thread>
 
 #include <Renderer/Triangle.h>
 #include <Renderer/Vertex.h>
@@ -29,6 +30,10 @@
 
 #include <Renderer/LineRenderer.h>
 #include <Renderer/PointRenderer.h>
+
+#include <Geometry/Formats/GeometryFormats.h>
+
+#include <nfd.h>
 
 OrbitalCameraController* camera_controller = nullptr;
 AxisGrid* axis_grid = nullptr;
@@ -94,10 +99,11 @@ static void on_render() {
 	std::weak_ptr<Geometry> current_geometry = geometry_editor->get_current_geometry();
 	if (!current_geometry.expired()) {
 		Geometry& geometry = *current_geometry.lock().get();
+		SelectedGeometry selection = geometry_editor->get_selection();
 		wireframe_renderer->render_wireframe(
 			active_camera,
 			geometry,
-			geometry_editor->get_selection()
+			selection
 		);
 	}
 }
@@ -136,6 +142,66 @@ int main() {
 	Menu file_menu("File");
 	Menu edit_menu("Edit");
 	Menu add_menu("Add");
+
+	// File menu items
+	MenuBarItem import_obj("Import obj", []() {
+		// Save file dialogue boilerplate
+		nfdu8char_t* in_path;
+		nfdu8filteritem_t filters[2] = { { "Wavefront obj", "obj" } };
+		nfdopendialogu8args_t args = { 0 };
+		args.filterList = filters;
+		args.filterCount = 1;
+		auto result = NFD_OpenDialog_With(&in_path, &args);
+
+		if (result == NFD_OKAY) {
+			GeometryFormat::GeometryFormatSpec export_spec;
+			export_spec.geometry_format = GeometryFormat::GeometryFormatType::WavefrontObj;
+			GeometryFormat::GeometryFormatFactory format_factory;
+			auto format = format_factory.create_format(export_spec);
+			auto import_result = GeometryFormat::GeometryFileHandler::import_geometry(format.get(), std::string((char*)in_path));
+
+			// If file imported successfully
+			if (import_result.has_value()) {
+				auto& manager = geometry_editor->get_geometry_manager();
+				// the geometry will take on the name of the imported geometry.
+				auto geometry = manager.create_new_geometry("ImportedPlaceholder");
+				*geometry.lock() = import_result.value();
+				geometry.lock().get()->name = "Imported";
+			}
+			NFD_FreePathU8(in_path);
+		}
+		else if (result == NFD_CANCEL) {
+			// Cancelled
+		}
+
+
+		});
+
+	MenuBarItem export_obj("Export as obj", []() {
+		// Save file dialogue boilerplate
+		nfdu8char_t* out_path;
+		nfdu8filteritem_t filters[2] = { { "Wavefront obj", "obj" } };
+		nfdsavedialogu8args_t args = { 0 };
+		args.defaultName = "exported.obj";
+		args.filterList = filters;
+		args.filterCount = 1;
+		auto result = NFD_SaveDialog_With(&out_path, & args);
+
+		if (result == NFD_OKAY) {
+			GeometryFormat::GeometryFormatSpec export_spec;
+			export_spec.geometry_format = GeometryFormat::GeometryFormatType::WavefrontObj;
+			GeometryFormat::GeometryFormatFactory format_factory;
+			auto format = format_factory.create_format(export_spec);
+			GeometryFormat::GeometryFileHandler::export_geometry(format.get(), *geometry_editor->get_current_geometry().lock().get(), std::string((char*)out_path));
+			NFD_FreePathU8(out_path);
+		}
+		else if (result == NFD_CANCEL) {
+			// Cancelled
+		}
+	});
+	
+	file_menu.add_menu_item(import_obj);
+	file_menu.add_menu_item(export_obj);
 
 	// Edit menu items
 	MenuBarItem undo("Undo", []() {
@@ -197,6 +263,9 @@ int main() {
 		toolbar.simulate_tool_click(new MoveTool());
 	}, true });
 
+	// Initialise native_file_dialogue.
+	NFD_Init();
+
 	while (engine->should_keep_ticking()) {
 		engine->tick();
 
@@ -209,6 +278,9 @@ int main() {
 		shortcut_manager.update();
 		camera_controller->update();
 	}
+
+
+	NFD_Quit();
 
 	return 0;
 }
