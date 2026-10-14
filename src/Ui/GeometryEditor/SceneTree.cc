@@ -7,8 +7,9 @@
 
 #include <imgui.h>
 
-SceneTree::SceneTree(GeometryEditor* geometry_editor) {
+SceneTree::SceneTree(GeometryEditor* geometry_editor, std::weak_ptr<ProjectManager> manager) {
 	this->geometry_editor = geometry_editor;
+	this->manager = manager;
 }
 
 void SceneTree::next_tree_node_colour() {
@@ -28,14 +29,15 @@ void SceneTree::render_geometry_tree() {
 	if (!ImGui::CollapsingHeader("Geometry"))
 		return;
 
-	auto geometry_manager = this->geometry_editor->get_geometry_manager();
+	auto geometry_manager = this->manager.lock().get()->get_geometry_manager();
 	auto all_geometry = geometry_manager.get_all_geometry();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 25.0f, 0.0f });
 	for (std::shared_ptr<Geometry>& geometry : all_geometry) {
 		this->next_tree_node_colour();
 		if (ImGui::Selectable(geometry.get()->name.c_str())) {
-			this->geometry_editor->set_current_geometry(geometry);
+			auto timeline = geometry_manager.get_timeline(geometry);
+			this->geometry_editor->set_current_geometry(geometry, timeline);
 		}
 	}
 	ImGui::PopStyleVar();
@@ -43,6 +45,9 @@ void SceneTree::render_geometry_tree() {
 }
 
 void SceneTree::render() {
+	if (this->manager.expired())
+		return;
+
 	ImGui::PushStyleColor(ImGuiCol_Button, COLOUR_CONST_FOURTHIARY);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, COLOUR_CONST_SECONDARY);
 	ImGui::PushStyleColor(ImGuiCol_Text, COLOUR_CONST_TEXT);
@@ -62,9 +67,9 @@ void SceneTree::render() {
 	// If the panel is completed then it has created the new geometry;
 	// and can be destroyed
 	if (this->new_geometry_panel != std::nullopt && this->new_geometry_panel->completed) {
-		GeometryManager& manager = this->geometry_editor->get_geometry_manager();
+		GeometryManager& manager = this->manager.lock()->get_geometry_manager();
 		auto new_geometry = manager.create_new_geometry(this->new_geometry_panel->get_name());
-		this->geometry_editor->set_current_geometry(new_geometry);
+		this->geometry_editor->set_current_geometry(new_geometry, manager.get_timeline(new_geometry));
 		this->geometry_editor->on_tool_clicked(new CreatePrimitiveTool(this->new_geometry_panel->get_primitive()));
 		this->new_geometry_panel = std::nullopt;
 	}

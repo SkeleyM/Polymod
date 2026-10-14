@@ -29,6 +29,8 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFormatFactory.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Formats/WavefrontObj.cc
 
+	${PROJECT_SOURCE_DIR}/PolymodProject/PolymodProject.cc
+	
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/EditorModeSelector.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.cc
@@ -73,6 +75,9 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFormats.h
 	${PROJECT_SOURCE_DIR}/Geometry/Formats/WavefrontObj.h
 
+	${PROJECT_SOURCE_DIR}/PolymodProject/ProjectManager.h
+	${PROJECT_SOURCE_DIR}/PolymodProject/PolymodProject.h
+
 	${PROJECT_SOURCE_DIR}/Ui/OperationArgumentPanel.h
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.h
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/Menu.h
@@ -105,6 +110,7 @@ add_subdirectory(Engine)
 
 add_executable(Polymod)
 
+add_subdirectory(external/json)
 add_subdirectory(external/nativefiledialog-extended)
 
 if (MSVC)
@@ -118,6 +124,7 @@ target_link_libraries(Polymod
 	PUBLIC
 	Engine
 	PRIVATE
+	nlohmann_json
 	nfd
 )
 
@@ -154,6 +161,7 @@ set(TESTS
  target_link_libraries(PolymodTests
 	PUBLIC
 	Engine
+	nlohmann_json
 )
 
 target_include_directories(PolymodTests

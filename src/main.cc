@@ -33,14 +33,19 @@
 
 #include <Geometry/Formats/GeometryFormats.h>
 
+#include <PolymodProject/ProjectManager.h>
+#include <PolymodProject/PolymodProject.h>
+
 #include <nfd.h>
+
+ProjectManager* project_manager = nullptr;
+GeometryEditor* geometry_editor = nullptr;
 
 OrbitalCameraController* camera_controller = nullptr;
 AxisGrid* axis_grid = nullptr;
 EditorModeSelector* editor_mode_selector = nullptr;
 SceneTree* scene_tree = nullptr;
 GeometryWireframeRenderer* wireframe_renderer = nullptr;
-GeometryEditor* geometry_editor = nullptr;
 ShortcutManager shortcut_manager;
 
 MenuBar menubar;
@@ -89,7 +94,8 @@ static void on_render() {
 	geometry_editor->render();
 	axis_grid->render(active_camera);
 	editor_mode_selector->render();
-	scene_tree->render();
+	if (scene_tree)
+		scene_tree->render();
 
 	// Check that the mouse hasnt moved much this frame before we click
 	if (clicked_this_frame && !is_dragging) {
@@ -124,7 +130,6 @@ int main() {
 	camera_controller = new OrbitalCameraController(&scene.camera);
 	axis_grid = new AxisGrid();
 	editor_mode_selector = new EditorModeSelector(geometry_editor);
-	scene_tree = new SceneTree(geometry_editor);
 
 	wireframe_renderer->set_edge_size(2.0f);
 	wireframe_renderer->set_vertex_size(4.0f);
@@ -142,6 +147,11 @@ int main() {
 	Menu file_menu("File");
 	Menu edit_menu("Edit");
 	Menu add_menu("Add");
+
+
+	MenuBarItem save_project("Save", []() {
+		PolymodProject::export_project("C:\\Users\\20kirk.mlab\\Documents\\project", project_manager->get_geometry_manager());
+	});
 
 	// File menu items
 	MenuBarItem import_obj("Import obj", []() {
@@ -162,7 +172,7 @@ int main() {
 
 			// If file imported successfully
 			if (import_result.has_value()) {
-				auto& manager = geometry_editor->get_geometry_manager();
+				auto& manager = project_manager->get_geometry_manager();
 				// the geometry will take on the name of the imported geometry.
 				auto geometry = manager.create_new_geometry("ImportedPlaceholder");
 				*geometry.lock() = import_result.value();
@@ -199,7 +209,8 @@ int main() {
 			// Cancelled
 		}
 	});
-	
+
+	file_menu.add_menu_item(save_project);
 	file_menu.add_menu_item(import_obj);
 	file_menu.add_menu_item(export_obj);
 
