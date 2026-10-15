@@ -10,6 +10,11 @@
 
 #include <iostream>
 
+
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+
+
 Engine* Engine::engine_instance = nullptr;
 
 void glfw_framebuffer_resize_handler(GLFWwindow* window, int width, int height) {

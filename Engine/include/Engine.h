@@ -3,8 +3,7 @@
 #include <Scene.h>
 #include <Renderer/TriangleRenderer.h>
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+struct GLFWwindow;
 
 class Engine {
 private:

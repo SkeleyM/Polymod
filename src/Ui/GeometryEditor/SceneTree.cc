@@ -1,16 +1,13 @@
 #include <Engine.h>
 
+#include <ApplicationContext.h>
+
 #include <Ui/GeometryEditor/SceneTree.h>
 #include <Ui/UiConstants.h>
 
 #include <Ui/Primitives/PrimitiveOperationPanels.h>
 
 #include <imgui.h>
-
-SceneTree::SceneTree(GeometryEditor* geometry_editor, std::weak_ptr<ProjectManager> manager) {
-	this->geometry_editor = geometry_editor;
-	this->manager = manager;
-}
 
 void SceneTree::next_tree_node_colour() {
 	static bool colour_a = true;
@@ -29,7 +26,10 @@ void SceneTree::render_geometry_tree() {
 	if (!ImGui::CollapsingHeader("Geometry"))
 		return;
 
-	auto geometry_manager = this->manager.lock().get()->get_geometry_manager();
+	auto& app_context = ApplicationContext::get_instance();
+	auto& geometry_manager = app_context.get_project_manager().lock()->get_geometry_manager();
+	auto& geometry_editor = app_context.get_geometry_editor();
+
 	auto all_geometry = geometry_manager.get_all_geometry();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 25.0f, 0.0f });
@@ -37,7 +37,7 @@ void SceneTree::render_geometry_tree() {
 		this->next_tree_node_colour();
 		if (ImGui::Selectable(geometry.get()->name.c_str())) {
 			auto timeline = geometry_manager.get_timeline(geometry);
-			this->geometry_editor->set_current_geometry(geometry, timeline);
+			geometry_editor.set_current_geometry(geometry, timeline);
 		}
 	}
 	ImGui::PopStyleVar();
@@ -45,8 +45,14 @@ void SceneTree::render_geometry_tree() {
 }
 
 void SceneTree::render() {
-	if (this->manager.expired())
+	auto& app_context = ApplicationContext::get_instance();
+	// If there is no active project
+	if (app_context.get_project_manager().expired())
 		return;
+
+	auto& geometry_manager = app_context.get_project_manager().lock()->get_geometry_manager();
+	auto& geometry_editor = app_context.get_geometry_editor();
+
 
 	ImGui::PushStyleColor(ImGuiCol_Button, COLOUR_CONST_FOURTHIARY);
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, COLOUR_CONST_SECONDARY);
@@ -67,10 +73,9 @@ void SceneTree::render() {
 	// If the panel is completed then it has created the new geometry;
 	// and can be destroyed
 	if (this->new_geometry_panel != std::nullopt && this->new_geometry_panel->completed) {
-		GeometryManager& manager = this->manager.lock()->get_geometry_manager();
-		auto new_geometry = manager.create_new_geometry(this->new_geometry_panel->get_name());
-		this->geometry_editor->set_current_geometry(new_geometry, manager.get_timeline(new_geometry));
-		this->geometry_editor->on_tool_clicked(new CreatePrimitiveTool(this->new_geometry_panel->get_primitive()));
+		auto new_geometry = geometry_manager.create_new_geometry(this->new_geometry_panel->get_name());
+		geometry_editor.set_current_geometry(new_geometry, geometry_manager.get_timeline(new_geometry));
+		geometry_editor.on_tool_clicked(new CreatePrimitiveTool(this->new_geometry_panel->get_primitive()));
 		this->new_geometry_panel = std::nullopt;
 	}
 

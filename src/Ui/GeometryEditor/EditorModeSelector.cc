@@ -1,3 +1,4 @@
+#include <ApplicationContext.h>
 #include <Engine.h>
 
 #include <Ui/GeometryEditor/EditorModeSelector.h>
@@ -5,11 +6,10 @@
 
 #include <imgui.h>
 
-EditorModeSelector::EditorModeSelector(GeometryEditor* geometry_editor) {
-	this->geometry_editor = geometry_editor;
-}
-
 void EditorModeSelector::render() {
+	auto& app_context = ApplicationContext::get_instance();
+	auto& geometry_editor = app_context.get_geometry_editor();
+
 	Vector2 window_size = Engine::get_instance()->get_window_size();
 	window_size.x = window_size.x - 100 - 300;
 	window_size.y = 25;
@@ -21,15 +21,15 @@ void EditorModeSelector::render() {
 	ImGui::Begin("EditorModeSelector", nullptr, ImGuiWindowFlags_NoDecoration);
 
 	if (ImGui::Button("V")) {
-		this->geometry_editor->set_select_mode(Select_Vertex);
+		geometry_editor.set_select_mode(Select_Vertex);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("E")) {
-		this->geometry_editor->set_select_mode(Select_Edge);
+		geometry_editor.set_select_mode(Select_Edge);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("F")) {
-		this->geometry_editor->set_select_mode(Select_Face);
+		geometry_editor.set_select_mode(Select_Face);
 	}
 
 	ImGui::PopStyleColor(2);
