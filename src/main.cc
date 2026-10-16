@@ -1,42 +1,26 @@
 #include <iostream>
 #include <Engine.h>
 #include <InputManager.h>
-#include <thread>
 
 #include <ApplicationContext.h>
-
-#include <Renderer/Triangle.h>
-#include <Renderer/Vertex.h>
-#include <Renderer/Mesh.h>
-#include <EMath.h>
-#include <imgui.h>
 
 #include <OrbitalCameraController.h>
 #include <GeometryEditor.h>
 
-#include <Ui/MenuBar/Menu.h>
-#include <Ui/MenuBar/MenuBar.h>
-#include <Ui/MenuBar/MenuBarItem.h>
-#include <Ui/Primitives/PrimitiveOperationPanels.h>
-#include <Ui/ToolbarTool/MoveTool.h>
-#include <Ui/ToolbarTool/RotateTool.h>
-#include <Ui/ToolbarTool/ScaleTool.h>
-#include <Ui/ToolbarTool/ExtrudeTool.h>
-#include <Ui/ToolbarTool/VertexSpinTool.h>
+#include <Init/MainMenuBar.h>
+#include <Init/GeometryEditorShortcuts.h>
+#include <Init/Toolbar.h>
+
 
 #include <Renderer/LineRenderer.h>
 #include <Renderer/PointRenderer.h>
-
-#include <Geometry/Formats/GeometryFormats.h>
-
-#include <PolymodProject/PolymodProject.h>
 
 #include <nfd.h>
 
 OrbitalCameraController* camera_controller = nullptr;
 GeometryWireframeRenderer* wireframe_renderer = nullptr;
 
-MenuBar menubar;
+std::unique_ptr<MenuBar> main_menu_bar = nullptr;
 
 // main application render function, called by the engine
 static void on_render() {
@@ -84,7 +68,7 @@ static void on_render() {
 
 	app_context.editor_ui->render();
 	geometry_editor.render();
-	menubar.render();
+	main_menu_bar->render();
 	
 
 	// Check that the mouse hasnt moved much this frame before we click
@@ -92,6 +76,7 @@ static void on_render() {
 		geometry_editor.select(input.get_mouse_pos());
 	}
 
+	// Render the wireframe of the current geometry
 	auto current_geometry = geometry_editor.get_current_geometry();
 	if (!current_geometry.expired()) {
 		Geometry& geometry = *current_geometry.lock().get();
@@ -119,197 +104,24 @@ int main() {
 	ApplicationContext& app_context = ApplicationContext::get_instance();
 	auto& geometry_editor = app_context.get_geometry_editor();
 	auto& project_manager = app_context.get_project_manager();
-	auto& shortcut_manager = app_context.shortcut_manager;
 
 	// Create all global variables
 	wireframe_renderer = new GeometryWireframeRenderer();
 	camera_controller = new OrbitalCameraController(&scene.camera);
+	main_menu_bar = Polymodel::Init::CreateMenuBar();
 
 	wireframe_renderer->set_edge_size(2.0f);
 	wireframe_renderer->set_vertex_size(4.0f);
 
 	// Initialise toolbar
 	Toolbar& toolbar = geometry_editor.get_toolbar();
+	Polymodel::Init::GeometryEditor::initialise_toolbar(toolbar);
 
-	toolbar.add_tool(new MoveTool());
-	toolbar.add_tool(new ScaleTool());
-	toolbar.add_tool(new RotateTool());
-	toolbar.add_tool(new ExtrudeTool());
-	toolbar.add_tool(new VertexSpinTool());
+	// Register shortcuts
+	auto& shortcut_manager = app_context.shortcut_manager;
+	Polymodel::Init::Shortcuts::register_geometry_editor_shortcuts(shortcut_manager);
 
-	// Initialise menus
-	Menu file_menu("File");
-	Menu edit_menu("Edit");
-	Menu add_menu("Add");
-
-
-	MenuBarItem save_project("Save", []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto project_manager = app_context.get_project_manager();
-		if (project_manager.expired() || !project_manager.lock().get()) return;
-
-		PolymodProject::export_project("C:\\Users\\mason\\Documents\\Adobe", project_manager.lock().get()->get_geometry_manager());
-	});
-
-	// File menu items
-	MenuBarItem import_obj("Import obj", []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto project_manager = app_context.get_project_manager();
-		if (project_manager.expired() || !project_manager.lock().get()) return;
-
-		// Save file dialogue boilerplate
-		nfdu8char_t* in_path;
-		nfdu8filteritem_t filters[2] = { { "Wavefront obj", "obj" } };
-		nfdopendialogu8args_t args = { 0 };
-		args.filterList = filters;
-		args.filterCount = 1;
-		auto result = NFD_OpenDialog_With(&in_path, &args);
-
-		if (result == NFD_OKAY) {
-			GeometryFormat::GeometryFormatSpec export_spec;
-			export_spec.geometry_format = GeometryFormat::GeometryFormatType::WavefrontObj;
-			GeometryFormat::GeometryFormatFactory format_factory;
-			auto format = format_factory.create_format(export_spec);
-			auto import_result = GeometryFormat::GeometryFileHandler::import_geometry(format.get(), std::string((char*)in_path));
-
-			// If file imported successfully
-			if (import_result.has_value()) {
-				auto& manager = project_manager.lock().get()->get_geometry_manager();
-				// the geometry will take on the name of the imported geometry.
-				auto geometry = manager.create_new_geometry("ImportedPlaceholder");
-				*geometry.lock() = import_result.value();
-				geometry.lock().get()->name = "Imported";
-			}
-			NFD_FreePathU8(in_path);
-		}
-		else if (result == NFD_CANCEL) {
-			// Cancelled
-		}
-
-
-		});
-
-	MenuBarItem export_obj("Export as obj", []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto project_manager = app_context.get_project_manager();
-		if (project_manager.expired() || !project_manager.lock().get()) return;
-
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		// Save file dialogue boilerplate
-		nfdu8char_t* out_path;
-		nfdu8filteritem_t filters[2] = { { "Wavefront obj", "obj" } };
-		nfdsavedialogu8args_t args = { 0 };
-		args.defaultName = "exported.obj";
-		args.filterList = filters;
-		args.filterCount = 1;
-		auto result = NFD_SaveDialog_With(&out_path, & args);
-
-		if (result == NFD_OKAY) {
-			GeometryFormat::GeometryFormatSpec export_spec;
-			export_spec.geometry_format = GeometryFormat::GeometryFormatType::WavefrontObj;
-			GeometryFormat::GeometryFormatFactory format_factory;
-			auto format = format_factory.create_format(export_spec);
-			GeometryFormat::GeometryFileHandler::export_geometry(format.get(), *geometry_editor.get_current_geometry().lock().get(), std::string((char*)out_path));
-			NFD_FreePathU8(out_path);
-		}
-		else if (result == NFD_CANCEL) {
-			// Cancelled
-		}
-	});
-
-	file_menu.add_menu_item(save_project);
-	file_menu.add_menu_item(import_obj);
-	file_menu.add_menu_item(export_obj);
-
-	// Edit menu items
-	MenuBarItem undo("Undo", []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		geometry_editor.undo();
-		});
-	MenuBarItem redo("Redo", []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		geometry_editor.redo();
-		});
-	edit_menu.add_menu_item(undo);
-	edit_menu.add_menu_item(redo);
-
-	// Add menu items
-	MenuBarItem add_selector("Add Primitive", [&]() {
-		auto create_primitive_tool = new CreatePrimitiveTool(GeometryPrimitives::Cube);
-		toolbar.simulate_tool_click(create_primitive_tool);
-		});
-	add_menu.add_menu_item(add_selector);
-
-
-	menubar.add_menu(file_menu);
-	menubar.add_menu(edit_menu);
-	menubar.add_menu(add_menu);
-
-	// Add shortcuts
-	shortcut_manager.add_shortcut({ GLFW_KEY_Z, MODIFIER_CONTROL, []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		geometry_editor.undo();
-	}, true });
-
-	shortcut_manager.add_shortcut({ GLFW_KEY_Z, MODIFIER_CONTROL | MODIFIER_SHIFT, []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		geometry_editor.redo();
-	}, true });
-
-	shortcut_manager.add_shortcut({ GLFW_KEY_ESCAPE, MODIFIER_NONE, []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		if (geometry_editor.is_performing_operation())
-			geometry_editor.cancel_operation();
-		else {
-			geometry_editor.set_selection({});
-		}
-	}, true });
-
-	// Tool shortcuts
-	shortcut_manager.add_shortcut({ GLFW_KEY_E, MODIFIER_NONE, []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		Toolbar& toolbar = geometry_editor.get_toolbar();
-		toolbar.simulate_tool_click(new ExtrudeTool());
-	}, true });
-
-	shortcut_manager.add_shortcut({ GLFW_KEY_S, MODIFIER_NONE, []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		Toolbar& toolbar = geometry_editor.get_toolbar();
-		toolbar.simulate_tool_click(new ScaleTool());
-	}, true });
-
-	shortcut_manager.add_shortcut({ GLFW_KEY_R, MODIFIER_NONE, []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		Toolbar& toolbar = geometry_editor.get_toolbar();
-		toolbar.simulate_tool_click(new RotateTool());
-	}, true });
-
-	shortcut_manager.add_shortcut({ GLFW_KEY_M, MODIFIER_NONE, []() {
-		ApplicationContext& app_context = ApplicationContext::get_instance();
-		auto& geometry_editor = app_context.get_geometry_editor();
-
-		Toolbar& toolbar = geometry_editor.get_toolbar();
-		toolbar.simulate_tool_click(new MoveTool());
-	}, true });
-
-
+	// Set inital project manager
 	app_context.set_project_manager(std::make_shared<PolymodProject::ProjectManager>("hi :)"));
 
 	// Initialise native_file_dialogue.
