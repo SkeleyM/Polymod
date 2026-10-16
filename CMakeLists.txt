@@ -101,6 +101,7 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/CreateNewGeometryPanel.h
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveOperationPanels.h
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveSelector.h
+	${PROJECT_SOURCE_DIR}/Ui/Screens/Home/HomeScreen.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/ExtrudeTool.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/MoveTool.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/RotateTool.h

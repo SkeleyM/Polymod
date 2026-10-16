@@ -65,7 +65,10 @@ bool Polymodel::Project::import_geometry(std::filesystem::path project_path, Geo
 	auto format = format_fac.create_format(spec);
 
 	for (auto& entry : std::filesystem::directory_iterator(geometry_path)) {
+		// Skip over rogue directories
 		if (entry.is_directory()) continue;
+
+		// Import obj file
 		auto value = GeometryFormat::GeometryFileHandler::import_geometry(format.get(), entry);
 
 		// Only add to manager if successfully imported

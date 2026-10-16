@@ -11,6 +11,7 @@
 #include <Init/GeometryEditorShortcuts.h>
 #include <Init/Toolbar.h>
 
+#include <Ui/Screens/Home/HomeScreen.h>
 
 #include <Renderer/LineRenderer.h>
 #include <Renderer/PointRenderer.h>
@@ -65,6 +66,11 @@ static void on_render() {
 	// Render all the UI
 	auto& app_context = ApplicationContext::get_instance();
 	auto& geometry_editor = app_context.get_geometry_editor();
+
+	// If there is no active project show the home screen
+	if (app_context.get_project_manager().expired()) {
+		Polymodel::Screens::Home::ShowHomeScreen();
+	}
 
 	app_context.editor_ui->render();
 	geometry_editor.render();
@@ -121,9 +127,6 @@ int main() {
 	auto& shortcut_manager = app_context.shortcut_manager;
 	Polymodel::Init::Shortcuts::register_geometry_editor_shortcuts(shortcut_manager);
 
-	// Set inital project manager
-	app_context.set_project_manager(Polymodel::Project::import_project("C:\\Users\\20kirk.mlab\\Documents\\Project"));
-
 	// Initialise native_file_dialogue.
 	NFD_Init();
 
@@ -139,7 +142,6 @@ int main() {
 		shortcut_manager.update();
 		camera_controller->update();
 	}
-
 
 	NFD_Quit();
 
