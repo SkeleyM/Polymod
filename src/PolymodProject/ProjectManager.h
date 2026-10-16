@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace PolymodProject {
+namespace Polymodel::Project {
 	class ProjectManager {
 	private:
 		std::string name;
@@ -14,11 +14,6 @@ namespace PolymodProject {
 	public:
 		ProjectManager(std::string name) {
 			this->name = name;
-
-			// Add the geometry
-			auto new_geo = this->geometry_manager.create_new_geometry("Cube");
-			*new_geo.lock().get() = GeometryPrimitives::create_primitive_cube({ 0.0f, 0.0f, 0.0f }, 1.0f);
-			new_geo.lock().get()->calculate_normals(SHADE_FLAT);
 		}
 
 		std::string get_project_name() {

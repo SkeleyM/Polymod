@@ -29,7 +29,11 @@ namespace Polymodel::Init {
 			auto project_manager = app_context.get_project_manager();
 			if (project_manager.expired() || !project_manager.lock().get()) return;
 
-			PolymodProject::export_project("C:\\Users\\mason\\Documents\\Adobe", project_manager.lock().get()->get_geometry_manager());
+			nfdu8char_t* save_path;
+			nfdu8char_t* default_path = "Documents/";
+			NFD_PickFolder(&save_path, default_path);
+
+			Polymodel::Project::export_project(save_path, project_manager);
 			});
 
 		// File menu items

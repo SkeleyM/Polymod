@@ -1,23 +1,28 @@
+#include <PolymodProject/ProjectManager.h>
+
 #include <PolymodProject/PolymodProject.h>
 #include <Geometry/Formats/GeometryFormats.h>
 
 #include <nlohmann/json.hpp>
 
 #include <fstream>
+#include <string>
 
-bool PolymodProject::export_project(std::filesystem::path path, GeometryManager& manager) {
-	std::filesystem::create_directories(path);
+bool Polymodel::Project::export_project(std::filesystem::path project_path, std::weak_ptr<Polymodel::Project::ProjectManager> project) {
+	auto& manager = project.lock()->get_geometry_manager();
 
-	PolymodProject::ProjectMetadata metadata;
+	std::filesystem::create_directories(project_path);
+
+	Polymodel::Project::ProjectMetadata metadata;
 	metadata.last_accessed = std::time(0);
 
-	PolymodProject::save_metadata(path, metadata);
-	PolymodProject::export_geometry(path, manager);
+	Polymodel::Project::save_metadata(project_path, metadata);
+	Polymodel::Project::export_geometry(project_path, manager);
 
 	return true;
 }
 
-bool PolymodProject::export_geometry(std::filesystem::path project_path, GeometryManager& manager) {
+bool Polymodel::Project::export_geometry(std::filesystem::path project_path, GeometryManager& manager) {
 	auto geometry_path = project_path / "Geometry";
 	std::filesystem::create_directory(geometry_path);
 
@@ -37,16 +42,20 @@ bool PolymodProject::export_geometry(std::filesystem::path project_path, Geometr
 }
 
 
-bool PolymodProject::import_project(std::filesystem::path project_path, GeometryManager& manager) {
+std::shared_ptr<Polymodel::Project::ProjectManager> Polymodel::Project::import_project(std::filesystem::path project_path) {
+	// Set project name to the end of the path, which is the name of the project folder
+	auto project_name = project_path.filename().string();
+	std::shared_ptr<Polymodel::Project::ProjectManager> project = std::make_shared<Polymodel::Project::ProjectManager>(project_name);
+
 	if (!std::filesystem::exists(project_path))
-		return false;
+		return nullptr;
 
-	PolymodProject::import_geometry(project_path, manager);
+	Polymodel::Project::import_geometry(project_path, project->get_geometry_manager());
 
-	return false;
+	return project;
 }
 
-bool PolymodProject::import_geometry(std::filesystem::path project_path, GeometryManager& manager) {
+bool Polymodel::Project::import_geometry(std::filesystem::path project_path, GeometryManager& manager) {
 	auto geometry_path = project_path / "Geometry";
 	if (!std::filesystem::exists(geometry_path))
 		return false;
@@ -71,12 +80,12 @@ bool PolymodProject::import_geometry(std::filesystem::path project_path, Geometr
 	return false;
 }
 
-PolymodProject::ProjectMetadata PolymodProject::read_metadata(std::filesystem::path project_path) {
+Polymodel::Project::ProjectMetadata Polymodel::Project::read_metadata(std::filesystem::path project_path) {
 	abort();
 	return {};
 }
 
-void PolymodProject::save_metadata(std::filesystem::path project_path, PolymodProject::ProjectMetadata metadata) {
+void Polymodel::Project::save_metadata(std::filesystem::path project_path, Polymodel::Project::ProjectMetadata metadata) {
 	using namespace nlohmann::literals;
 	nlohmann::json json = {
 		{"last_accessed", metadata.last_accessed}

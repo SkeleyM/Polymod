@@ -4,13 +4,13 @@
 #include <filesystem>
 #include <string.h>
 
-namespace PolymodProject {
+namespace Polymodel::Project {
 	struct ProjectMetadata {
 		uint64_t last_accessed;
 	};
 
-	bool export_project(std::filesystem::path project_path, GeometryManager& manager);
-	bool import_project(std::filesystem::path project_path, GeometryManager& manager);
+	bool export_project(std::filesystem::path project_path, std::weak_ptr<Polymodel::Project::ProjectManager> project);
+	std::shared_ptr<Polymodel::Project::ProjectManager> import_project(std::filesystem::path project_path);
 
 	bool export_geometry(std::filesystem::path project_path, GeometryManager& manager);
 	bool import_geometry(std::filesystem::path project_path, GeometryManager& manager);

@@ -122,7 +122,7 @@ int main() {
 	Polymodel::Init::Shortcuts::register_geometry_editor_shortcuts(shortcut_manager);
 
 	// Set inital project manager
-	app_context.set_project_manager(std::make_shared<PolymodProject::ProjectManager>("hi :)"));
+	app_context.set_project_manager(Polymodel::Project::import_project("C:\\Users\\20kirk.mlab\\Documents\\Project"));
 
 	// Initialise native_file_dialogue.
 	NFD_Init();

@@ -6,7 +6,7 @@
 #include <memory>
 #include <optional>
 
-using namespace PolymodProject;
+using namespace Polymodel::Project;
 
 class SceneTree {
 private:

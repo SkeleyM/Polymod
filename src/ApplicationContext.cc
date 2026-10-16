@@ -11,11 +11,11 @@ ApplicationContext& ApplicationContext::get_instance() {
 	return *instance;
 }
 
-std::weak_ptr<PolymodProject::ProjectManager> ApplicationContext::get_project_manager() {
+std::weak_ptr<Polymodel::Project::ProjectManager> ApplicationContext::get_project_manager() {
 	return this->project_manager;
 }
 
-void ApplicationContext::set_project_manager(std::shared_ptr<PolymodProject::ProjectManager> project_manager) {
+void ApplicationContext::set_project_manager(std::shared_ptr<Polymodel::Project::ProjectManager> project_manager) {
 	this->project_manager = project_manager;
 }
 

@@ -13,7 +13,7 @@ class ApplicationContext {
 	static ApplicationContext* instance;
 
 private:
-	std::shared_ptr<PolymodProject::ProjectManager> project_manager;
+	std::shared_ptr<Polymodel::Project::ProjectManager> project_manager;
 	GeometryEditor geometry_editor = GeometryEditor();
 public:
 	ShortcutManager shortcut_manager = ShortcutManager();
@@ -21,7 +21,7 @@ public:
 public:
 	static ApplicationContext& get_instance();
 
-	std::weak_ptr<PolymodProject::ProjectManager> get_project_manager();
-	void set_project_manager(std::shared_ptr<PolymodProject::ProjectManager> project_manager);
+	std::weak_ptr<Polymodel::Project::ProjectManager> get_project_manager();
+	void set_project_manager(std::shared_ptr<Polymodel::Project::ProjectManager> project_manager);
 	GeometryEditor& get_geometry_editor();
 };
