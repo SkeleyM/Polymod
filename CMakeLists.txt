@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_SOURCE_DIR src)
 
 set(SOURCES
+	${PROJECT_SOURCE_DIR}/ApplicationContext.cc
 	${PROJECT_SOURCE_DIR}/AxisGrid.cc
 	${PROJECT_SOURCE_DIR}/OrbitalCameraController.cc
 	${PROJECT_SOURCE_DIR}/GeometryManager.cc
@@ -29,6 +30,8 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFormatFactory.cc
 	${PROJECT_SOURCE_DIR}/Geometry/Formats/WavefrontObj.cc
 
+	${PROJECT_SOURCE_DIR}/PolymodProject/PolymodProject.cc
+	
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/EditorModeSelector.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.cc
@@ -44,13 +47,19 @@ set(SOURCES
 )
 
 set(HEADERS 
+	${PROJECT_SOURCE_DIR}/ApplicationContext.h
 	${PROJECT_SOURCE_DIR}/AxisFlags.h
 	${PROJECT_SOURCE_DIR}/AxisGrid.h
+	${PROJECT_SOURCE_DIR}/EditorUI.h
 	${PROJECT_SOURCE_DIR}/OrbitalCameraController.h
 	${PROJECT_SOURCE_DIR}/GeometryManager.h
 	${PROJECT_SOURCE_DIR}/GeometryEditor.h
 	${PROJECT_SOURCE_DIR}/GeometryWireframeRenderer.h
 	${PROJECT_SOURCE_DIR}/ShortcutManager.h
+
+	${PROJECT_SOURCE_DIR}/Init/GeometryEditorShortcuts.h
+	${PROJECT_SOURCE_DIR}/Init/MainMenuBar.h
+
 	${PROJECT_SOURCE_DIR}/Geometry/Face.h
 	${PROJECT_SOURCE_DIR}/Geometry/Geometry.h
 	${PROJECT_SOURCE_DIR}/Geometry/GeometryPrimitives.cc
@@ -73,6 +82,10 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Geometry/Formats/GeometryFormats.h
 	${PROJECT_SOURCE_DIR}/Geometry/Formats/WavefrontObj.h
 
+	${PROJECT_SOURCE_DIR}/PolymodProject/ProjectManager.h
+	${PROJECT_SOURCE_DIR}/PolymodProject/PolymodProject.h
+	${PROJECT_SOURCE_DIR}/PolymodProject/RecentProjects.h
+
 	${PROJECT_SOURCE_DIR}/Ui/OperationArgumentPanel.h
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.h
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/Menu.h
@@ -89,6 +102,7 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/CreateNewGeometryPanel.h
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveOperationPanels.h
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveSelector.h
+	${PROJECT_SOURCE_DIR}/Ui/Screens/Home/HomeScreen.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/ExtrudeTool.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/MoveTool.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/RotateTool.h
@@ -102,9 +116,11 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}
 
 # Build the main executable
 add_subdirectory(Engine)
+add_subdirectory(src/Directory)
 
 add_executable(Polymod)
 
+add_subdirectory(external/json)
 add_subdirectory(external/nativefiledialog-extended)
 
 if (MSVC)
@@ -117,7 +133,9 @@ endif()
 target_link_libraries(Polymod
 	PUBLIC
 	Engine
+	DirectoryResolver
 	PRIVATE
+	nlohmann_json
 	nfd
 )
 
@@ -154,6 +172,7 @@ set(TESTS
  target_link_libraries(PolymodTests
 	PUBLIC
 	Engine
+	nlohmann_json
 )
 
 target_include_directories(PolymodTests

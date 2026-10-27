@@ -12,8 +12,8 @@ enum SelectMode {
 
 class GeometryEditor {
 private:
-	GeometryManager geometry_manager;
 	std::weak_ptr<Geometry> current_geometry;
+	std::weak_ptr<Timeline> current_geometry_timeline;
 	std::optional<OperationArgumentPanel> in_progress_operation_panel;
 	Toolbar* toolbar;
 
@@ -34,7 +34,7 @@ public:
 	void render();
 
 	void select(Vector2 screen_coordinates);
-	void set_current_geometry(std::weak_ptr<Geometry> geometry);
+	void set_current_geometry(std::weak_ptr<Geometry> geometry, std::weak_ptr<Timeline> timeline);
 	void begin_operation(OperationArgumentPanel operation_panel);
 	void do_operation(AbstractGeometryOperation* geometry_operation);
 	void cancel_operation();
@@ -45,7 +45,6 @@ public:
 	void set_selection(SelectedGeometry selection);
 	SelectedGeometry get_selection();
 
-	GeometryManager& get_geometry_manager();
 	Toolbar& get_toolbar();
 	std::weak_ptr<Geometry> get_current_geometry();
 

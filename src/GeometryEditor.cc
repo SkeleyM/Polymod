@@ -17,22 +17,16 @@ GeometryEditor::GeometryEditor() {
 	this->select_mode = Select_Vertex;
 	this->selection = SelectedGeometry();
 
-	// Create initial geometry
-	this->get_geometry_manager().create_new_geometry("Cube");
-	auto geometry = this->get_geometry_manager().get_geometry("Cube");
-	this->set_current_geometry(geometry);
 	this->set_select_mode(Select_Face);
-
-	// Add the geometry
-	Geometry& geometry_d = *geometry.lock().get();
-	geometry_d = GeometryPrimitives::create_primitive_cube({ 0.0f, 0.0f, 0.0f }, 1.0f);
-	geometry_d.calculate_normals(SHADE_FLAT);
 
 	// refresh so that it appears in the scene
 	this->refresh_current_geometry_in_scene();
 }
 
 void GeometryEditor::refresh_current_geometry_in_scene() {
+	if (this->current_geometry.expired())
+		return;
+
 	std::string geometry_name = this->current_geometry.lock().get()->name;
 	Scene& scene = Engine::get_instance()->get_active_scene();
 
@@ -170,8 +164,9 @@ void GeometryEditor::select(Vector2 screen_coordinates) {
 	}
 }
 
-void GeometryEditor::set_current_geometry(std::weak_ptr<Geometry> geometry) {
+void GeometryEditor::set_current_geometry(std::weak_ptr<Geometry> geometry, std::weak_ptr<Timeline> timeline) {
 	this->current_geometry = geometry;
+	this->current_geometry_timeline = timeline;
 	this->set_selection({});
 }
 
@@ -183,11 +178,10 @@ void GeometryEditor::do_operation(AbstractGeometryOperation* geometry_operation)
 	// Complete operation
 	this->in_progress_operation_panel = std::nullopt;
 	std::string geometry_name = this->current_geometry.lock().get()->name;
-	std::weak_ptr<Timeline> timeline = this->geometry_manager.get_timeline(this->current_geometry);
-	timeline.lock().get()->push_operation(std::shared_ptr<AbstractGeometryOperation>(geometry_operation));
+	this->current_geometry_timeline.lock().get()->push_operation(std::shared_ptr<AbstractGeometryOperation>(geometry_operation));
 	
 	// Set current geometry
-	Geometry present = timeline.lock().get()->get_present_geometry();
+	Geometry present = this->current_geometry_timeline.lock().get()->get_present_geometry();
 	*this->current_geometry.lock().get() = present;
 
 	this->refresh_current_geometry_in_scene();
@@ -226,10 +220,6 @@ SelectedGeometry GeometryEditor::get_selection() {
 	return this->selection;
 }
 
-GeometryManager& GeometryEditor::get_geometry_manager() {
-	return this->geometry_manager;
-}
-
 Toolbar& GeometryEditor::get_toolbar() {
 	return *this->toolbar;
 }
@@ -239,7 +229,7 @@ std::weak_ptr<Geometry> GeometryEditor::get_current_geometry() {
 }
 
 void GeometryEditor::undo() {
-	Timeline* timeline = this->geometry_manager.get_timeline(this->current_geometry).lock().get();
+	Timeline* timeline = this->current_geometry_timeline.lock().get();
 	if (timeline->get_operations().size() == 0) return;
 
 	timeline->pop_operation();
@@ -250,7 +240,7 @@ void GeometryEditor::undo() {
 }
 
 void GeometryEditor::redo() {
-	Timeline* timeline = this->geometry_manager.get_timeline(this->current_geometry).lock().get();
+	Timeline* timeline = this->current_geometry_timeline.lock().get();
 	if (timeline->get_operations().size() == 0) return;
 	timeline->forward();
 	Geometry present = timeline->get_present_geometry();
