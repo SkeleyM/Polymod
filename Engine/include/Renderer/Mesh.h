@@ -1,5 +1,6 @@
 #pragma once
 #include <Renderer/Triangle.h>
+#include <Renderer/Texture.h>
 #include <Transform.h>
 
 #include <vector>
@@ -13,6 +14,7 @@ public:
 	// A dynamic array is nessicary as meshes are different sizes;
 	uint32_t triangle_count;
 	Triangle* triangles;
+	Texture texture;
 
 	Transform transform;
 

@@ -105,3 +105,20 @@ void Shader::set_uniform_float(std::string name, float value) {
 	// Set the uniform value in the shader
 	glUniform1f(uniform_location, value);
 }
+
+void Shader::set_uniform_bool(std::string name, bool value) {
+	glUseProgram(this->gl_program_id);
+	// Get the uniforms location required to set the value in the shader
+	int uniform_location = this->get_uniform_location(name);
+
+	// Set the uniform value in the shader
+	glUniform1i(uniform_location, value);
+}
+
+void Shader::set_uniform_texture(Texture value) {
+	glUseProgram(this->gl_program_id);
+
+	// Set the uniform value in the shader
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, value.gl_texture_id);
+}

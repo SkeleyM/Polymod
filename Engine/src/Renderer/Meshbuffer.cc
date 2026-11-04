@@ -37,6 +37,9 @@ MeshBuffer::MeshBuffer(int size) {
 	// Colour
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(2*sizeof(Vector3)));
 	glEnableVertexAttribArray(2);
+	// Texture
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(Vector3)));
+	glEnableVertexAttribArray(3);
 	gl_check_for_error();
 }
 

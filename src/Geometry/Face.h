@@ -20,7 +20,8 @@ typedef struct Face {
 
 	Face(std::vector<int> vertices) {
 		this->vertices = vertices;
-		this->face_colour = { 0.4f, 0.4f, 0.4f };
+		this->face_colour = { 1.0f, 1.0f, 1.0f };
+		this->face_normal = { 0.3f , 0.3f, 0.3f };
 	}
 
 	std::vector<TriangleIds> triangulate();

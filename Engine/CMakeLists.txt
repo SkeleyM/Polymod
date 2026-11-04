@@ -14,6 +14,7 @@ set(HEADERS include/Engine.h
 	include/Renderer/Camera.h
 	include/Renderer/Shader.h
 	include/Renderer/Vertex.h
+	include/Renderer/Texture.h
 	include/Renderer/Triangle.h
 	include/Renderer/TriangleRenderer.h
 	include/Renderer/LineRenderer.h
@@ -24,6 +25,7 @@ set(HEADERS include/Engine.h
 	src/Renderer/Glerror.h
 
 	include/imgui_impl/ImGui.h
+	external/stb_image/stb_image.h
 )
 set(SOURCES ${PROJECT_SOURCE_DIR}/Engine.cc
 	${PROJECT_SOURCE_DIR}/InputManager.cc
@@ -32,6 +34,7 @@ set(SOURCES ${PROJECT_SOURCE_DIR}/Engine.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Camera.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Shader.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Vertex.cc
+	${PROJECT_SOURCE_DIR}/Renderer/Texture.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Triangle.cc
 	${PROJECT_SOURCE_DIR}/Renderer/TriangleRenderer.cc
 	${PROJECT_SOURCE_DIR}/Renderer/LineRenderer.cc
@@ -54,7 +57,6 @@ add_subdirectory(external/glad)
 
 # Build IMGUI here
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 17)
 
 set(imgui_HEADERS 
 	external/imgui/imgui.h
@@ -96,7 +98,7 @@ add_library(Engine STATIC
 )
 
 target_include_directories(
-	Engine PUBLIC include src
+	Engine PUBLIC include src external/stb_image
 )
 
 target_link_libraries(Engine PUBLIC glfw glad glm imgui)

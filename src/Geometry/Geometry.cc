@@ -43,7 +43,7 @@ void Geometry::calculate_face_normals(int face_index, GeometryShadingType shadin
 }
 
 int Geometry::add_vertex(Vector3 vertex) {
-	Vertex vert = Vertex(vertex, Vector3(0.3));
+	Vertex vert = Vertex(vertex);
 	this->vertices.push_back(vert);
 	this->connections.push_back(std::vector<int>());
 	return this->vertices.size() - 1;

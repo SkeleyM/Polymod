@@ -26,6 +26,10 @@ void TriangleRenderer::render(Camera& camera, Mesh* mesh) {
 	this->shader.set_uniform_matrix4x4("view", glm::inverse(camera.transform.get_matrix()));
 	this->shader.set_uniform_matrix4x4("projection", camera.get_projection_matrix());
 
+	// Texture uniforms
+	this->shader.set_uniform_texture(mesh->texture);
+	this->shader.set_uniform_bool("use_texture", mesh->texture.gl_texture_id != -1);
+
 
  	glDrawElements(
 		GL_TRIANGLES, 

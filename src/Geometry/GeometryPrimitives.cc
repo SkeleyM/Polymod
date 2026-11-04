@@ -106,6 +106,11 @@ Geometry GeometryPrimitives::create_primitive_plane(Vector3 position, float diam
 	geometry.add_connection(2, 3);
 	geometry.add_connection(3, 0);
 
+	geometry.get_vertex(2).texture = Vector2(0.0f, 0.0f);
+	geometry.get_vertex(3).texture = Vector2(0.0f, 1.0f);
+	geometry.get_vertex(0).texture = Vector2(1.0f, 1.0f);
+	geometry.get_vertex(1).texture = Vector2(1.0f, 0.0f);
+
 	geometry.define_face({ 0, 1, 2, 3 });
 
 	return geometry;
