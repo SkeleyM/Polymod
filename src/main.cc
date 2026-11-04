@@ -9,6 +9,7 @@
 
 #include <Init/MainMenuBar.h>
 #include <Init/GeometryEditorShortcuts.h>
+#include <Init/ProjectShortcuts.h>
 #include <Init/Toolbar.h>
 
 #include <Ui/Screens/Home/HomeScreen.h>
@@ -148,6 +149,7 @@ int main() {
 	// Register shortcuts
 	auto& shortcut_manager = app_context.shortcut_manager;
 	Polymodel::Init::Shortcuts::register_geometry_editor_shortcuts(shortcut_manager);
+	Polymodel::Init::Shortcuts::register_project_shortcuts(shortcut_manager);
 
 	// Initialise native_file_dialogue.
 	NFD_Init();

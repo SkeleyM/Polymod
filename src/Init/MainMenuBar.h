@@ -2,6 +2,8 @@
 
 #include <ApplicationContext.h>
 
+#include <Init/InitCommonFunc.h>
+
 #include <PolymodProject/PolymodProject.h>
 #include <Geometry/Formats/GeometryFormats.h>
 
@@ -38,11 +40,7 @@ namespace Polymodel::Init {
 		});
 
 		MenuBarItem save_project("Save", []() {
-			ApplicationContext& app_context = ApplicationContext::get_instance();
-			auto project_manager = app_context.get_project_manager();
-			if (project_manager.expired() || !project_manager.lock().get()) return;
-
-			Polymodel::Project::export_project(project_manager);
+			Polymodel::Init::CommonFuncs::save_active_project();
 		});
 
 		MenuBarItem save_project_as("Save As", []() {
@@ -56,7 +54,7 @@ namespace Polymodel::Init {
 
 			if (result == NFD_OKAY) {
 				project_manager.lock()->set_project_path(save_path);
-				Polymodel::Project::export_project(project_manager);
+				Polymodel::Init::CommonFuncs::save_active_project();
 			}
 		});
 

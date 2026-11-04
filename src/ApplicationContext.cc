@@ -52,12 +52,15 @@ std::weak_ptr<Polymodel::Project::ProjectManager> ApplicationContext::get_projec
 
 void ApplicationContext::set_project_manager(std::shared_ptr<Polymodel::Project::ProjectManager> project_manager) {
 	this->project_manager = project_manager;
-	this->recent_projects.push_project(project_manager->get_project_path());
 
 	// Make sure to clear all meshes if the current project was just discarded
 	if (this->project_manager == nullptr) {
 		Engine* engine = Engine::get_instance();
 		engine->get_active_scene().clear_scene();
+	}
+	else {
+		// Add to recent projects
+		this->recent_projects.push_project(project_manager->get_project_path());
 	}
 }
 

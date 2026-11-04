@@ -58,7 +58,10 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/ShortcutManager.h
 
 	${PROJECT_SOURCE_DIR}/Init/GeometryEditorShortcuts.h
+	${PROJECT_SOURCE_DIR}/Init/InitCommonFunc.h
 	${PROJECT_SOURCE_DIR}/Init/MainMenuBar.h
+	${PROJECT_SOURCE_DIR}/Init/ProjectShortcuts.h
+	${PROJECT_SOURCE_DIR}/Init/Toolbar.h
 
 	${PROJECT_SOURCE_DIR}/Geometry/Face.h
 	${PROJECT_SOURCE_DIR}/Geometry/Geometry.h
