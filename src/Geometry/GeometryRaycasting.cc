@@ -49,12 +49,12 @@ std::optional<int> GeometryRaycasting::raycast_vertex(Geometry& geometry, Vector
 	for (int vertex_id : geometry.get_all_vertex_ids()) {
 		Vertex vertex = geometry.get_vertex(vertex_id);
 
-		if (glm::dot(ray_direction, glm::normalize(ray_origin - vertex.position)) < 0.0f) {
+		if (glm::dot(ray_direction, glm::normalize(vertex.position - ray_origin)) < 0.0f) {
 			continue;
 		}
 
 		float distance{ 0.0f };
-		float click_radius = 2.0f;
+		float click_radius = 4.0f;
 		bool intersects = glm::intersectRaySphere(ray_origin, ray_direction, vertex.position, click_radius, distance);
 		if (intersects && distance < closest_vertex_distance) {
 			closest_vertex_id = vertex_id;
