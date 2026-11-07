@@ -14,6 +14,7 @@ set(HEADERS include/Engine.h
 	include/Renderer/Camera.h
 	include/Renderer/Shader.h
 	include/Renderer/Vertex.h
+	include/Renderer/Image2d.h
 	include/Renderer/Texture.h
 	include/Renderer/Triangle.h
 	include/Renderer/TriangleRenderer.h
@@ -34,6 +35,7 @@ set(SOURCES ${PROJECT_SOURCE_DIR}/Engine.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Camera.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Shader.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Vertex.cc
+	${PROJECT_SOURCE_DIR}/Renderer/Image2d.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Texture.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Triangle.cc
 	${PROJECT_SOURCE_DIR}/Renderer/TriangleRenderer.cc
