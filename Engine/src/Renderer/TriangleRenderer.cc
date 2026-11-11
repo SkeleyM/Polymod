@@ -30,7 +30,6 @@ void TriangleRenderer::render(Camera& camera, Mesh* mesh) {
 	this->shader.set_uniform_texture(mesh->texture);
 	this->shader.set_uniform_bool("use_texture", mesh->texture.gl_texture_id != -1);
 
-
  	glDrawElements(
 		GL_TRIANGLES, 
 		mesh->triangle_count * 3, 

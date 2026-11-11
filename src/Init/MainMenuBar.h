@@ -154,7 +154,29 @@ namespace Polymodel::Init {
 			auto create_primitive_tool = new CreatePrimitiveTool(GeometryPrimitives::Cube);
 			toolbar.simulate_tool_click(create_primitive_tool);
 			});
+
+		MenuBarItem add_reference_image("Add Reference Image", []() {
+			auto& app_context = ApplicationContext::get_instance();
+			auto& geometry_editor = app_context.get_geometry_editor();
+			auto& toolbar = geometry_editor.get_toolbar();
+
+			// Save file dialogue boilerplate
+			nfdu8char_t* in_path;
+			nfdu8filteritem_t filters[2] = { { "PNG", "png" }, { "jpeg", "jpg" } };
+			nfdopendialogu8args_t args = { 0 };
+			args.filterList = filters;
+			args.filterCount = 1;
+			auto result = NFD_OpenDialog_With(&in_path, &args);
+
+			if (result == NFD_OKAY) {
+				auto& app_context = ApplicationContext::get_instance();
+				auto& reference_image_manager = app_context.get_reference_image_manager();
+				auto path = std::filesystem::path(in_path);
+				reference_image_manager.create_reference_image(path.filename().string(), path);
+			}
+			});
 		add_menu.add_menu_item(add_selector);
+		add_menu.add_menu_item(add_reference_image);
 
 		// Add Menus to menubar
 		menubar->add_menu(file_menu);

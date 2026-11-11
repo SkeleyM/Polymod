@@ -151,10 +151,6 @@ int main() {
 	Polymodel::Init::Shortcuts::register_geometry_editor_shortcuts(shortcut_manager);
 	Polymodel::Init::Shortcuts::register_project_shortcuts(shortcut_manager);
 
-	Mesh mesh = GeometryPrimitives::create_primitive_plane({}, 1.0f).triangulate();
-	mesh.texture = Texture::from_image_file("C:\\Users\\mason\\Downloads\\verity.jpg");
-	scene.add_mesh(mesh);
-
 	// Initialise native_file_dialogue.
 	NFD_Init();
 
