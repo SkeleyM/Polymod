@@ -27,7 +27,7 @@ static const char* LINE_FRAGMENT_SHADER =
 "in vec3 o_colour;\n"
 "void main()\n"
 "{\n"
-"	gl_FragColor = vec4(o_colour, 0.0);\n"
+"	gl_FragColor = vec4(o_colour, 1.0);\n"
 "}\n\0";
 
 struct Line {

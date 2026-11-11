@@ -47,6 +47,10 @@ Engine::Engine(const char* window_title, int width, int height) {
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	glViewport(0, 0, width, height);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquation(GL_FUNC_ADD);
+
 	glfwSetScrollCallback(this->window, glfw_scroll_handler);
 	glfwSetCursorPosCallback(this->window, glfw_mouse_handler);
 	glfwSetMouseButtonCallback(this->window, glfw_mouse_click_handler);
