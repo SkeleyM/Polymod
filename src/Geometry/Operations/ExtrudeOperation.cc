@@ -6,9 +6,7 @@ Geometry ExtrudeOperation::do_operation() {
 	if (this->selection.selected_vertices.has_value()) {
 		std::vector<int> affected_vertices;
 
-		for (auto vert : *this->selection.selected_vertices) {
-			int new_vert;
-		
+		for (auto vert : *this->selection.selected_vertices) {		
 			// Get current position
 			Vertex v = new_geometry.get_vertex(vert);
 			// Add new vertex
@@ -22,7 +20,7 @@ Geometry ExtrudeOperation::do_operation() {
 	else if (this->selection.selected_edges.has_value()) {
 		std::vector<std::pair<int, int>> affected_edges;
 
-		auto edges = *this->selection.selected_edges;
+		auto& edges = *this->selection.selected_edges;
 		for (auto edge : edges) {
 			// Get edge positions
 			Vertex v1 = new_geometry.get_vertex(edge.first);
@@ -43,7 +41,7 @@ Geometry ExtrudeOperation::do_operation() {
 		this->affected_edges = affected_edges;
 	}
 	else if (this->selection.selected_faces.has_value()) {
-		auto faces = *this->selection.selected_faces;
+		auto& faces = *this->selection.selected_faces;
 		for (Face face : faces) {
 			int vertex_count = face.vertices.size();
 
