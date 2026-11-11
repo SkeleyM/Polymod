@@ -2,6 +2,7 @@
 #pragma once
 #include <EMath.h>
 
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 enum KeyModifiers {

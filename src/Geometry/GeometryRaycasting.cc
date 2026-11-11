@@ -54,7 +54,7 @@ std::optional<int> GeometryRaycasting::raycast_vertex(Geometry& geometry, Vector
 		}
 
 		float distance{ 0.0f };
-		float click_radius = 4.0f;
+		constexpr float click_radius = 10^2;
 		bool intersects = glm::intersectRaySphere(ray_origin, ray_direction, vertex.position, click_radius, distance);
 		if (intersects && distance < closest_vertex_distance) {
 			closest_vertex_id = vertex_id;

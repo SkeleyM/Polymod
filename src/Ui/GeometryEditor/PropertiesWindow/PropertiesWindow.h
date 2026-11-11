@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ui/PropertiesWindow/PropertiesPanel.h>
+#include <Ui/GeometryEditor/PropertiesWindow/PropertiesPanel.h>
 
 struct PropertiesWindow {
 	PropertiesPanel properties_panel;

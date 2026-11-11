@@ -3,7 +3,7 @@
 #include <vector>
 #include <EMath.h>
 
-#include <Engine.h>
+#include <Renderer/Camera.h>
 #include <Renderer/Shader.h>
 
 static const char* LINE_VERTEX_SHADER =

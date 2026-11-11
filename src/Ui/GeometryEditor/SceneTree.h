@@ -3,10 +3,7 @@
 #include <GeometryEditor.h>
 #include <Ui/Primitives/CreateNewGeometryPanel.h>
 
-#include <memory>
 #include <optional>
-
-using namespace Polymodel::Project;
 
 class SceneTree {
 private:

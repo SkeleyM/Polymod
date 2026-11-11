@@ -97,7 +97,7 @@ namespace Polymodel::Screens {
 			return clicked;
 		}
 
-		void show_home_screen(RecentProjects& recent_projects) {
+		void show_home_screen(Polymodel::Project::RecentProjects& recent_projects) {
 			Engine* engine = Engine::get_instance();
 			auto window_size = engine->get_window_size();
 
@@ -126,7 +126,7 @@ namespace Polymodel::Screens {
 			ImGui::PopStyleVar();
 
 			int iter = 0;
-			for (auto prev_project : recent_projects.get_recent_project_paths()) {
+			for (auto& prev_project : recent_projects.get_recent_project_paths()) {
 				if (iter >= 3) break;
 				if (this->project_button(prev_project)) {
 					this->on_open_project_callback(prev_project);
@@ -145,7 +145,7 @@ namespace Polymodel::Screens {
 			std::function<void(std::filesystem::path)> on_open_project_callback
 		) : on_new_project_callback(on_new_project_callback), on_open_project_callback(on_open_project_callback) {}
 
-		void render(RecentProjects& recent_projects) {
+		void render(Polymodel::Project::RecentProjects& recent_projects) {
 			switch (this->state) {
 				case (HomeScreenState::Home): {
 					this->show_home_screen(recent_projects);

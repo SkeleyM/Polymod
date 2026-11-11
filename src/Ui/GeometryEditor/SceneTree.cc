@@ -62,7 +62,7 @@ void SceneTree::render() {
 
 	ImGui::SetNextWindowPos({window_size.x - 300, 20}, ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize({ 300, 200 });
-	ImGui::Begin("Scene Tree", nullptr, ImGuiWindowFlags_NoSavedSettings);
+	ImGui::BeginChild("Scene Tree", {}, ImGuiChildFlags_Borders, ImGuiWindowFlags_NoSavedSettings);
 	if (ImGui::Button("New")) {
 		this->new_geometry_panel = CreateNewGeometryPanel();
 	}
@@ -80,7 +80,7 @@ void SceneTree::render() {
 	}
 
 	this->render_geometry_tree();
-	ImGui::End();
+	ImGui::EndChild();
 
 	ImGui::PopStyleColor(3);
 }

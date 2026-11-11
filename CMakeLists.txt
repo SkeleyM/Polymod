@@ -7,6 +7,7 @@ set(PROJECT_SOURCE_DIR src)
 set(SOURCES
 	${PROJECT_SOURCE_DIR}/ApplicationContext.cc
 	${PROJECT_SOURCE_DIR}/AxisGrid.cc
+	${PROJECT_SOURCE_DIR}/EditorUI.cc
 	${PROJECT_SOURCE_DIR}/OrbitalCameraController.cc
 	${PROJECT_SOURCE_DIR}/GeometryManager.cc
 	${PROJECT_SOURCE_DIR}/GeometryEditor.cc
@@ -35,6 +36,7 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/EditorModeSelector.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.cc
+	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SideWindow.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/Menu.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBar.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBarItem.cc
@@ -96,6 +98,8 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBarItem.h
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/EditorModeSelector.h
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.h
+	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/PropertiesWindow/PropertiesPanel.h
+	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/PropertiesWindow/PropertiesWindow.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/AbstractOperationArgument.h
 	${PROJECT_SOURCE_DIR}/Ui/OperationArguments/DropdownOperationArgument.h
@@ -105,8 +109,6 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/CreateNewGeometryPanel.h
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveOperationPanels.h
 	${PROJECT_SOURCE_DIR}/Ui/Primitives/PrimitiveSelector.h
-	${PROJECT_SOURCE_DIR}/Ui/PropertiesWindow/PropertiesPanel.h
-	${PROJECT_SOURCE_DIR}/Ui/PropertiesWindow/PropertiesWindow.h
 	${PROJECT_SOURCE_DIR}/Ui/Screens/Home/HomeScreen.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/ExtrudeTool.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool/MoveTool.h
@@ -179,7 +181,11 @@ set(TESTS
  target_link_libraries(PolymodTests
 	PUBLIC
 	Engine
+	DirectoryResolver
+	ReferenceImages
+	PRIVATE
 	nlohmann_json
+	nfd
 )
 
 target_include_directories(PolymodTests
