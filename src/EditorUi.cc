@@ -13,9 +13,9 @@ void EditorUI::render() {
 
 	if (!current_geometry_weak.expired()) {
 		auto current_geometry = current_geometry_weak.lock();
+		// Set the transform of the 
 		side_window.properties_panel.transform = &current_geometry.get()->transform;
 	}
-	
 
 	this->axis_grid.render(scene.camera);
 	this->side_window.render();

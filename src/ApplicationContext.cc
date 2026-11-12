@@ -1,4 +1,5 @@
 #include <ApplicationContext.h>
+#include <EditorUI.h>
 #include <Engine.h>
 
 #include <fstream>
@@ -20,7 +21,7 @@ ApplicationContext& ApplicationContext::get_instance() {
 			std::stringstream file_data;
 			file_data << file.rdbuf();
 
-			auto deserialised_projects = RecentProjects::deserialize(file_data.str());
+			auto deserialised_projects = Polymodel::Project::RecentProjects::deserialize(file_data.str());
 			if (deserialised_projects.has_value()) {
 				instance->recent_projects = deserialised_projects.value();
 			}

@@ -7,6 +7,7 @@ set(PROJECT_SOURCE_DIR src)
 set(SOURCES
 	${PROJECT_SOURCE_DIR}/ApplicationContext.cc
 	${PROJECT_SOURCE_DIR}/AxisGrid.cc
+	${PROJECT_SOURCE_DIR}/EditorUI.cc
 	${PROJECT_SOURCE_DIR}/OrbitalCameraController.cc
 	${PROJECT_SOURCE_DIR}/GeometryManager.cc
 	${PROJECT_SOURCE_DIR}/GeometryEditor.cc
@@ -35,6 +36,7 @@ set(SOURCES
 	${PROJECT_SOURCE_DIR}/Ui/Toolbar.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/EditorModeSelector.cc
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.cc
+	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SideWindow.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/Menu.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBar.cc
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBarItem.cc
@@ -179,7 +181,11 @@ set(TESTS
  target_link_libraries(PolymodTests
 	PUBLIC
 	Engine
+	DirectoryResolver
+	ReferenceImages
+	PRIVATE
 	nlohmann_json
+	nfd
 )
 
 target_include_directories(PolymodTests

@@ -4,7 +4,6 @@
 
 #include <Renderer/Texture.h>
 
-#include "glad/glad.h"
 static const char* DEFAULT_VERTEX_SHADER =
 "#version 330 core\n"
 "layout (location = 0) in vec3 pos;\n"
@@ -61,7 +60,7 @@ class Shader
 private:
 	bool destroy_shader_on_destructor{ true };
 public:
-	GLuint gl_program_id;
+	uint32_t gl_program_id;
 	bool compilation_status;
 
 	Shader(std::string vertex_source, std::string fragment_source);

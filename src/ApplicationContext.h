@@ -5,7 +5,6 @@
 #include <Directory/DirectoryResolver.h>
 #include <ReferenceImages/ReferenceImageManager.h>
 #include <GeometryEditor.h>
-#include <EditorUI.h>
 #include <ShortcutManager.h>
 
 #include <memory.h>
@@ -21,7 +20,7 @@ private:
 	ReferenceImageManager reference_image_manager = ReferenceImageManager();
 public:
 	ShortcutManager shortcut_manager = ShortcutManager();
-	RecentProjects recent_projects;
+	Polymodel::Project::RecentProjects recent_projects;
 	Polymodel::Directory::AbstractDirectoryResolver* directory_resolver;
 	EditorUI* editor_ui;
 public:

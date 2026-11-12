@@ -3,8 +3,10 @@
 #include <InputManager.h>
 
 #include <ApplicationContext.h>
+#include <EditorUI.h>
 
 #include <OrbitalCameraController.h>
+#include <GeometryWireframeRenderer.h>
 #include <GeometryEditor.h>
 
 #include <Init/MainMenuBar.h>
