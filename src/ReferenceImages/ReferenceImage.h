@@ -12,16 +12,16 @@ struct ReferenceImage {
 
 	// Save the image, the engine discards it after loading it into a texture.
 	// But its needed to be able to save the reference image to a file.
-	Image2d image;
+	std::shared_ptr<Image2d> image;
 
-	ReferenceImage(std::string name, Image2d image) {
+	ReferenceImage(std::string name, std::shared_ptr<Image2d> image) {
 		this->name = name;
 
 		// Apply a shrink factor so the image is not extremely huge in world units
 		// Uses standard screen image width of 1920, but halved
 		const float shrink_factor = 1.0f / (1920.0f);
-		float scalefactorX = (float)image.width * shrink_factor;
-		float scalefactorY = (float)image.height * shrink_factor;
+		float scalefactorX = (float)image->width * shrink_factor;
+		float scalefactorY = (float)image->height * shrink_factor;
 		
 
 		Triangle triangles[] = {
@@ -47,7 +47,7 @@ struct ReferenceImage {
 
 		auto mesh = std::make_shared<Mesh>(triangles, 2);
 
-		Texture texture = Texture::from_rgb_bytes(image.data.data(), image.width, image.height, image.channels);
+		auto texture = Texture::from_image2d(image);
 		mesh->texture = texture;
 
 		this->image = image;

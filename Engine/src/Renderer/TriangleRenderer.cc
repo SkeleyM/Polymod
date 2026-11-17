@@ -8,9 +8,9 @@ TriangleRenderer::TriangleRenderer() {
 
 TriangleRenderer::~TriangleRenderer() {}
 
-void TriangleRenderer::render(Camera& camera, Mesh* mesh) {
+void TriangleRenderer::render(Camera& camera, std::shared_ptr<Mesh> mesh) {
 	// Get the info about the mesh on the gpu and draw it
-	GpuMesh gpumesh = this->meshbuffer.get_gpu_mesh(*mesh);
+	GpuMesh gpumesh = this->meshbuffer.get_gpu_mesh(mesh);
 
 	gl_check_for_error();
 
@@ -27,8 +27,13 @@ void TriangleRenderer::render(Camera& camera, Mesh* mesh) {
 	this->shader.set_uniform_matrix4x4("projection", camera.get_projection_matrix());
 
 	// Texture uniforms
-	this->shader.set_uniform_texture(mesh->texture);
-	this->shader.set_uniform_bool("use_texture", mesh->texture.gl_texture_id != -1);
+	if (mesh->texture) {
+		this->shader.set_uniform_texture(*mesh->texture);
+		this->shader.set_uniform_bool("use_texture", true);
+	}
+	else {
+		this->shader.set_uniform_bool("use_texture", false);
+	}
 
  	glDrawElements(
 		GL_TRIANGLES, 
@@ -49,6 +54,6 @@ void TriangleRenderer::set_shader(Shader shader) {
 	this->shader = shader;
 }
 
-void TriangleRenderer::delete_mesh_from_buffer(Mesh& mesh) {
+void TriangleRenderer::delete_mesh_from_buffer(std::shared_ptr<Mesh> mesh) {
 	this->meshbuffer.delete_mesh(mesh);
 }

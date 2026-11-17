@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-Image2d Image2d::from_image_file(std::filesystem::path path) {
+std::shared_ptr<Image2d> Image2d::from_image_file(std::filesystem::path path) {
 	uint32_t width{ 0 }, height{ 0 }, channels{ 0 };
 
 	auto image = stbi_load(path.string().c_str(), (int*)&width, (int*)&height, (int*)&channels, 0);
@@ -12,5 +12,5 @@ Image2d Image2d::from_image_file(std::filesystem::path path) {
 	// Almost 100% not a good idea
 	std::memcpy(data.data(), image, width * height * channels);
 
-	return Image2d{ data, width, height, channels };
+	return std::make_shared<Image2d>(Image2d{ data, width, height, channels });
 }

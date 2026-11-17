@@ -15,9 +15,9 @@ public:
 	TriangleRenderer();
 	~TriangleRenderer();
 
-	void render(Camera& camera, Mesh* mesh);
+	void render(Camera& camera, std::shared_ptr<Mesh> mesh);
 	void set_shader(Shader shader);
 	Shader& get_shader() { return this->shader; }
 
-	void delete_mesh_from_buffer(Mesh& mesh);
+	void delete_mesh_from_buffer(std::shared_ptr<Mesh> mesh);
 };

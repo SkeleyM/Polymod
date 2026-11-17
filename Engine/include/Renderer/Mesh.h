@@ -4,21 +4,22 @@
 #include <Transform.h>
 
 #include <vector>
+#include <memory>
 
 typedef struct Mesh {
-public:
-	static uint32_t rolling_id;
+	friend class MeshBuffer;
 
 	// To avoid using a dynamic array for storing mesh data
 	// memory is manually allocated and tracked using the 'triangle_count' variable.
 	// A dynamic array is nessicary as meshes are different sizes;
-	uint32_t triangle_count;
+private:
 	Triangle* triangles;
-	Texture texture;
+
+public:
+	uint32_t triangle_count;
+	std::shared_ptr<Texture> texture;
 
 	Transform transform;
-
-	uint32_t id{ rolling_id };
 
 	Mesh(Triangle triangles[], uint32_t triangle_count);
 	Mesh(const Mesh& mesh);

@@ -46,7 +46,7 @@ MeshBuffer::MeshBuffer(int size) {
 MeshBuffer::~MeshBuffer() {
 }
 
-void MeshBuffer::add_mesh(Mesh& mesh) {
+void MeshBuffer::add_mesh(std::shared_ptr<Mesh> mesh) {
 	glBindVertexArray(this->gl_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, this->gl_vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->gl_ebo);
@@ -64,7 +64,7 @@ void MeshBuffer::add_mesh(Mesh& mesh) {
 	GpuMesh gpu_mesh = *gpu_mesh_gap_result;
 
 
-	std::vector<uint32_t> indices = mesh.get_indices();
+	std::vector<uint32_t> indices = mesh->get_indices();
 	// Calculate the incices
 	for (int i = 0; i < indices.size(); i++) {
 		indices[i] = indices[i] + (gpu_mesh.ebo_offset / sizeof(uint32_t));
@@ -75,18 +75,18 @@ void MeshBuffer::add_mesh(Mesh& mesh) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->gl_ebo);
 
 	// Upload Vertex data to gpu
-	glBufferSubData(GL_ARRAY_BUFFER, gpu_mesh.vbo_offset, gpu_mesh.vbo_size, mesh.triangles);
+	glBufferSubData(GL_ARRAY_BUFFER, gpu_mesh.vbo_offset, gpu_mesh.vbo_size, mesh->triangles);
 	// Upload Index data to gpu
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, gpu_mesh.ebo_offset, gpu_mesh.ebo_size, indices.data());
 
 	gl_check_for_error();
 
-	this->mesh_map.insert({ mesh.id, gpu_mesh });
+	this->mesh_map.insert({ mesh, gpu_mesh });
 }
 
-std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(Mesh& mesh) {
-	uint32_t ebo_size = (mesh.triangle_count * 3) * sizeof(uint32_t);
-	uint32_t vbo_size = mesh.triangle_count * sizeof(Triangle);
+std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(std::shared_ptr<Mesh> mesh) {
+	uint32_t ebo_size = (mesh->triangle_count * 3) * sizeof(uint32_t);
+	uint32_t vbo_size = mesh->triangle_count * sizeof(Triangle);
 
 	// To append to the buffer, this algorithm requires at least 1 mesh to already exist
 	if (this->mesh_map.size() == 0) {
@@ -167,18 +167,18 @@ std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(Mesh& mesh) {
 	);
 }
 
-void MeshBuffer::delete_mesh(Mesh& mesh) {
-	this->mesh_map.erase(mesh.id);
+void MeshBuffer::delete_mesh(std::shared_ptr<Mesh> mesh) {
+	this->mesh_map.erase(mesh);
 }
 
 void MeshBuffer::clear_buffer() {
 	this->mesh_map.clear();
 }
 
-GpuMesh MeshBuffer::get_gpu_mesh(Mesh& mesh) {
+GpuMesh MeshBuffer::get_gpu_mesh(std::shared_ptr<Mesh> mesh) {
 	// If the mesh already exists on the gpu, return the GpuMesh for it.
-	if (this->mesh_map.find(mesh.id) != this->mesh_map.end()) {
-		return this->mesh_map[mesh.id];
+	if (this->mesh_map.find(mesh) != this->mesh_map.end()) {
+		return this->mesh_map[mesh];
 	}
 	
 	this->add_mesh(mesh);
