@@ -21,7 +21,7 @@ private:
 	SelectedGeometry selection;
 
 	// Maps Geometry pointers to the ID of the corresponding mesh in the scene
-	std::unordered_map<std::string, int> geometry_scene_mesh_id_map;
+	std::unordered_map<std::string, std::shared_ptr<Mesh>> geometry_scene_mesh_id_map;
 
 	void select_vertex(Vector3 ray_origin, Vector3 ray_direction);
 	void select_edge(Vector3 ray_origin, Vector3 ray_direction);

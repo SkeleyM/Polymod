@@ -8,7 +8,7 @@
 
 class Scene {
 	TriangleRenderer renderer;
-	std::vector<Mesh> meshes;
+	std::vector<std::shared_ptr<Mesh>> meshes;
 public:
 	Light light;
 	Camera camera{Camera(50.0f, 0.001f, 1000.0f)};
@@ -17,7 +17,7 @@ public:
 	~Scene();
 
 	void render();
-	void add_mesh(Mesh mesh);
-	void remove_mesh(int mesh_id);
+	void add_mesh(std::shared_ptr<Mesh> mesh);
+	void remove_mesh(std::shared_ptr<Mesh> mesh);
 	void clear_scene();
 };

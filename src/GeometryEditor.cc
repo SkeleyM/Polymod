@@ -55,9 +55,10 @@ void GeometryEditor::refresh_current_geometry_in_scene() {
 	}
 
 	Mesh new_mesh = copy_of_current.triangulate();
+	std::shared_ptr<Mesh> mesh_ptr = std::make_shared<Mesh>(new_mesh);
 
-	this->geometry_scene_mesh_id_map[geometry_name] = new_mesh.id;
-	scene.add_mesh(new_mesh);
+	this->geometry_scene_mesh_id_map[geometry_name] = mesh_ptr;
+	scene.add_mesh(mesh_ptr);
 }
 
 void GeometryEditor::on_tool_clicked(ToolbarTool* tool) {

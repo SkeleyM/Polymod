@@ -35,18 +35,18 @@ public:
 	// Needed to track size for bounds checking the buffer
 	uint32_t size; 
 
-	// Links mesh ID's to their mesh data stored on the gpu
-	std::unordered_map<uint32_t, GpuMesh> mesh_map;
+	// Links meshes to their mesh data stored on the gpu
+	std::unordered_map<std::shared_ptr<Mesh>, GpuMesh> mesh_map;
 
 	MeshBuffer(int size);
 	~MeshBuffer();
 
-	void add_mesh(Mesh& mesh);
-	void delete_mesh(Mesh& mesh);
+	void add_mesh(std::shared_ptr<Mesh> mesh);
+	void delete_mesh(std::shared_ptr<Mesh> mesh);
 	// This function finds a place in the buffer by attempting to append
 	// from the last item
-	std::optional<GpuMesh> create_gpu_mesh(Mesh& mesh);
+	std::optional<GpuMesh> create_gpu_mesh(std::shared_ptr<Mesh> mesh);
 	void clear_buffer();
 
-	GpuMesh get_gpu_mesh(Mesh& mesh);
+	GpuMesh get_gpu_mesh(std::shared_ptr<Mesh> mesh);
 };
