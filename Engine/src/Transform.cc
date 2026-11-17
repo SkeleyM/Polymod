@@ -47,12 +47,7 @@ Matrix4x4 Transform::get_matrix() {
 
 Vector3 Transform::forward() {
 	// This is a 4 component vector, the final component can be ignored.
-	Matrix4x4 rotation_matrix = glm::eulerAngleXYZ(
-		this->rotation.x,
-		this->rotation.y,
-		this->rotation.z
-	);
-
+	Matrix4x4 rotation_matrix = glm::toMat4(this->rotation);
 	Vector4 forward_vector = rotation_matrix * Vector4(0.0, 0.0, -1.0, 1.0f);
 	return glm::normalize(Vector3(forward_vector));
 }
