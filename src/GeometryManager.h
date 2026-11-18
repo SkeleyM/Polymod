@@ -6,15 +6,19 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <optional>
 
 class GeometryManager {
 private:
 	std::vector<std::shared_ptr<Geometry>> geometry;
 	std::unordered_map<std::string, std::shared_ptr<Timeline>> geometry_timelines;
+	std::unordered_map<std::string, std::shared_ptr<Mesh>> geometry_meshes;
 public:
+	~GeometryManager();
 	std::weak_ptr<Geometry> create_new_geometry(std::string name);
 	void delete_geometry(std::string name);
+	void update_geometry_mesh(std::string name);
 	std::weak_ptr<Timeline> get_timeline(std::weak_ptr<Geometry> geometry);
-	std::weak_ptr<Geometry> get_geometry(std::string name);
+	std::optional<std::weak_ptr<Geometry>> get_geometry(std::string name);
 	std::vector<std::shared_ptr<Geometry>> get_all_geometry();
 };

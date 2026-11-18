@@ -71,9 +71,10 @@ static void on_render() {
 	// Render all the UI
 	auto& app_context = ApplicationContext::get_instance();
 	auto& geometry_editor = app_context.get_geometry_editor();
+	auto& project = app_context.get_project_manager();
 
 	// If there is no active project show the home screen
-	if (app_context.get_project_manager().expired()) {
+	if (project.expired()) {
 		home_screen->render(app_context.recent_projects);
 	}
 
@@ -81,14 +82,23 @@ static void on_render() {
 	geometry_editor.render();
 	main_menu_bar->render();
 	
-
 	// Check that the mouse hasnt moved much this frame before we click
 	if (clicked_this_frame && !is_dragging) {
 		geometry_editor.select(input.get_mouse_pos());
 	}
 
-	// Render the wireframe of the current geometry
 	auto current_geometry = geometry_editor.get_current_geometry();
+
+	// Check if the current geometries mesh needs refreshing
+	if (!project.expired() && geometry_editor.should_mesh_be_updated()) {
+		auto& geometry_manager = project.lock().get()->get_geometry_manager();
+		geometry_manager.update_geometry_mesh(current_geometry.lock().get()->name);
+
+		geometry_editor.reset_mesh_update_flag();
+	}
+
+	// Render the wireframe of the current geometry
+	
 	if (!current_geometry.expired()) {
 		Geometry& geometry = *current_geometry.lock().get();
 		SelectedGeometry selection = geometry_editor.get_selection();
@@ -100,7 +110,7 @@ static void on_render() {
 	}
 }
 
-int main() {
+ int main() {
 	Engine* engine = new Engine("Polymodel", 1920, 1080);
 
 	engine->set_on_render(on_render);
