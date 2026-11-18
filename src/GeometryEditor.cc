@@ -18,47 +18,6 @@ GeometryEditor::GeometryEditor() {
 	this->selection = SelectedGeometry();
 
 	this->set_select_mode(Select_Face);
-
-	// refresh so that it appears in the scene
-	this->refresh_current_geometry_in_scene();
-}
-
-void GeometryEditor::refresh_current_geometry_in_scene() {
-	if (this->current_geometry.expired())
-		return;
-
-	std::string geometry_name = this->current_geometry.lock().get()->name;
-	Scene& scene = Engine::get_instance()->get_active_scene();
-
-	scene.remove_mesh(this->geometry_scene_mesh_id_map[geometry_name]);
-	auto geometry = this->current_geometry.lock();
-	geometry.get()->calculate_normals(SHADE_FLAT);
-
-	// Make copy of current geometry, as we will be changing details for visual feedback
-	// Like colouring selection, and we want to avoid making permanent changes
-	Geometry copy_of_current = Geometry(*geometry.get());
-
-	// Colour the selected faces
-	std::vector<Face>& faces = copy_of_current.get_faces();
-	for (int f = 0; f < faces.size(); f++) {
-		Face& face = faces[f];
-		// If the current face is in the selected faces, colour it differently
-		if (
-			this->selection.selected_faces != std::nullopt &&
-			std::find(
-			this->selection.selected_faces.value().begin(), 
-			this->selection.selected_faces.value().end(), 
-			face
-		) != this->selection.selected_faces.value().end()) {
-			faces[f].face_colour = { 1.0f, 0.4f, 0.0f };
-		}
-	}
-
-	Mesh new_mesh = copy_of_current.triangulate();
-	std::shared_ptr<Mesh> mesh_ptr = std::make_shared<Mesh>(new_mesh);
-
-	this->geometry_scene_mesh_id_map[geometry_name] = mesh_ptr;
-	scene.add_mesh(mesh_ptr);
 }
 
 void GeometryEditor::on_tool_clicked(ToolbarTool* tool) {
@@ -81,7 +40,7 @@ void GeometryEditor::render() {
 		Geometry present = operation->do_operation();
 		*this->current_geometry.lock().get() = present;
 
-		this->refresh_current_geometry_in_scene();
+		this->update_mesh_flag = true;
 
 		// Render operation panel
 		this->in_progress_operation_panel.value().render();
@@ -96,7 +55,7 @@ void GeometryEditor::select_vertex(Vector3 ray_origin, Vector3 ray_direction) {
 		SelectedGeometry selection;
 		selection.selected_vertices = { raycast_result.value() };
 		this->selection = selection;
-		this->refresh_current_geometry_in_scene();
+		this->update_mesh_flag = true;
 	}
 }
 
@@ -108,7 +67,7 @@ void GeometryEditor::select_edge(Vector3 ray_origin, Vector3 ray_direction) {
 		SelectedGeometry selection;
 		selection.selected_edges = { raycast_result.value() };
 		this->selection = selection;
-		this->refresh_current_geometry_in_scene();
+		this->update_mesh_flag = true;
 	}
 }
 
@@ -120,7 +79,7 @@ void GeometryEditor::select_face(Vector3 ray_origin, Vector3 ray_direction) {
 		SelectedGeometry selection;
 		selection.selected_faces = {raycast_result.value()};
 		this->selection = selection;
-		this->refresh_current_geometry_in_scene();
+		this->update_mesh_flag = true;
 	}
 }
 
@@ -169,6 +128,10 @@ void GeometryEditor::set_current_geometry(std::weak_ptr<Geometry> geometry, std:
 	this->current_geometry = geometry;
 	this->current_geometry_timeline = timeline;
 	this->set_selection({});
+
+	// Reset flags
+	this->geometry_change_flag = false;
+	this->update_mesh_flag = false;
 }
 
 void GeometryEditor::begin_operation(OperationArgumentPanel operation_panel) {
@@ -185,7 +148,8 @@ void GeometryEditor::do_operation(AbstractGeometryOperation* geometry_operation)
 	Geometry present = this->current_geometry_timeline.lock().get()->get_present_geometry();
 	*this->current_geometry.lock().get() = present;
 
-	this->refresh_current_geometry_in_scene();
+	this->geometry_change_flag = true;
+	this->update_mesh_flag = true;
 }
 
 void GeometryEditor::cancel_operation() {
@@ -197,11 +161,27 @@ void GeometryEditor::cancel_operation() {
 	*this->current_geometry.lock().get() = restored_geometry;
 
 	this->in_progress_operation_panel = std::nullopt;
-	this->refresh_current_geometry_in_scene();
+	this->update_mesh_flag = true;
 }
 
 bool GeometryEditor::is_performing_operation() {
 	return this->in_progress_operation_panel.has_value();
+}
+
+bool GeometryEditor::has_geometry_changed() {
+	return this->geometry_change_flag;
+}
+
+void GeometryEditor::reset_geometry_change_flag() {
+	this->geometry_change_flag = false;
+}
+
+bool GeometryEditor::should_mesh_be_updated() {
+	return this->update_mesh_flag;
+}
+
+void GeometryEditor::reset_mesh_update_flag() {
+	this->update_mesh_flag = false;
 }
 
 void GeometryEditor::set_select_mode(SelectMode mode) {
@@ -214,7 +194,7 @@ SelectMode GeometryEditor::get_select_mode() {
 
 void GeometryEditor::set_selection(SelectedGeometry selection) {
 	this->selection = selection;
-	this->refresh_current_geometry_in_scene();
+	this->update_mesh_flag = true;
 }
 
 SelectedGeometry GeometryEditor::get_selection() {
@@ -237,7 +217,8 @@ void GeometryEditor::undo() {
 	Geometry present = timeline->get_present_geometry();
 
 	*this->current_geometry.lock().get() = present;
-	this->refresh_current_geometry_in_scene();
+	this->update_mesh_flag = true;
+	this->geometry_change_flag = true;
 }
 
 void GeometryEditor::redo() {
@@ -247,5 +228,6 @@ void GeometryEditor::redo() {
 	Geometry present = timeline->get_present_geometry();
 
 	*this->current_geometry.lock().get() = present;
-	this->refresh_current_geometry_in_scene();
+	this->update_mesh_flag = true;
+	this->geometry_change_flag = true;
 }

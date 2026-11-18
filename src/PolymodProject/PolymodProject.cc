@@ -78,8 +78,10 @@ bool Polymodel::Project::import_geometry(std::filesystem::path project_path, Geo
 			auto new_geo = manager.create_new_geometry("Placeholder");
 			*new_geo.lock() = value.value();
 			new_geo.lock()->name = entry.path().filename().string();
+
+			// Update it so that it appears initially in the scene
+			manager.update_geometry_mesh(new_geo.lock()->name);
 		}
-			
 	}
 
 	return false;
