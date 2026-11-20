@@ -47,6 +47,14 @@ void GeometryManager::update_geometry_mesh(std::string name) {
 	scene.add_mesh(new_mesh);
 }
 
+std::shared_ptr<Mesh> GeometryManager::get_geometry_mesh(std::string name) {
+	if (this->geometry_meshes.find(name) == this->geometry_meshes.end()) {
+		return nullptr;
+	}
+
+	return this->geometry_meshes[name];
+}
+
 std::weak_ptr<Timeline> GeometryManager::get_timeline(std::weak_ptr<Geometry> geometry) {
 	assert(!geometry.expired());
 

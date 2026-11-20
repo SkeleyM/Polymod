@@ -38,10 +38,35 @@ void SceneTree::render_geometry_tree() {
 		if (ImGui::Selectable(geometry.get()->name.c_str())) {
 			auto timeline = geometry_manager.get_timeline(geometry);
 			geometry_editor.set_current_geometry(geometry, timeline);
+
+			this->selection = geometry;
+			this->selection_type = SceneTreeObjectType::Geometry;
 		}
 	}
 	ImGui::PopStyleVar();
 	ImGui::PopStyleColor(all_geometry.size());
+}
+
+void SceneTree::render_image_tree() {
+	if (!ImGui::CollapsingHeader("Images"))
+		return;
+
+	auto& app_context = ApplicationContext::get_instance();
+	auto& project = app_context.get_project_manager();
+	auto& image_manager = app_context.get_reference_image_manager();
+	auto& images = image_manager.get_reference_images();
+
+
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 25.0f, 0.0f });
+	for (const std::shared_ptr<ReferenceImage>& image : images) {
+		this->next_tree_node_colour();
+		if (ImGui::Selectable(image.get()->name.c_str())) {
+			this->selection = image;
+			this->selection_type = SceneTreeObjectType::Image;
+		}
+	}
+	ImGui::PopStyleVar();
+	ImGui::PopStyleColor(images.size());
 }
 
 void SceneTree::render() {
@@ -80,6 +105,7 @@ void SceneTree::render() {
 	}
 
 	this->render_geometry_tree();
+	this->render_image_tree();
 	ImGui::EndChild();
 
 	ImGui::PopStyleColor(3);

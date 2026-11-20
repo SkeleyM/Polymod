@@ -18,6 +18,7 @@ public:
 	std::weak_ptr<Geometry> create_new_geometry(std::string name);
 	void delete_geometry(std::string name);
 	void update_geometry_mesh(std::string name);
+	std::shared_ptr<Mesh> get_geometry_mesh(std::string name);
 	std::weak_ptr<Timeline> get_timeline(std::weak_ptr<Geometry> geometry);
 	std::optional<std::weak_ptr<Geometry>> get_geometry(std::string name);
 	std::vector<std::shared_ptr<Geometry>> get_all_geometry();

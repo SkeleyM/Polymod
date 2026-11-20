@@ -7,5 +7,5 @@ struct SideWindow {
 	PropertiesPanel properties_panel;
 	SceneTree scene_tree;
 
-	void render();
+	void render(GeometryManager& geometry_manager);
 };

@@ -9,15 +9,37 @@ void EditorUI::render() {
 
 	auto& app_context = ApplicationContext::get_instance();
 	auto& geometry_editor = app_context.get_geometry_editor();
-	auto current_geometry_weak = geometry_editor.get_current_geometry();
+	auto& project = app_context.get_project_manager();
+	auto& geometry_manager = project.lock()->get_geometry_manager();
 
-	if (!current_geometry_weak.expired()) {
-		auto current_geometry = current_geometry_weak.lock();
-		// Set the transform of the 
-		side_window.properties_panel.transform = &current_geometry.get()->transform;
+	// set Properties panel transform 
+	this->side_window.properties_panel.transform_origin_object = this->side_window.scene_tree.selection_type;
+	if (this->side_window.scene_tree.selection.has_value()) {
+		switch (this->side_window.scene_tree.selection_type) {
+			case (SceneTreeObjectType::Geometry): {
+				std::shared_ptr<Geometry> current_geometry = 
+					std::get<std::shared_ptr<Geometry>>(this->side_window.scene_tree.selection.value());
+
+				// Set the properties panel transform target
+				this->side_window.properties_panel.transform = &current_geometry->transform;
+				this->side_window.properties_panel.geometry_name = current_geometry->name;
+
+				break;
+			}
+			case (SceneTreeObjectType::Image): {
+				std::shared_ptr<ReferenceImage> selected_reference_image =
+					std::get<std::shared_ptr<ReferenceImage>>(this->side_window.scene_tree.selection.value());
+
+				this->side_window.properties_panel.transform = &selected_reference_image->get_mesh()->transform;
+				break;
+			}
+		}
+	}
+	else {
+		this->side_window.properties_panel.transform = nullptr;
 	}
 
 	this->axis_grid.render(scene.camera);
-	this->side_window.render();
+	this->side_window.render(geometry_manager);
 	this->editor_mode_selector.render();
 }

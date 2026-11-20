@@ -98,6 +98,7 @@ set(HEADERS
 	${PROJECT_SOURCE_DIR}/Ui/MenuBar/MenuBarItem.h
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/EditorModeSelector.h
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SceneTree.h
+	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/SideWindow.h
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/PropertiesWindow/PropertiesPanel.h
 	${PROJECT_SOURCE_DIR}/Ui/GeometryEditor/PropertiesWindow/PropertiesWindow.h
 	${PROJECT_SOURCE_DIR}/Ui/ToolbarTool.h
