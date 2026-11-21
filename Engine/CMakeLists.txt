@@ -27,6 +27,7 @@ set(HEADERS include/Engine.h
 
 	include/imgui_impl/ImGui.h
 	external/stb_image/stb_image.h
+	external/stb_image/stb_image_write.h
 )
 set(SOURCES ${PROJECT_SOURCE_DIR}/Engine.cc
 	${PROJECT_SOURCE_DIR}/InputManager.cc
