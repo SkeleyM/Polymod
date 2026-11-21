@@ -51,3 +51,15 @@ Vector3 Transform::forward() {
 	Vector4 forward_vector = rotation_matrix * Vector4(0.0, 0.0, -1.0, 1.0f);
 	return glm::normalize(Vector3(forward_vector));
 }
+
+Vector3 Transform::get_rotation_euler() {
+	Vector3 euler_angle;
+	glm::extractEulerAngleXYZ(glm::toMat4(this->rotation), euler_angle.x, euler_angle.y, euler_angle.z);
+	return glm::degrees(euler_angle);
+}
+
+Vector3 Transform::get_rotation_euler_radians() {
+	Vector3 euler_angle;
+	glm::extractEulerAngleXYZ(glm::toMat4(this->rotation), euler_angle.x, euler_angle.y, euler_angle.z);
+	return euler_angle;
+}

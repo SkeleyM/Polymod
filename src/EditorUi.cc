@@ -30,13 +30,13 @@ void EditorUI::render() {
 				std::shared_ptr<ReferenceImage> selected_reference_image =
 					std::get<std::shared_ptr<ReferenceImage>>(this->side_window.scene_tree.selection.value());
 
-				this->side_window.properties_panel.transform = &selected_reference_image->get_mesh()->transform;
+				this->side_window.properties_panel.set_transform(&selected_reference_image->get_mesh()->transform);
 				break;
 			}
 		}
 	}
 	else {
-		this->side_window.properties_panel.transform = nullptr;
+		this->side_window.properties_panel.set_transform(nullptr);
 	}
 
 	this->axis_grid.render(scene.camera);

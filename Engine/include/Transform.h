@@ -19,4 +19,6 @@ public:
 	// Used to translate and transform during rendering.
 	Matrix4x4 get_matrix();
 	Vector3 forward();
+	Vector3 get_rotation_euler();
+	Vector3 get_rotation_euler_radians();
 };
