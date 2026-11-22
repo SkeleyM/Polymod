@@ -6,6 +6,15 @@
 
 #include <fstream>
 
+ReferenceImageManager::~ReferenceImageManager() {
+	// Go through and delete all meshes from the scene
+	auto engine = Engine::get_instance();
+	auto& scene = engine->get_active_scene();
+	for (auto& image : this->reference_images) {
+		scene.remove_mesh(image->get_mesh());
+	}
+}
+
 std::shared_ptr<ReferenceImage> ReferenceImageManager::create_reference_image(std::string name, std::filesystem::path image_path) {
 	auto image = Image2d::from_image_file(image_path.string());
 	auto reference = std::make_shared<ReferenceImage>(name, image);

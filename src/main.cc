@@ -110,7 +110,7 @@ static void on_render() {
 	}
 }
 
- int main() {
+int main() {
 	Engine* engine = new Engine("Polymodel", 1920, 1080);
 
 	engine->set_on_render(on_render);
