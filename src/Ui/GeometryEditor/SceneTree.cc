@@ -53,7 +53,7 @@ void SceneTree::render_image_tree() {
 
 	auto& app_context = ApplicationContext::get_instance();
 	auto& project = app_context.get_project_manager();
-	auto& image_manager = app_context.get_reference_image_manager();
+	auto& image_manager = project.lock()->get_reference_image_manager();
 	auto& images = image_manager.get_reference_images();
 
 

@@ -35,7 +35,7 @@ void GeometryEditor::render() {
 
 	if (this->in_progress_operation_panel.has_value()) {
 		// Perform the operation temporarily
-		auto operation = this->in_progress_operation_panel.value().get_operation();
+		AbstractGeometryOperation* operation = this->in_progress_operation_panel.value().get_operation();
 
 		Geometry present = operation->do_operation();
 		*this->current_geometry.lock().get() = present;

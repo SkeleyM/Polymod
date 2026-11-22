@@ -60,10 +60,6 @@ void ApplicationContext::set_project_manager(std::shared_ptr<Polymodel::Project:
 	}
 }
 
-ReferenceImageManager& ApplicationContext::get_reference_image_manager() {
-	return this->reference_image_manager;
-}
-
 GeometryEditor& ApplicationContext::get_geometry_editor() {
 	return this->geometry_editor;
 }

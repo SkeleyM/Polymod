@@ -5,9 +5,9 @@
 struct PropertiesWindow {
 	PropertiesPanel properties_panel;
 
-	void render() {
+	void render(GeometryManager& geometry_manager) {
 		ImGui::Begin("PropertiesWindow");
-		properties_panel.render();
+		properties_panel.render(geometry_manager);
 		ImGui::End();
 	}
 };

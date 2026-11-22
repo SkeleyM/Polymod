@@ -4,6 +4,8 @@
 #include <Renderer/Texture.h>
 #include <Engine.h>
 
+#include <fstream>
+
 std::shared_ptr<ReferenceImage> ReferenceImageManager::create_reference_image(std::string name, std::filesystem::path image_path) {
 	auto image = Image2d::from_image_file(image_path.string());
 	auto reference = std::make_shared<ReferenceImage>(name, image);

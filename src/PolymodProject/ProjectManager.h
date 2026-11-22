@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GeometryManager.h>
-#include <Geometry/GeometryPrimitives.h>
+#include <ReferenceImageManager.h>
 
 #include <string>
 #include <filesystem>
@@ -12,7 +12,7 @@ namespace Polymodel::Project {
 		std::string name;
 		std::filesystem::path path;
 		GeometryManager geometry_manager;
-
+		ReferenceImageManager reference_image_manager;
 	public:
 		ProjectManager(std::filesystem::path path, std::string name) : path(path), name(name) {}
 
@@ -26,6 +26,10 @@ namespace Polymodel::Project {
 
 		GeometryManager& get_geometry_manager() {
 			return this->geometry_manager;
+		}
+
+		ReferenceImageManager& get_reference_image_manager() {
+			return this->reference_image_manager;
 		}
 
 		std::filesystem::path get_project_path() {

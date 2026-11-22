@@ -170,7 +170,12 @@ namespace Polymodel::Init {
 
 			if (result == NFD_OKAY) {
 				auto& app_context = ApplicationContext::get_instance();
-				auto& reference_image_manager = app_context.get_reference_image_manager();
+				auto& project = app_context.get_project_manager();
+			
+				// Currently should be impossible
+				assert(project.expired() == false && "Project manager is expired when trying to add reference image");
+
+				auto& reference_image_manager = project.lock()->get_reference_image_manager();
 				auto path = std::filesystem::path(in_path);
 				reference_image_manager.create_reference_image(path.filename().string(), path);
 			}
