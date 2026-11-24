@@ -27,12 +27,12 @@ void TriangleRenderer::render(Camera& camera, std::shared_ptr<Mesh> mesh) {
 	this->shader.set_uniform_matrix4x4("projection", camera.get_projection_matrix());
 
 	// Texture uniforms
-	if (mesh->texture) {
-		this->shader.set_uniform_texture(*mesh->texture);
-		this->shader.set_uniform_bool("use_texture", true);
-	}
-	else {
-		this->shader.set_uniform_bool("use_texture", false);
+	if (mesh->material) {
+		auto& material = mesh->material;
+		this->shader.set_uniform_texture(material->texture);
+		this->shader.set_uniform_bool("use_texture", material->use_texture);
+		this->shader.set_uniform_vector4("albedo_colour", material->albedo_colour);
+		this->shader.set_uniform_bool("use_albedo_colour", material->use_albedo_colour);
 	}
 
  	glDrawElements(

@@ -1,4 +1,5 @@
 #include <Geometry/Geometry.h>
+#include <Renderer/Material.h>
 
 Geometry::Geometry(std::string name) {
 	this->name = name;
@@ -224,7 +225,9 @@ Mesh Geometry::triangulate() {
 		}
 	}
 
+	static std::shared_ptr<Material> default_mat = Material::create_default("default");
 	Mesh triangulated = Mesh(triangles.data(), triangles.size());
+	triangulated.material = default_mat;
 	triangulated.transform = this->transform;
 
 	return triangulated;

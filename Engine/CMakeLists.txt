@@ -20,6 +20,7 @@ set(HEADERS include/Engine.h
 	include/Renderer/TriangleRenderer.h
 	include/Renderer/LineRenderer.h
 	include/Renderer/PointRenderer.h
+	include/Renderer/Material.h
 	include/Renderer/Mesh.h
 	include/Renderer/MeshBuffer.h
 
@@ -42,6 +43,7 @@ set(SOURCES ${PROJECT_SOURCE_DIR}/Engine.cc
 	${PROJECT_SOURCE_DIR}/Renderer/TriangleRenderer.cc
 	${PROJECT_SOURCE_DIR}/Renderer/LineRenderer.cc
 	${PROJECT_SOURCE_DIR}/Renderer/PointRenderer.cc
+	${PROJECT_SOURCE_DIR}/Renderer/Material.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Mesh.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Meshbuffer.cc
 	${PROJECT_SOURCE_DIR}/Renderer/Glerror.cc

@@ -32,7 +32,7 @@ Mesh::Mesh(const Mesh& mesh) {
 	this->triangles = mesh_triangles;
 	this->triangle_count = mesh.triangle_count;
 	this->transform = mesh.transform;
-	this->texture = mesh.texture;
+	this->material = mesh.material;
 }
 
 std::vector<uint32_t> Mesh::get_indices() {

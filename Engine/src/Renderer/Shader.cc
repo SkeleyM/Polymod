@@ -88,6 +88,15 @@ void Shader::set_uniform_matrix4x4(std::string name, Matrix4x4 value) {
 	glUniformMatrix4fv(uniform_location, 1, GL_FALSE, (float*)(&value));
 }
 
+void Shader::set_uniform_vector4(std::string name, Vector4 value) {
+	glUseProgram(this->gl_program_id);
+	// Get the uniforms location required to set the value in the shader
+	int uniform_location = this->get_uniform_location(name);
+
+	// Set the uniform value in the shader
+	glUniform4f(uniform_location, value.x, value.y, value.z, value.w);
+}
+
 void Shader::set_uniform_vector3(std::string name, Vector3 value) {
 	glUseProgram(this->gl_program_id);
 	// Get the uniforms location required to set the value in the shader
@@ -115,10 +124,13 @@ void Shader::set_uniform_bool(std::string name, bool value) {
 	glUniform1i(uniform_location, value);
 }
 
-void Shader::set_uniform_texture(Texture value) {
+void Shader::set_uniform_texture(std::shared_ptr<Texture> value) {
 	glUseProgram(this->gl_program_id);
 
 	// Set the uniform value in the shader
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, value.gl_texture_id);
+	if (value == nullptr)
+		glBindTexture(GL_TEXTURE_2D, -1);
+	else
+		glBindTexture(GL_TEXTURE_2D, value->gl_texture_id);
 }

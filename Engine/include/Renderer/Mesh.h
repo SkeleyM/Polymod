@@ -1,6 +1,6 @@
 #pragma once
 #include <Renderer/Triangle.h>
-#include <Renderer/Texture.h>
+#include <Renderer/Material.h>
 #include <Transform.h>
 
 #include <vector>
@@ -17,7 +17,7 @@ private:
 
 public:
 	uint32_t triangle_count;
-	std::shared_ptr<Texture> texture;
+	std::shared_ptr<Material> material;
 
 	Transform transform;
 

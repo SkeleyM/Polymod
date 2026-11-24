@@ -31,13 +31,18 @@ static const char* DEFAULT_VERTEX_SHADER =
 static const char* DEFAULT_FRAGMENT_SHADER =
 "#version 330 core\n"
 "in vec3 world_position;\n"
+// Vertex attributes
 "in vec2 v_texture;\n"
 "in vec3 v_normal;\n"
 "in vec3 v_colour;\n"
+// Light uniforms
 "uniform vec3 light_position;\n"
 "uniform vec3 light_colour;\n"
-"uniform sampler2D u_texture;\n"
+// Material Uniforms
+"uniform sampler2D albedo_texture;\n"
 "uniform bool use_texture;\n"
+"uniform vec4 albedo_colour;\n"
+"uniform bool use_albedo_colour;\n"
 "vec3 diffuse(vec3 normal, vec3 light_pos)\n"
 "{\n"
 "	vec3 ambient = vec3(0.4, 0.4, 0.4);\n"
@@ -49,7 +54,10 @@ static const char* DEFAULT_FRAGMENT_SHADER =
 "{\n"
 "	vec4 colour = vec4(diffuse(v_normal, light_position), 1.0f);\n"
 "	if (use_texture) {\n"
-"		colour = texture(u_texture, v_texture);\n"
+"		colour = texture(albedo_texture, v_texture);\n"
+"	}\n"
+"	if (use_albedo_colour) {\n"
+"		colour *= albedo_colour;\n"
 "	}\n"
 "	colour *= vec4(v_colour, 1.0f);\n"
 "	gl_FragColor = colour;\n"
@@ -70,11 +78,12 @@ public:
 
 	int get_uniform_location(std::string name);
 	void set_uniform_matrix4x4(std::string name, Matrix4x4 value);
+	void set_uniform_vector4(std::string name, Vector4 value);
 	void set_uniform_vector3(std::string name, Vector3 value);
 	void set_uniform_float(std::string name, float value);
 	void set_uniform_bool(std::string name, bool value);
 
-	void set_uniform_texture(Texture value);
+	void set_uniform_texture(std::shared_ptr<Texture> value);
 	void dont_destroy() {
 		this->destroy_shader_on_destructor = false;
 	}
