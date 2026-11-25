@@ -21,6 +21,10 @@ public:
 
 	Transform transform;
 
+	// Child meshes can have seperate materials, geometry, position, etc.
+	// They do not have to be added to the scene, and can be handled purely in the renderer
+	std::shared_ptr<Mesh> child;
+
 	Mesh(Triangle triangles[], uint32_t triangle_count);
 	Mesh(const Mesh& mesh);
 	~Mesh();

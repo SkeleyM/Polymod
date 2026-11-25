@@ -33,6 +33,7 @@ Mesh::Mesh(const Mesh& mesh) {
 	this->triangle_count = mesh.triangle_count;
 	this->transform = mesh.transform;
 	this->material = mesh.material;
+	this->child = mesh.child;
 }
 
 std::vector<uint32_t> Mesh::get_indices() {

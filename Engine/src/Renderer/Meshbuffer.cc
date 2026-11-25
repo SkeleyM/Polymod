@@ -111,7 +111,7 @@ std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(std::shared_ptr<Mesh> mesh) {
 
 	// Check if the first element has a gap before it, if so use that
 	uint32_t ebo_offset = meshes.front().ebo_offset + meshes.front().ebo_size;
-	if (ebo_offset >= ebo_size)
+	if (ebo_offset > ebo_size)
 		ebo_offset = 0;
 	else
 		// Otherwise, set the offset to the end of the last element
@@ -135,7 +135,7 @@ std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(std::shared_ptr<Mesh> mesh) {
 		});
 
 	uint32_t vbo_offset = meshes.front().vbo_offset + meshes.front().vbo_size;
-	if (vbo_offset >= vbo_size)
+	if (vbo_offset > vbo_size)
 		vbo_offset = 0;
 	else
 		// Otherwise, set the offset to the end of the last element
@@ -180,7 +180,7 @@ GpuMesh MeshBuffer::get_gpu_mesh(std::shared_ptr<Mesh> mesh) {
 	if (this->mesh_map.find(mesh) != this->mesh_map.end()) {
 		return this->mesh_map[mesh];
 	}
-	
+
 	this->add_mesh(mesh);
 	return this->get_gpu_mesh(mesh);
 }

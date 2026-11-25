@@ -1,4 +1,5 @@
 #pragma once
+#include <Renderer/Material.h>
 #include <Renderer/Mesh.h>
 #include <Renderer/Image2d.h>
 
@@ -47,8 +48,11 @@ struct ReferenceImage {
 
 		auto mesh = std::make_shared<Mesh>(triangles, 2);
 
+		auto material = Material::create_default(name);
 		auto texture = Texture::from_image2d(image);
-		mesh->texture = texture;
+		material->texture = texture;
+		material->use_texture = true;
+		mesh->material = material;
 
 		this->image = image;
 		this->mesh = mesh;
