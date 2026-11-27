@@ -108,10 +108,11 @@ std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(std::shared_ptr<Mesh> mesh) {
 	std::sort(meshes.begin(), meshes.end(), [](GpuMesh a, GpuMesh b) {
 		return a.ebo_offset < b.ebo_offset;
 	});
-
-	// Check if the first element has a gap before it, if so use that
+	
+	uint32_t distance_from_element_buffer_start = meshes.front().ebo_offset;
 	uint32_t ebo_offset = meshes.front().ebo_offset + meshes.front().ebo_size;
-	if (ebo_offset > ebo_size)
+	// Check if the first element has a gap before it, if so use that
+	if (distance_from_element_buffer_start > ebo_size)
 		ebo_offset = 0;
 	else
 		// Otherwise, set the offset to the end of the last element
@@ -134,8 +135,9 @@ std::optional<GpuMesh> MeshBuffer::create_gpu_mesh(std::shared_ptr<Mesh> mesh) {
 		return a.vbo_offset < b.vbo_offset;
 		});
 
+	uint32_t distance_from_vertex_buffer_start = meshes.front().vbo_offset;
 	uint32_t vbo_offset = meshes.front().vbo_offset + meshes.front().vbo_size;
-	if (vbo_offset > vbo_size)
+	if (distance_from_vertex_buffer_start > vbo_size)
 		vbo_offset = 0;
 	else
 		// Otherwise, set the offset to the end of the last element
